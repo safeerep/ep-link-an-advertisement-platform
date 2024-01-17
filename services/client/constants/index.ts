@@ -1,9 +1,13 @@
 // base urls of different services
+
 // users service
 export const USERS_SERVICE_BASE_URL = `http://localhost:3001/api/users`
 
-// prroduct service
+// product service
 export const PRODUCT_SERVICE_BASE_URL = `http://localhost:3002/api/product`
+
+// chat service
+export const CHAT_SERVICE_BASE_URL = `http://localhost:3003/api/chat`
 
 // product images base url
 export const PRODUCT_IMAGES_URL = `http://localhost:3002/products`

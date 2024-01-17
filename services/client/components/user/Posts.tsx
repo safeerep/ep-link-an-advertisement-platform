@@ -6,6 +6,8 @@ import { useRouter } from 'next/navigation'
 const Posts = () => {
     const router = useRouter();
     const products = useSelector((state: any) => state?.user?.data?.products)
+    console.log(`pro`,products);
+    
     return (
         <>
             <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 w-full gap-4 my-2 px-12">

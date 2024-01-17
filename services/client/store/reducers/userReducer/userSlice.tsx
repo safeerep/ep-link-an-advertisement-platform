@@ -10,7 +10,9 @@ import {
     addProduct, 
     getProducts,
     getCurrentUserProducts, 
-    getSpecificProduct
+    getSpecificProduct,
+    followUser,
+    unFollowUser
 } from "@/store/actions/userActions/userActions";
 import { UserState } from "@/types/user";
 
@@ -173,6 +175,32 @@ const userSlice = createSlice({
                 state.error = null;
             })
             .addCase(getSpecificProduct.rejected, (state: UserState, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            })
+            // on the time when a user is trying to follow one another user
+            .addCase(followUser.pending, (state: UserState) => {
+                state.loading = true;
+            })
+            .addCase(followUser.fulfilled, (state: UserState, action) => {
+                state.loading = false;
+                state.data = { ...state.data, ...action.payload };
+                state.error = null;
+            })
+            .addCase(followUser.rejected, (state: UserState, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            })
+            // on the time when a user is trying to follow one another user
+            .addCase(unFollowUser.pending, (state: UserState) => {
+                state.loading = true;
+            })
+            .addCase(unFollowUser.fulfilled, (state: UserState, action) => {
+                state.loading = false;
+                state.data = { ...state.data, ...action.payload };
+                state.error = null;
+            })
+            .addCase(unFollowUser.rejected, (state: UserState, action) => {
                 state.loading = false;
                 state.error = action.error.message;
             })

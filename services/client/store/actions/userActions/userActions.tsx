@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { signUpCredentialsWithOtp, signInCredentials } from "@/types/user";
-import { USERS_SERVICE_BASE_URL, PRODUCT_SERVICE_BASE_URL } from '../../../constants/index'
+import { USERS_SERVICE_BASE_URL, PRODUCT_SERVICE_BASE_URL, CHAT_SERVICE_BASE_URL } from '../../../constants/index'
 import toast from "react-hot-toast";
 
 
@@ -335,3 +335,65 @@ export const getSpecificProduct = createAsyncThunk(`/user/get-specific-product`,
     }
 )
 
+export const followUser = createAsyncThunk(`/user/follow-user`, 
+    async (userId: string) => {
+        try {
+            const response = await axios.patch(`${USERS_SERVICE_BASE_URL}/user/follow/${userId}`,{
+                headers: { "Content-Type": "application/json" },
+                withCredentials: true
+            })
+            if (response?.data) {
+                console.log(response.data);
+                if (response?.data?.success) {
+                    return response.data;
+                }      
+                return response.data;
+            }
+        } catch (error: any) {
+            console.log(`an error happened during trying to follow ${error}`);
+            return error?.response?.data;
+        }
+    }
+)
+
+export const unFollowUser = createAsyncThunk(`/user/unfollow-user`, 
+    async (userId: string) => {
+        try {
+            const response = await axios.patch(`${USERS_SERVICE_BASE_URL}/user/unfollow/${userId}`,{
+                headers: { "Content-Type": "application/json" },
+                withCredentials: true
+            })
+            if (response?.data) {
+                console.log(response.data);
+                if (response?.data?.success) {
+                    return response.data;
+                }      
+                return response.data;
+            }
+        } catch (error: any) {
+            console.log(`an error happened during trying to unfollow ${error}`);
+            return error?.response?.data;
+        }
+    }
+)
+
+export const chatWithSeller = createAsyncThunk(`/user/chat-with-seller`, 
+    async (userId: string) => {
+        try {
+            const response = await axios.patch(`${CHAT_SERVICE_BASE_URL}/${userId}`,{
+                headers: { "Content-Type": "application/json" },
+                withCredentials: true
+            })
+            if (response?.data) {
+                console.log(response.data);
+                if (response?.data?.success) {
+                    return response.data;
+                }      
+                return response.data;
+            }
+        } catch (error: any) {
+            console.log(`an error happened during trying to unfollow ${error}`);
+            return error?.response?.data;
+        }
+    }
+)
