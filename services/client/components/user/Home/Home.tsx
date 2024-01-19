@@ -20,7 +20,7 @@ const Home = () => {
     <>
       <Navbar />
       <Banner />
-      <Posts />
+      <Posts from={'home'} />
     </>
   )
 }

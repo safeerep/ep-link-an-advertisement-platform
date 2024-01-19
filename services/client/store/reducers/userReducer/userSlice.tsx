@@ -12,7 +12,8 @@ import {
     getCurrentUserProducts, 
     getSpecificProduct,
     followUser,
-    unFollowUser
+    unFollowUser,
+    editProduct
 } from "@/store/actions/userActions/userActions";
 import { UserState } from "@/types/user";
 
@@ -136,6 +137,19 @@ const userSlice = createSlice({
                 state.error = null;
             })
             .addCase(addProduct.rejected, (state: UserState, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            })
+            // on updating a product
+            .addCase(editProduct.pending, (state: UserState) => {
+                state.loading = true;
+            })
+            .addCase(editProduct.fulfilled, (state: UserState, action) => {
+                state.loading = false;
+                state.data = { ...state.data, ...action.payload };
+                state.error = null;
+            })
+            .addCase(editProduct.rejected, (state: UserState, action) => {
                 state.loading = false;
                 state.error = action.error.message;
             })

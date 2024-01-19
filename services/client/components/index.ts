@@ -6,6 +6,7 @@ import ChangePassword from "./auth/ChangePassword/ChangePassword";
 import Navbar from "./shared/userSide/Navbar";
 import Home from "./user/Home/Home";
 import AddProduct from "./user/AddProduct/AddProduct";
+import EditProduct from "./user/EditProduct/EditProduct";
 import ProductView from "./user/ProductView/ProductView";
 
 import AdminSignIn from "./auth/AdminSignIn/AdminSignIn";
@@ -26,6 +27,7 @@ export {
     Navbar,
     Home,
     AddProduct,
+    EditProduct,
     ProductView,
     
     AdminSignIn,

@@ -1,18 +1,18 @@
-import { addProduct, authRequired, getAllCategories } from '@/store/actions/userActions/userActions'
+import { addProduct, authRequired, editProduct, getAllCategories, getSpecificProduct } from '@/store/actions/userActions/userActions'
 import React, { useState, ChangeEvent, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { Formik, Form, Field, ErrorMessage } from 'formik'
 import { Toaster } from 'react-hot-toast'
 import addProductValidationSchema from '@/models/validationSchemas/user/addProductSchema'
 
-const AddProduct = () => {
+const EditProduct = () => {
     let imagesArray = new Array(8).fill(null)
     const [imageUrls, setImageUrls] = useState<Array<string | null>>(imagesArray);
     const [imageFiles, setImageFiles] = useState(Array(8).fill(null));
     const [currentCategory, setCurrentCategory] = useState<any>(null);
     const [selectedOptions, setSelectedOptions] = useState<Record<number, any>>({});
-    const [selectedOptionsInRadioButton, setSlectedOptionsInRadioButton] = useState<Record<string, any>>({});
+    const [selectedOptionsInRadioButton, setSelectedOptionsInRadioButton] = useState<Record<string, any>>({});
     const [categoryNameError, setCategoryNameError] = useState<any>(null);
     const [productNameError, setProductNameError] = useState<any>(null);
     const [priceError, setPriceError] = useState<any>(null);
@@ -21,14 +21,26 @@ const AddProduct = () => {
 
     const dispatch: any = useDispatch()
     const router = useRouter();
+    const searchParams = useSearchParams();
+    const productId: string | any = searchParams.get("product");
+
     useEffect(() => {
         dispatch(authRequired(router))
         dispatch(getAllCategories())
+        dispatch(getSpecificProduct(productId));
     }, [])
 
     const categories = useSelector((state: any) => state?.user?.data?.categories)
-    console.log(categories);
-    console.log(currentCategory);
+    const currentProduct = useSelector((state: any) => state?.user?.data?.currentProduct)
+    useEffect(() => {
+        const currentlySelectedCategory = categories?.find((category: any) => {
+            return category?.categoryName === currentProduct?.categoryName;
+        });
+
+        setCurrentCategory(currentlySelectedCategory || null);
+    }, [categories, currentProduct]);
+
+
 
     const handleCategoryChange = (categoryName: string) => {
         const selectedCategory = categories
@@ -39,28 +51,28 @@ const AddProduct = () => {
     const handleImageChange = (index: number, e: ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-          const imageUrl = URL.createObjectURL(file);
-    
-          setImageUrls((prevImageUrls) => {
-            const newImageUrls = [...prevImageUrls];
-            newImageUrls[index] = imageUrl;
-            return newImageUrls;
-          });
-    
-          setImageFiles((prevImageFiles) => {
-            const newImageFiles = [...prevImageFiles];
-            newImageFiles[index] = file;
-            return newImageFiles;
-          });
+            const imageUrl = URL.createObjectURL(file);
+
+            setImageUrls((prevImageUrls) => {
+                const newImageUrls = [...prevImageUrls];
+                newImageUrls[index] = imageUrl;
+                return newImageUrls;
+            });
+
+            setImageFiles((prevImageFiles) => {
+                const newImageFiles = [...prevImageFiles];
+                newImageFiles[index] = file;
+                return newImageFiles;
+            });
         }
-      };
-    
+    };
+
     const handleRadioChange = (fieldIndex: number, optionIndex: any) => {
         setSelectedOptions((prevState) => ({
             ...prevState,
             [fieldIndex]: optionIndex,
         }));
-        setSlectedOptionsInRadioButton((prevState) => ({
+        setSelectedOptionsInRadioButton((prevState) => ({
             ...prevState,
             [currentCategory?.radioButtonFields[fieldIndex]?.label]: currentCategory?.radioButtonFields[fieldIndex]?.options[optionIndex],
         }));
@@ -82,9 +94,8 @@ const AddProduct = () => {
                 checkboxes,
                 ...inputFields
             } = values;
-            
+
             // creating an object to validate;
-            const filteredImageUrls = imageUrls.filter(url => url !== null);
             const filteredImageFiles = imageFiles.filter((file) => file !== null);
             const productObj = {
                 categoryName: currentCategory?.categoryName || '',
@@ -113,16 +124,16 @@ const AddProduct = () => {
                     }
                 })
             }
-            
+
             const productDetails = {
                 ...productObj,
-                inputFields: {...inputFields},
-                checkBoxes: {...checkBoxes},
-                radioButtons: {...selectedOptionsInRadioButton}
+                inputFields: { ...inputFields },
+                checkBoxes: { ...checkBoxes },
+                radioButtons: { ...selectedOptionsInRadioButton }
             };
-            console.log(`yes its final`,productDetails);
-            dispatch(addProduct({productDetails, router}))
-            
+            console.log(`yes its final`, productDetails);
+            dispatch(editProduct({ productDetails, router }))
+
         } catch (err: any) {
             // Validation failed, handle the error
             if (err.inner && err.inner.length > 0) {
@@ -144,18 +155,25 @@ const AddProduct = () => {
         }
     }
 
+    if (!currentProduct) {
+        return <div>Loading...</div>;
+    }
+
     return (
         <>
             <div className="w-full justify-between px-12 lg:px-28 bg-slate-50 mt-2 min-h-screen">
                 <Formik
                     initialValues={{
-                        categoryName: '',
-                        productName: '',
-                        price: '',
-                        description: '',
-                        checkboxes: {},
+                        CategoryName: currentProduct?.categoryName,
+                        productName: currentProduct?.productName,
+                        description: currentProduct?.description,
+                        price: currentProduct?.price,
+                        ...currentProduct?.inputFields,
+                        checkboxes: { ...currentProduct?.checkBoxes}, 
                     }}
                     onSubmit={(values: any) => {
+                        console.log(`from values`, values)
+                        console.log(`category from values`, currentCategory)
                         handleFormSubmit(values)
                     }}
                 >
@@ -168,19 +186,21 @@ const AddProduct = () => {
                                         name="CategoryName"
                                         className="p-2 border mt-1 w-full rounded-md bg-light"
                                         as="select"
-                                        defaultValue=''
+                                        // defaultValue=''
                                         onChange={(e: any) => handleCategoryChange(e.target.value)}
                                     >
-                                        <option value={''} disabled>Select a category</option>
                                         {categories?.length > 0 &&
                                             categories.map((category: any) => (
-                                                <option key={category.categoryName}
-                                                    value={category.categoryName}>
-                                                    {category.categoryName}
+                                                <option
+                                                    key={category?.categoryName}
+                                                    value={category?.categoryName}
+                                                >
+                                                    {category?.categoryName}
                                                 </option>
                                             ))
                                         }
                                     </Field>
+
                                 </div>
                                 {categoryNameError && <div className='text-red-600'>{categoryNameError}</div>}
                             </div>
@@ -222,10 +242,9 @@ const AddProduct = () => {
                             {priceError && <div className='text-red-600'>{priceError}</div>}
                         </div>
                         {/* dynamic fields starting */}
-                        {currentCategory && currentCategory?.inputFields?.length &&
-                            currentCategory?.inputFields?.map((label: string) =>
-                            (
 
+                        {(currentCategory?.inputFields?.length > 0) &&
+                            currentCategory?.inputFields?.map((label: string) => (
                                 <div key={label} className="w-full md:w-1/2 lg:w-1/2 px-2">
                                     <label htmlFor={label} className="block text-md font-semibold text-gray-600">{label}</label>
                                     <Field
@@ -234,29 +253,27 @@ const AddProduct = () => {
                                         className="p-2 border mt-1 block w-full rounded-md bg-light"
                                     />
                                 </div>
-                            )
-                            )
+                            ))
                         }
                         {currentCategory?.checkBoxFields?.length > 0 &&
-                            currentCategory?.checkBoxFields?.map((document: any, index: number) =>
-                            (
+                            currentCategory?.checkBoxFields?.map((document: any, index: number) => (
                                 <div key={index} className="sm:w-full lg:w-1/2 px-2">
                                     <label htmlFor={document?.label} className="block text-md font-semibold text-gray-600">{document?.label}</label>
-                                    {
-                                        document?.options?.map((option: string, optionIndex: number) => (
-                                            <div key={optionIndex} className="flex items-center">
-                                                <Field
-                                                    type="checkbox"
-                                                    name={`checkboxes.${document?.label}_${option}`}
-                                                    className='mr-2' />
-                                                <label htmlFor="">{option}</label>
-                                            </div>
-                                        ))
-                                    }
+                                    {document?.options?.map((option: string, optionIndex: number) => (
+                                        <div key={optionIndex} className="flex items-center">
+                                            <input
+                                                type="checkbox"
+                                                name={`checkboxes.${document?.label}_${option}`}
+                                                className='mr-2'
+                                                defaultChecked={currentProduct?.checkBoxes[document?.label]?.includes(option)}
+                                            />
+                                            <label htmlFor="">{option}</label>
+                                        </div>
+                                    ))}
                                 </div>
-                            )
-                            )
+                            ))
                         }
+                        {/* Render dynamic radio buttons */}
                         {currentCategory?.radioButtonFields?.length > 0 &&
                             currentCategory?.radioButtonFields?.map((document: any, fieldIndex: number) => (
                                 <div key={fieldIndex} className="sm:w-full md:w-1/2 lg:w-1/2 px-2">
@@ -270,14 +287,19 @@ const AddProduct = () => {
                                                 name={`radioButtons.${document?.label}`}
                                                 id={`radio_${fieldIndex}_${optionIndex}`}
                                                 className="mr-2"
-                                                checked={selectedOptions[fieldIndex] === optionIndex}
+                                                checked={
+                                                    selectedOptions[fieldIndex] !== undefined
+                                                        ? selectedOptions[fieldIndex] === optionIndex
+                                                        : currentProduct?.radioButtons[document?.label] === option
+                                                }
                                                 onChange={() => handleRadioChange(fieldIndex, optionIndex)}
                                             />
                                             <label htmlFor={`radio_${fieldIndex}_${optionIndex}`}>{option}</label>
                                         </div>
                                     ))}
                                 </div>
-                            ))}
+                            ))
+                        }
 
                         {/* dynamic fields ending */}
                         <h1 className='text-xl block p-4'> Add your product' images</h1>
@@ -312,7 +334,7 @@ const AddProduct = () => {
                             <button
                                 type='submit'
                                 className='bg-black w-1/2 text-white p-3 m-3 rounded-md'>
-                                ADD PRODUCT
+                                UPDATE PRODUCT
                             </button>
                         </div>
                     </Form>
@@ -323,4 +345,4 @@ const AddProduct = () => {
     )
 }
 
-export default AddProduct;
+export default EditProduct;

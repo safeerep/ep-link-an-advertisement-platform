@@ -262,6 +262,50 @@ export const addProduct = createAsyncThunk(`/user/add-product`, async ({ product
     }
 });
 
+
+export const editProduct = createAsyncThunk(`/user/edit-product`, async ({ productDetails, router }: { productDetails: any, router: any }) => {
+    try {
+        const formData = new FormData();
+
+        // Append standard fields
+        formData.append('categoryName', productDetails.categoryName);
+        formData.append('productName', productDetails.productName);
+        formData.append('description', productDetails.description);
+        formData.append('price', productDetails.price);
+
+        // appending images
+        productDetails.images.forEach((imageFile: any) => {
+            formData.append('images', imageFile);
+        });
+
+        // serializing complex fields
+        formData.append('inputFields', JSON.stringify(productDetails.inputFields));
+        formData.append('checkBoxes', JSON.stringify(productDetails.checkBoxes));
+        formData.append('radioButtons', JSON.stringify(productDetails.radioButtons));
+
+
+        const response = await axios.post(`${PRODUCT_SERVICE_BASE_URL}/update-product`, formData, {
+            headers: { "Content-Type": "multipart/form-data" },
+            withCredentials: true
+        });
+
+        if (response?.data) {
+            console.log(response.data);
+            if (response?.data?.success) {
+                toast.success('Successfully updated product details');
+                router.push('/');
+                return response.data;
+            } else {
+                toast.error(response?.data?.message);
+            }
+            return response.data;
+        }
+    } catch (error: any) {
+        console.log(`An error happened during fetching all categories ${error}`);
+        return error?.response?.data;
+    }
+});
+
 export const getProducts = createAsyncThunk(`/user/get-products`, 
     async () => {
         try {
@@ -286,14 +330,13 @@ export const getProducts = createAsyncThunk(`/user/get-products`,
 
 export const getCurrentUserProducts = createAsyncThunk(`/user/user-products`, 
     async () => {
+        console.log('called');
+        
         try {
             const response = await axios.get(`${PRODUCT_SERVICE_BASE_URL}/current-user-products`,{
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true
-            })
-            console.log(`yea herre`);
-            console.log(response);
-            
+            })        
             if (response?.data) {
                 console.log(response.data);
                 if (response?.data?.success) {

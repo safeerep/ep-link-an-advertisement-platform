@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { FiUser } from 'react-icons/fi'
 import { BsChatDots } from 'react-icons/bs'
 import { BsSearch } from 'react-icons/bs'
+import { RiArrowDownSLine } from 'react-icons/ri'
 import { logout } from '@/store/actions/userActions/userActions'
 
 
@@ -38,10 +39,10 @@ const Navbar = () => {
         }}
         className=' flex justify-center items-center'
         onClick={() => router.push('/')}>
-        <Image src="/brand.png"
+        <img src="/brand.png"
           alt='logo'
           width={200} height={200}>
-        </Image>
+        </img>
       </div>
       <div className='flex relative items-center'>
         <input
@@ -59,24 +60,13 @@ const Navbar = () => {
                 <button
                   onClick={() => handleButtonClickForDropDown()}
                   type="button"
-                  className="inline-flex w-full justify-center gap-x-1.5 rounded-md  px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm"
+                  className="inline-flex w-full justify-center items-center gap-x-1.5 rounded-md  px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm"
                   id="menu-button"
                   aria-expanded="true"
                   aria-haspopup="true"
                 >
                   {user?.userData?.userName}
-                  <svg
-                    className="-mr-1 h-5 w-5 text-gray-400"
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                    aria-hidden="true"
-                  >
-                    <path
-                      fillRule="evenodd"
-                      d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z"
-                      clipRule="evenodd"
-                    />
-                  </svg>
+                  <RiArrowDownSLine />
                 </button>
               </div>
 

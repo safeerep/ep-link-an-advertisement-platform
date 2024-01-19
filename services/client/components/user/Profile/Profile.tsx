@@ -19,7 +19,7 @@ const Profile = () => {
         <ProfileSidebar />
         <div className="flex-grow">
           <h1 className='text-xl p-3'> Your Products </h1>
-          <Posts />
+          <Posts from={'profile'} />
         </div>
       </div>
     </>
