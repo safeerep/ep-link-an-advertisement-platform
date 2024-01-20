@@ -1,25 +1,26 @@
-import React, { useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { authRequired, chatWithSeller, followUser, getSpecificProduct, unFollowUser } from '@/store/actions/userActions/userActions'
 import { useDispatch, useSelector } from 'react-redux'
 import { FiUserCheck } from 'react-icons/fi'
 import { ImPower } from 'react-icons/im'
 import { BsChatDots } from 'react-icons/bs'
-import { PRODUCT_IMAGES_URL } from '@/constants'
+import { AiOutlineEdit } from 'react-icons/ai'
 
 const ProductView = () => {
     const dispatch: any = useDispatch()
     const router: any = useRouter()
+    const [ mainImage, setMainImage] = useState <number>(0)
 
     const searchParams = useSearchParams();
     const productId: string | any = searchParams.get("product");
 
-    const handleFollow = async ( ) => {
+    const handleFollow = async () => {
         console.log(`clicked for follow`);
         dispatch(followUser(product?.userId))
     }
 
-    const handleUnfollow = async ( ) => {
+    const handleUnfollow = async () => {
         console.log(`clicked for unfollow`);
         dispatch(unFollowUser(product?.userId))
     }
@@ -50,8 +51,29 @@ const ProductView = () => {
         <>
             <div className="p-4 pt-6 bg-slate-50">
                 <div className="w-full flex justify-center">
-                    <img className="sm:w-full md:w-1/2 lg:w-3/4 h-96 p-4 border border-black object-fill" src={`${PRODUCT_IMAGES_URL}/${product?.images[0]}`} alt="" />
-                    <div className='bg-slate-50 sm:w-full md:w-1/2 lg:w-1/4'>
+                    <div className="w-full sm:w-full md:w-1/2 lg:w-3/4">
+                        <div className=" h-96 p-4 border border-black flex justify-center object-center" >
+                            <img
+                                src={product?.images? product?.images[mainImage] : ''} alt="" />
+                        </div>
+                        <div className='flex justify-start px-2' >
+                            {
+                                product?.images && product?.images.map((image: any, index: number) => (
+                                    <img 
+                                    className="m-2" 
+                                    src={image} 
+                                    onClick={() => {
+                                        setMainImage(index)
+                                    }}
+                                    alt="" 
+                                    height={100} 
+                                    width={100} 
+                                    />
+                                )
+                                )}
+                        </div>
+                    </div>
+                    <div className='bg-slate-50 w-full sm:w-full md:w-1/2 lg:w-1/4'>
                         {product && Object?.keys(product?.inputFields).map(key => (
                             <div className='p-2' key={key}>
                                 <h3 className='text-xl'>{key}</h3>
@@ -102,29 +124,38 @@ const ProductView = () => {
                                 {sellerStatus && sellerStatus === "following" && (
                                     <>
                                         <button className='bg-slate-950 px-4 rounded-md'>
-                                            <span 
-                                            onClick={handleUnfollow}
-                                            className='px-4 text-teal-50' >UNFOLLOW</span>
+                                            <span
+                                                onClick={handleUnfollow}
+                                                className='px-4 text-teal-50' >UNFOLLOW</span>
                                         </button>
-                                        <button 
-                                        onClick={handleClickForChat}
-                                        className='bg-slate-700 p-1 text-white'>
+                                        <button
+                                            onClick={handleClickForChat}
+                                            className='bg-slate-700 p-1 text-white'>
                                             <BsChatDots />
                                         </button>
                                     </>
                                 )}
                                 {sellerStatus && sellerStatus === "not-following" && (
                                     <>
-                                        <button 
-                                        onClick={handleFollow}
-                                        className='bg-slate-950 px-4 rounded-md'>
+                                        <button
+                                            onClick={handleFollow}
+                                            className='bg-slate-950 px-4 rounded-md'>
                                             <span className='px-4 text-teal-50' >FOLLOW</span>
                                         </button>
-                                        <button 
-                                        onClick={handleClickForChat}
-                                        className='bg-slate-700 p-1 text-white'>
+                                        <button
+                                            onClick={handleClickForChat}
+                                            className='bg-slate-700 p-1 text-white'>
                                             <BsChatDots />
                                         </button></>
+                                )}
+                                {sellerStatus && sellerStatus === "same-user" && (
+                                    <>
+                                        <button
+                                            className='bg-slate-700 p-1 text-white'>
+                                            Edit Product
+                                            <AiOutlineEdit />
+                                        </button>
+                                    </>
                                 )}
                             </div>
                         </>
