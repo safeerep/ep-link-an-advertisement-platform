@@ -1,5 +1,14 @@
-import { addProduct, authRequired, editProduct, getAllCategories, getSpecificProduct } from '@/store/actions/userActions/userActions'
-import React, { useState, ChangeEvent, useEffect } from 'react'
+import { 
+    authRequired, 
+    editProduct, 
+    getAllCategories, 
+    getSpecificProduct 
+} from '@/store/actions/userActions/userActions'
+import React, { 
+    useState, 
+    ChangeEvent, 
+    useEffect 
+} from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Formik, Form, Field, ErrorMessage } from 'formik'
@@ -316,9 +325,13 @@ const EditProduct = () => {
                                         onChange={(e) => handleImageChange(index, e)}
                                     />
                                     <div className="w-56 h-56 bg-gray-200 relative cursor-pointer">
-                                        {imageUrls[index] && (
+                                        {(imageUrls[index] || currentProduct?.images[index] ) && (
                                             <img
-                                                src={imageUrls[index]!}
+                                                src={
+                                                    imageUrls[index]
+                                                      ? imageUrls[index]
+                                                      : currentProduct?.images[index]
+                                                  }
                                                 alt={`Image ${index + 1}`}
                                                 className="object-cover w-full h-full"
                                             />

@@ -34,8 +34,7 @@ const Posts = ({ from }: { from: string }) => {
                                     <img
                                         onClick={() => router.push(`/product-view?product=${product?._id}`)}
                                         className="h-32 w-full object-center relative"
-                                        src={product?.images ? `${PRODUCT_IMAGES_URL}/${product?.images[0]}` : ''}
-                                        alt="product image"
+                                        src={product?.images[0] ? product?.images[0] : ''} alt="" 
                                     />
                                 </div>
                                 {from &&
