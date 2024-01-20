@@ -7,6 +7,7 @@ import { changeProductsStatusByCategory_usecase } from "./changeProductStatusByC
 import { getSpecificCategory_usecase } from "./getSpecificCategory";
 import { isCategoryExistWithId_usecase } from "./checkIsExistingWithId";
 import { updateCategoryDetails_usecase } from "./updateCategory";
+import { getActiveCategories_usecase } from "./getActiveCategories";
 
 export default {
     addNewCategory_usecase,
@@ -17,5 +18,6 @@ export default {
     changeProductsStatusByCategory_usecase,
     getSpecificCategory_usecase,
     isCategoryExistWithId_usecase,
-    updateCategoryDetails_usecase
+    updateCategoryDetails_usecase,
+    getActiveCategories_usecase
 }

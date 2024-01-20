@@ -9,6 +9,10 @@ export default async () => {
         if (!process.env.MY_EMAIL) throw new Error ('MY_EMAIL IS REQUIRED')
         if (!process.env.EMAIL_PASSWORD) throw new Error ('EMAIL_PASSWORD IS REQUIRED')
         if (!process.env.CLIENT_URL) throw new Error ('CLIENT_URL IS REQUIRED')
+        if (!process.env.S3_BUCKET_ACCESS_KEY) throw new Error ('S3_BUCKET_ACCESS_KEY IS REQUIRED')
+        if (!process.env.S3_SECRET_ACCESS_KEY) throw new Error ('S3_SECRET_ACCESS_KEY IS REQUIRED')
+        if (!process.env.S3_BUCKET_REGION) throw new Error ('S3_BUCKET_REGION IS REQUIRED')
+        if (!process.env.S3_PRODUCT_BUCKET_NAME) throw new Error ('S3_PRODUCT_BUCKET_NAME IS REQUIRED')
     } catch ( error: any) {
         console.log(error.message)
     }

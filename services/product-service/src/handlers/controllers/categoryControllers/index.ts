@@ -3,6 +3,7 @@ import getAllCategories from "./getAllCategories"
 import changeCategoryStatus from "./changeCategoryStatus"
 import getCurrentCategory from "./getCurrentCategory"
 import updateCategory from "./updateCategory"
+import getActiveCategories from "./getActiveCategories"
 
 export = ( dependencies: any) => {
     return {
@@ -10,6 +11,7 @@ export = ( dependencies: any) => {
         getAllCategoriesController: getAllCategories(dependencies),
         changeCategoryStatusController: changeCategoryStatus(dependencies),
         getCurrentCategoryController: getCurrentCategory(dependencies),
-        updateCategoryController: updateCategory(dependencies)
+        updateCategoryController: updateCategory(dependencies),
+        getActiveCategoriesController: getActiveCategories(dependencies)
     }
 }

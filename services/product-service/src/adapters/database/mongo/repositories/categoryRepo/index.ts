@@ -6,13 +6,15 @@ import {
   isCategoryExist,
   updateCategoryDetails,
   getCategoryById,
-  isCategoryExistWithId
+  isCategoryExistWithId,
+  getActiveCategories
 } from "./categoryRepo";
 
 export default {
   addCategory,
   changeCategoryStatus,
   getCategories,
+  getActiveCategories,
   getCategoryById,
   getCurrentStatus,
   isCategoryExist,

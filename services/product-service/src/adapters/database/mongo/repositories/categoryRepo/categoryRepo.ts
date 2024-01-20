@@ -57,6 +57,19 @@ export const getCategories = async () :Promise< ICategory[] | boolean > => {
     }
 }
 
+// to get active categories only to users
+export const getActiveCategories = async () :Promise< ICategory[] | boolean > => {
+    try {
+        const categories = await CategoriesCollection.find({
+            status: true
+        })
+        return categories as ICategory[];
+    } catch (error) {
+        console.log(`an error happened during fetching all the active categories ${error}`);
+        return false;
+    }
+}
+
 export const getCategoryById = async ( categoryId: string) :Promise< ICategory | boolean > => {
     try {
         const category = await CategoriesCollection.findById(categoryId);

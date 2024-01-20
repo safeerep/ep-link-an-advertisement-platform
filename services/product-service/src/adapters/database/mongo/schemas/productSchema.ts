@@ -35,6 +35,11 @@ const ProductsSchema: Schema = new Schema({
     required: true,
     default: true,
   },
+  soldOut: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
   images: [
     {
       type: String,

@@ -4,7 +4,10 @@ import {
   getCurrentUserProducts,
   changeProductDetails,
   getProductDetails,
-  changeProductsStatusByCategory
+  changeProductsStatusByCategory,
+  getAvailableProducts,
+  makeProductAsSoldOut,
+  updateProduct
 } from "./productRepo";
 
 export default {
@@ -12,6 +15,9 @@ export default {
     getCurrentUserProducts,
     changeProductDetails,
     getProducts,
+    getAvailableProducts,
+    makeProductAsSoldOut,
+    updateProduct,
     getProductDetails,
     changeProductsStatusByCategory
 }

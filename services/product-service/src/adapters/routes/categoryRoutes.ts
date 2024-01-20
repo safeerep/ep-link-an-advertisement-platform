@@ -11,7 +11,8 @@ export = ( dependencies: any) => {
         getAllCategoriesController,
         changeCategoryStatusController,
         getCurrentCategoryController,
-        updateCategoryController
+        updateCategoryController,
+        getActiveCategoriesController
     } = categoryControllers(dependencies)
 
     // admin only routes
@@ -23,7 +24,7 @@ export = ( dependencies: any) => {
 
     // user routes
     // giving categories to select one for adding product;
-    router.get('/get-all-categories-user', verifyUserAuth, getAllCategoriesController)
+    router.get('/get-all-categories-user', verifyUserAuth, getActiveCategoriesController)
 
     return router;
 }

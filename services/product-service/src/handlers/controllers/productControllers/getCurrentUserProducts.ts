@@ -16,11 +16,12 @@ export = ( dependencies: any) => {
             const userId = await getUserId(token)
             // after getting user id, we can fetch the products simply
             const products = await productUsecases.getCurrentUserProducts_usecase(dependencies).execute(userId)
+            return res.json({ success: true, message: "successfully fetched current user's products", products })
         } catch (error) {
             console.log(`something went wrong during fetching a specific user's products ${error}`);
             return res.status(503).json({ success: false, message: "something went wrong" })
         }
     }
 
-    return getSpecificUserProduct
+    return getSpecificUserProduct;
 }

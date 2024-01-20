@@ -10,6 +10,7 @@ export interface IProduct extends Document {
   categoryName: string | null;
   status: boolean;
   categoryWiseStatus: boolean;
+  soldOut: boolean;
   images: string[];
   featured: boolean;
   reportsOnProduct: {
