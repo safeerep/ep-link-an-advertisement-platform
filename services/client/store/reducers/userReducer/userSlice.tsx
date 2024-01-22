@@ -13,7 +13,9 @@ import {
     getSpecificProduct,
     followUser,
     unFollowUser,
-    editProduct
+    editProduct,
+    makeProductAvailable,
+    makeProductSoldOut
 } from "@/store/actions/userActions/userActions";
 import { UserState } from "@/types/user";
 
@@ -150,6 +152,32 @@ const userSlice = createSlice({
                 state.error = null;
             })
             .addCase(editProduct.rejected, (state: UserState, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            })
+            // on updating a product as available from sold out
+            .addCase(makeProductAvailable.pending, (state: UserState) => {
+                state.loading = true;
+            })
+            .addCase(makeProductAvailable.fulfilled, (state: UserState, action) => {
+                state.loading = false;
+                state.data = { ...state.data, ...action.payload };
+                state.error = null;
+            })
+            .addCase(makeProductAvailable.rejected, (state: UserState, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            })
+            // on updating a product as available from sold out
+            .addCase( makeProductSoldOut.pending, (state: UserState) => {
+                state.loading = true;
+            })
+            .addCase( makeProductSoldOut.fulfilled, (state: UserState, action) => {
+                state.loading = false;
+                state.data = { ...state.data, ...action.payload };
+                state.error = null;
+            })
+            .addCase( makeProductSoldOut.rejected, (state: UserState, action) => {
                 state.loading = false;
                 state.error = action.error.message;
             })

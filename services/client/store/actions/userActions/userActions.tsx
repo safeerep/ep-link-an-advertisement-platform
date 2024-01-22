@@ -440,3 +440,46 @@ export const chatWithSeller = createAsyncThunk(`/user/chat-with-seller`,
         }
     }
 )
+
+export const makeProductAvailable = createAsyncThunk('/user/make-product-available', 
+    async (productId: string) => {
+        try {
+            const response = await axios.patch(`${PRODUCT_SERVICE_BASE_URL}/available/${productId}`,{
+                headers: { "Content-Type": "application/json" },
+                withCredentials: true
+            })
+            if (response?.data?.success) {
+                toast.success(response?.data?.message)
+            }
+            else {
+                toast.error(response?.data?.message)
+            }
+            return response.data;
+        } catch (error: any) {
+            console.log(`an error happened during making product available ${error}`);
+            toast.error(error?.response?.data?.message)
+            return error?.response?.data;
+        }
+    }
+)
+export const makeProductSoldOut = createAsyncThunk('/user/make-product-soldout', 
+    async (productId: string) => {
+        try {
+            const response = await axios.patch(`${PRODUCT_SERVICE_BASE_URL}/soldout/${productId}`,{
+                headers: { "Content-Type": "application/json" },
+                withCredentials: true
+            })
+            if (response?.data?.success) {
+                toast.success(response?.data?.message)
+            }
+            else {
+                toast.error(response?.data?.message)
+            }
+            return response.data;
+        } catch (error: any) {
+            console.log(`an error happened during making product sold out ${error}`);
+            toast.error(error?.response?.data?.message)
+            return error?.response?.data;
+        }
+    }
+)

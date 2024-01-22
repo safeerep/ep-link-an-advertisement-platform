@@ -1,11 +1,12 @@
 import React, { useState } from 'react'
-import { useSelector } from 'react-redux'
-import { PRODUCT_IMAGES_URL } from '@/constants'
+import { useDispatch, useSelector } from 'react-redux'
 import { useRouter } from 'next/navigation'
 import { HiOutlineHeart } from 'react-icons/hi'
 import { CgMoreO } from 'react-icons/cg'
+import { makeProductAvailable, makeProductSoldOut } from '@/store/actions/userActions/userActions'
 
 const Posts = ({ from }: { from: string }) => {
+    const dispatch: any = useDispatch()
     const router = useRouter();
     const [isDropdownOpen, setIsDropdownOpen] = useState(false)
     const products = useSelector((state: any) => state?.user?.data?.products)
@@ -18,6 +19,13 @@ const Posts = ({ from }: { from: string }) => {
     const handleSoldout = (productId: string) => {
         setIsDropdownOpen(!isDropdownOpen)
         console.log(`called for making this product status as sold out. product id is ${productId}`)
+        dispatch(makeProductSoldOut(productId))
+    }
+
+    const handleAvailable = (productId: string) => {
+        setIsDropdownOpen(!isDropdownOpen)
+        console.log(`called for making this product status as sold out. product id is ${productId}`)
+        dispatch(makeProductAvailable(productId))
     }
 
 
@@ -59,11 +67,17 @@ const Posts = ({ from }: { from: string }) => {
                                                         className="block px-4 py-2 text-sm text-black">
                                                         Edit product
                                                     </button>
+                                                    {product?.soldOut?
+                                                    <button
+                                                        onClick={() => handleAvailable(product?._id)}
+                                                        className="block px-4 py-2 text-sm text-red-600">
+                                                        Make it available
+                                                    </button>:
                                                     <button
                                                         onClick={() => handleSoldout(product?._id)}
                                                         className="block px-4 py-2 text-sm text-red-600">
                                                         Sold out
-                                                    </button>
+                                                    </button>}
                                                 </div>
                                             )}
                                         </>
