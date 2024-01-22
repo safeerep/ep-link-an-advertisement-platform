@@ -263,11 +263,12 @@ export const addProduct = createAsyncThunk(`/user/add-product`, async ({ product
 });
 
 
-export const editProduct = createAsyncThunk(`/user/edit-product`, async ({ productDetails, router }: { productDetails: any, router: any }) => {
+export const editProduct = createAsyncThunk(`/user/edit-product`, async ({ productId, productDetails, router }: { productId: string, productDetails: any, router: any }) => {
     try {
         const formData = new FormData();
 
         // Append standard fields
+        formData.append('productId', productId);
         formData.append('categoryName', productDetails.categoryName);
         formData.append('productName', productDetails.productName);
         formData.append('description', productDetails.description);
@@ -284,7 +285,7 @@ export const editProduct = createAsyncThunk(`/user/edit-product`, async ({ produ
         formData.append('radioButtons', JSON.stringify(productDetails.radioButtons));
 
 
-        const response = await axios.post(`${PRODUCT_SERVICE_BASE_URL}/update-product`, formData, {
+        const response = await axios.put(`${PRODUCT_SERVICE_BASE_URL}/update-product`, formData, {
             headers: { "Content-Type": "multipart/form-data" },
             withCredentials: true
         });

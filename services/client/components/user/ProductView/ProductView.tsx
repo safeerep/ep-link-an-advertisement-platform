@@ -44,8 +44,12 @@ const ProductView = () => {
     }, [productId]);
 
     const product = useSelector((state: any) => state?.user?.data?.currentProduct)
+    const productLoading = useSelector((state: any) => state?.user?.loading?.currentProduct)
     const seller = useSelector((state: any) => state?.user?.data?.seller)
+    const sellerLoading = useSelector((state: any) => state?.user?.loading?.seller)
     const sellerStatus = useSelector((state: any) => state?.user?.data?.status)
+    console.log(sellerStatus,'ok status now');
+    
 
     return (
         <>
@@ -121,7 +125,9 @@ const ProductView = () => {
                         <>
                             <p>{seller?.userName}</p>
                             <div className='w-full flex justify-center items-center gap-2'>
-                                {sellerStatus && sellerStatus === "following" && (
+                                {sellerLoading? 
+                                'loading':
+                                sellerStatus && sellerStatus == "following" && (
                                     <>
                                         <button className='bg-slate-950 px-4 rounded-md'>
                                             <span
@@ -135,7 +141,7 @@ const ProductView = () => {
                                         </button>
                                     </>
                                 )}
-                                {sellerStatus && sellerStatus === "not-following" && (
+                                {sellerStatus && sellerStatus == "not-following" && (
                                     <>
                                         <button
                                             onClick={handleFollow}
@@ -148,10 +154,11 @@ const ProductView = () => {
                                             <BsChatDots />
                                         </button></>
                                 )}
-                                {sellerStatus && sellerStatus === "same-user" && (
+                                {sellerStatus && sellerStatus == "same_user" && (
                                     <>
                                         <button
-                                            className='bg-slate-700 p-1 text-white'>
+                                            onClick={() => router.push(`/edit-product?product=${productId}`)}
+                                            className='bg-slate-700 p-1 flex justify-between items-center text-white gap-x-2'>
                                             Edit Product
                                             <AiOutlineEdit />
                                         </button>
@@ -160,11 +167,11 @@ const ProductView = () => {
                             </div>
                         </>
                         <>
-                            {seller ?
-                                '' :
+                            {(!seller && !sellerStatus) ?
                                 <p className="text-red-800">
-                                    Sorry for the inconvenience! Seller details are not available.
-                                </p>}
+                                Sorry for the inconvenience! Seller details are not available.
+                            </p> :
+                                ''}
                         </>
                     </div>
                 </div>

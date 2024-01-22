@@ -144,7 +144,7 @@ const EditProduct = () => {
                 radioButtons: { ...selectedOptionsInRadioButton }
             };
             console.log(`yes its final`, productDetails);
-            dispatch(editProduct({ productDetails, router }))
+            dispatch(editProduct({productId, productDetails, router }))
 
         } catch (err: any) {
             // Validation failed, handle the error
