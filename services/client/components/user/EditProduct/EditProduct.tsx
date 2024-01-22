@@ -47,6 +47,9 @@ const EditProduct = () => {
         });
 
         setCurrentCategory(currentlySelectedCategory || null);
+        if (currentProduct && currentProduct.images) {
+            setImageFiles(currentProduct.images);
+        }
     }, [categories, currentProduct]);
 
 
@@ -167,6 +170,7 @@ const EditProduct = () => {
     if (!currentProduct) {
         return <div>Loading...</div>;
     }
+   
 
     return (
         <>
