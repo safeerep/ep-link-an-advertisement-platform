@@ -12,7 +12,7 @@ export = ( dependencies: any) => {
 
     const updatedProduct = async ( req: Request, res: Response) => {
         // we should get product id with the update information
-        let currentProductToEdit;
+        let currentProductToEdit: any;
         try {
             const productId = req.body.productId;
             const existingProduct = await productUsecases

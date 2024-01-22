@@ -3,6 +3,7 @@ import getProducts from "./getAllProducts"
 import getSpecificUserProducts from "./getCurrentUserProducts"
 import getSpecificProduct from "./getSpecificProduct"
 import getAvailableProducts from "./getAvailableProducts"
+import updateProduct from "./updateProduct"
 
 
 export = ( dependencies: any) => {
@@ -11,6 +12,7 @@ export = ( dependencies: any) => {
         getProductsController: getProducts(dependencies),
         getSpecificUserProductsController : getSpecificUserProducts(dependencies),
         getSpecificProductController: getSpecificProduct(dependencies),
-        getAvailableProductsController: getAvailableProducts(dependencies)
+        getAvailableProductsController: getAvailableProducts(dependencies),
+        updateProductController: updateProduct(dependencies)
     }
 }
