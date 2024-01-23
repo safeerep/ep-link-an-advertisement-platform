@@ -11,7 +11,9 @@ export = ( dependencies: any) => {
         getSpecificUserProductsController,
         getSpecificProductController,
         getAvailableProductsController,
-        updateProductController
+        updateProductController,
+        makeProductAvailableController,
+        makeProductSoldoutController
     }
     = productControllers(dependencies)
 
@@ -26,9 +28,9 @@ export = ( dependencies: any) => {
     // to update a product' details
     router.put('/update-product', verifyUserAuth, upload.array('images'), updateProductController)
     // to make product as sold out
-    router.patch('/available/:productId', verifyUserAuth, )
+    router.patch('/available/:productId', verifyUserAuth, makeProductAvailableController)
     // to make product as available
-    router.patch('/soldout/:productId', verifyUserAuth, )
+    router.patch('/soldout/:productId', verifyUserAuth, makeProductSoldoutController)
 
     return router;
 } 
