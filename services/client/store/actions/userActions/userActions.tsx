@@ -424,7 +424,7 @@ export const unFollowUser = createAsyncThunk(`/user/unfollow-user`,
 export const chatWithSeller = createAsyncThunk(`/user/chat-with-seller`, 
     async (userId: string) => {
         try {
-            const response = await axios.patch(`${CHAT_SERVICE_BASE_URL}/${userId}`,{
+            const response = await axios.patch(`${CHAT_SERVICE_BASE_URL}/${userId}`,{},{
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true
             })
@@ -445,7 +445,7 @@ export const chatWithSeller = createAsyncThunk(`/user/chat-with-seller`,
 export const makeProductAvailable = createAsyncThunk('/user/make-product-available', 
     async (productId: string) => {
         try {
-            const response = await axios.patch(`${PRODUCT_SERVICE_BASE_URL}/available/${productId}`,{
+            const response = await axios.patch(`${PRODUCT_SERVICE_BASE_URL}/available/${productId}`,{},{
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true
             })
@@ -466,7 +466,7 @@ export const makeProductAvailable = createAsyncThunk('/user/make-product-availab
 export const makeProductSoldOut = createAsyncThunk('/user/make-product-soldout', 
     async (productId: string) => {
         try {
-            const response = await axios.patch(`${PRODUCT_SERVICE_BASE_URL}/soldout/${productId}`,{
+            const response = await axios.patch(`${PRODUCT_SERVICE_BASE_URL}/soldout/${productId}`,{},{
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true
             })
