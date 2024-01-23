@@ -5,9 +5,9 @@ export const changeCategoryStatus_usecase = ( dependencies: any ) => {
         }
     } = dependencies;
 
-    const execute = async (categoryId: string, status: boolean) => {
+    const interactor = async (categoryId: string, status: boolean) => {
         return await categoryRepo.changeCategoryStatus(categoryId, status);
     }
 
-    return { execute }
+    return { interactor }
 }

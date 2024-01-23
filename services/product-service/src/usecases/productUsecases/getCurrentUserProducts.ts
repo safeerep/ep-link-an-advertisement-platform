@@ -5,9 +5,9 @@ export const getCurrentUserProducts_usecase = ( dependencies: any) => {
         }
     } = dependencies;
 
-    const execute = async (userId: string) => {
+    const interactor = async (userId: string) => {
         return await productRepo.getCurrentUserProducts(userId)
     }
 
-    return { execute }
+    return { interactor }
 }

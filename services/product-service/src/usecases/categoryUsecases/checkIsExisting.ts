@@ -5,9 +5,9 @@ export const checkIsCategoryExisting_usecase = ( dependencies: any) => {
         }
     } = dependencies;
 
-    const execute = async ( categoryName: string) => {
+    const interactor = async ( categoryName: string) => {
         return await categoryRepo.isCategoryExist(categoryName)
     }
 
-    return { execute }
+    return { interactor }
 }

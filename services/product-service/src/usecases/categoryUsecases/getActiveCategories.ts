@@ -5,9 +5,9 @@ export const getActiveCategories_usecase = ( dependencies: any) => {
         }
     } = dependencies;
 
-    const execute = async () => {
+    const interactor = async () => {
         return await categoryRepo.getActiveCategories();
     }
 
-    return { execute }
+    return { interactor }
 }

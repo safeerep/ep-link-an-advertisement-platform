@@ -6,9 +6,9 @@ export const isCategoryExistWithId_usecase = ( dependencies: any) => {
         }
     } = dependencies;
 
-    const execute = async ( categoryId: string) => {
+    const interactor = async ( categoryId: string) => {
         return await categoryRepo.isCategoryExistWithId(categoryId)
     }
 
-    return { execute }
+    return { interactor }
 }

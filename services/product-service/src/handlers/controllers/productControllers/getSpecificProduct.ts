@@ -24,7 +24,7 @@ export = (dependencies: any) => {
 
             // if there have product id, we have to continue
             const product = await productUsecases
-            .getOneSpecificProduct_usecase(dependencies).execute(productId)
+            .getOneSpecificProduct_usecase(dependencies).interactor(productId)
             console.log(product);
             
             // if we can't find product, that means product id is invalid

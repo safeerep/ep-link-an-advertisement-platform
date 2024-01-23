@@ -12,7 +12,7 @@ export = ( dependencies: any) => {
         // if existing, we don't want to create new one
         try {
             const categoryName: string = req.body?.categoryName;
-            const existingCategory = await categoryUsecases.checkIsCategoryExisting_usecase(dependencies).execute(categoryName)
+            const existingCategory = await categoryUsecases.checkIsCategoryExisting_usecase(dependencies).interactor(categoryName)
             if (existingCategory) {
                 return res.status(409).json({ success: false, message: 'category name is already existing'})
             }
@@ -24,7 +24,7 @@ export = ( dependencies: any) => {
 
         // try to add new category
         try {
-            const newCategory = await categoryUsecases.addNewCategory_usecase(dependencies).execute(req.body)
+            const newCategory = await categoryUsecases.addNewCategory_usecase(dependencies).interactor(req.body)
             if (newCategory) return res.status(201).json({ success: true, message: "successfully added new category"})
             return res.status(503).json({ success: false, message: 'something went wrong'})
         } catch (error) {

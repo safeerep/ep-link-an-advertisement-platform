@@ -46,7 +46,7 @@ export = ( dependencies: any) => {
             // then, we want to check category is existing or not
             const categoryName: string = req?.body?.categoryName;
             const existingCategory = await categoryUsecases
-            .checkIsCategoryExisting_usecase(dependencies).execute(categoryName)
+            .checkIsCategoryExisting_usecase(dependencies).interactor(categoryName)
             if (!existingCategory) {
                 // if category name is not valid, we will return 
                 return res.status(400).json({ success: false, message: 'category name is not valid'})
@@ -69,7 +69,7 @@ export = ( dependencies: any) => {
 
             // when new product is being added we will get the products as newproduct included
             const products = await productUsecases
-            .addProduct_usecase(dependencies).execute(req.body)
+            .addProduct_usecase(dependencies).interactor(req.body)
             return res.json({ success: true, message: 'successfully added a product', products});
         } catch (error) {
             console.log(`an error happened during adding new product ${error}`);
