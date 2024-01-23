@@ -23,7 +23,7 @@ export = ( dependencies: any) => {
 
         // to give users list after successful auth check;
         try {
-            const users = await getAllUsers_usecase(dependencies).execute();
+            const users = await getAllUsers_usecase(dependencies).interactor();
             return res.json({ success: true, message: "request is successful", users})
         } catch (error) {
             console.log(`something went wrong ${error}`);

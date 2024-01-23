@@ -31,7 +31,7 @@ export = (dependencies: any) => {
                 // if token is valid, we have to update password
                 const saltRounds: number = Number(process.env.SALT_ROUNDS) || 10;
                 const hashedPassword: string = bcrypt.hashSync(password, saltRounds)
-                const adminData = await upadatePassword_usecase(dependencies).execute(email, hashedPassword)
+                const adminData = await upadatePassword_usecase(dependencies).interactor(email, hashedPassword)
                 const token = generateToken(adminData._id);
                 res.cookie( "adminJwt", token, { maxAge: 30 * 24 * 60 * 60 * 1000 })
                 return res.status(200).json({ success: true, adminData, message: "password updated successfully"})

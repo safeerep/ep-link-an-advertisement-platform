@@ -14,7 +14,7 @@ export = ( dependencies: any) => {
         
         try {
             // first we have to check is user existing?
-            const userData = await findExistingUser_usecase(dependencies).execute(email);
+            const userData = await findExistingUser_usecase(dependencies).interactor(email);
             
             // if there is no user with the email specified just return
             if (!userData) return res.json({ success: false, message: "email is not registered with us"})

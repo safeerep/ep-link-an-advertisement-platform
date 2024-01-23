@@ -8,10 +8,10 @@ export const findUserWithPhone_usecase = (dependencies: any) => {
     
     if (!getUserWithPhone) throw new Error("dependecy is required for it");
   
-    const execute = async (phone: number) => {
+    const interactor = async (phone: number) => {
       return await getUserWithPhone(phone);
     };
   
-    return { execute };
+    return { interactor };
   };
   

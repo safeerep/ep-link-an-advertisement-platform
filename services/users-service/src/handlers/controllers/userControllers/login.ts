@@ -23,7 +23,7 @@ export = (dependencies: any): any => {
     }
     let userData;
     try {
-      userData = await findExistingUser_usecase(dependencies).execute(
+      userData = await findExistingUser_usecase(dependencies).interactor(
         userCredentials.email
       );
       console.log(userData);

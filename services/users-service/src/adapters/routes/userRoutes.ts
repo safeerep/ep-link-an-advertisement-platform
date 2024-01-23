@@ -2,6 +2,7 @@ import express, { Request, Response } from "express";
 import { userControllers } from "../../handlers/controllers";
 import passport from "passport";
 import "../../utils/externalServices/passportJs/googleAuth";
+import verifyUserAuth from "../../utils/middlewares/verifyUserAuth";
 
 export = (dependencies: any) => {
   const router = express.Router();
@@ -48,8 +49,8 @@ export = (dependencies: any) => {
   router.post("/send-reset-password-email", sendResetPasswordMailController)
   router.post("/change-password", changePasswordController)
 
-  router.put("/follow/:userId", followController)
-  router.put("/unfollow/:userId", unfollowController)
+  router.patch("/follow/:userId",verifyUserAuth, followController)
+  router.patch("/unfollow/:userId",verifyUserAuth, unfollowController)
 
   return router;
 };

@@ -5,9 +5,9 @@ export const getAllUsers_usecase = (dependencies: any) => {
         }
     } = dependencies;
 
-    const execute = () => {
+    const interactor = () => {
         return adminRepo.getAllUsers() 
     }
 
-    return { execute }
+    return { interactor }
 }

@@ -14,7 +14,7 @@ export = (dependencies: any) => {
         try {
             // first we have to check that an admin is existing with the email came as credential;
             const adminEmail: string = req?.body?.email;
-            adminData = await findAdmin_usecase(dependencies).execute(adminEmail)
+            adminData = await findAdmin_usecase(dependencies).interactor(adminEmail)
             // if we can't find an admin with specified email address just return;
             console.log(adminData);
             

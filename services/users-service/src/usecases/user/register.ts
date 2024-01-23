@@ -8,11 +8,11 @@ export const register_usecase = (dependencies: any) :any => {
       
     if (!createNewUser) throw new Error('repository is required')
 
-    const execute = (userCredentials: any) => {
+    const interactor = (userCredentials: any) => {
         console.log(`now here`);
         return createNewUser(userCredentials)
     }
 
-    return { execute }
+    return { interactor }
 }
  

@@ -5,9 +5,9 @@ export const upadatePassword_usecase = (dependencies: any) => {
 
   if (!adminRepo) throw new Error("dependecy is required for update password");
 
-  const execute = async (email: string, password: string) => {
+  const interactor = async (email: string, password: string) => {
     return await adminRepo.updatePassword(email, password);
   };
 
-  return { execute };
+  return { interactor };
 };

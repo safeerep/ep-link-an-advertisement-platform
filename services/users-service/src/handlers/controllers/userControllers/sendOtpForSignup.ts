@@ -11,7 +11,7 @@ export = ( dependencies: any): any => {
         const email: string = req.body.email;
         const phone: number = req.body.phone;
         try {
-            let existingUser = await findExistingUser_usecase(dependencies).execute(
+            let existingUser = await findExistingUser_usecase(dependencies).interactor(
                 email
             );
             if (existingUser) return res.json({ success: false, message: 'email is already registered'})
@@ -21,7 +21,7 @@ export = ( dependencies: any): any => {
 
         try {
             if (phone !== null) {
-                const existingUser = await findUserWithPhone_usecase(dependencies).execute(
+                const existingUser = await findUserWithPhone_usecase(dependencies).interactor(
                     phone
                 );
                 if (existingUser) return res.json({ success: false, message: 'phone number is already registered'})
@@ -33,7 +33,7 @@ export = ( dependencies: any): any => {
             const otp =  Math.floor(Math.random() * (9999 - 1000 + 1)) + 1000;
             const sentSuccessfully: boolean | any = sendOtp( otp, email)
 
-            const otpStored = await storeOtp_usecase(dependencies).execute(email, otp)            
+            const otpStored = await storeOtp_usecase(dependencies).interactor(email, otp)            
 
             if (sentSuccessfully) return res.json({ success: true, message: 'otp sent successfully through email'})
             return res.json({ success: false, message: "something went wrong"})

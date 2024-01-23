@@ -15,7 +15,7 @@ export = ( dependencies: any) => {
 
         // else we will continue
         try {
-            const user = await findUserWithId_usecase(dependencies).execute(userId);
+            const user = await findUserWithId_usecase(dependencies).interactor(userId);
             if (!user) return res.json({ success: false, message: "invalid user id"})
             // else we will continue in the next try catch block
         } catch (error) {
@@ -27,12 +27,19 @@ export = ( dependencies: any) => {
         try {
             // for to start it first we want to get current user id;
             const token = req.cookies.userJwt;
-            const currentUserId: string | any = getUserId(token)
-
+            getUserId(token)
+            .then((currentUserId) => {
+                if (currentUserId) {
+                    const updated = unFollowUser_usecase(dependencies).interactor(currentUserId, userId)
+                    if (updated) return res.json({ success: true, status: 'not-following' , message: "successfully processed unfollow"})
+                    else throw new Error('some unexpected errors happened')
+                }
+            })
+            .catch((err) => {
+                console.log(`an error happened during fetching current user id from token`);
+                throw new Error('error from token destructure')
+            })
             // now we have two user's id and we can start ;
-            const updated = unFollowUser_usecase(dependencies).execute(currentUserId, userId)
-            if (updated) return res.json({ success: true, status: 'not-following' , message: "successfully processed unfollow"})
-            else throw new Error('some unexpected errors happened')
         } catch (error) {
             console.log(`something went wrong during trying to process follow ${error}`);
             return res.status(503).json({ success: false, message: 'something went wrong'})

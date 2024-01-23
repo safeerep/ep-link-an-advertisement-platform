@@ -15,7 +15,7 @@ export = (dependencies: any) => {
                 const userCredentials = req.user;
                 console.log('from user controller');
                 console.log(userCredentials);
-                let existingUser = await findExistingUser_usecase(dependencies).execute(
+                let existingUser = await findExistingUser_usecase(dependencies).interactor(
                     userCredentials?.email
                 );
                 if (existingUser) {

@@ -18,7 +18,7 @@ export = (dependencies: any): any => {
     const userCredentials = req.body;
     console.log(userCredentials);
     try {
-      let otpIsMatching = await verifyOtp_usecase(dependencies).execute(
+      let otpIsMatching = await verifyOtp_usecase(dependencies).interactor(
         userCredentials?.email,
         userCredentials?.otp
       );
@@ -45,7 +45,7 @@ export = (dependencies: any): any => {
     }
     try {
       // to check email is already existing or not;
-      let existingUser = await findExistingUser_usecase(dependencies).execute(
+      let existingUser = await findExistingUser_usecase(dependencies).interactor(
         userCredentials?.email
       );
       if (existingUser) {
@@ -69,7 +69,7 @@ export = (dependencies: any): any => {
         salt
       );
       userCredentials.password = hashedPassword;
-      let userData = await register_usecase(dependencies).execute(
+      let userData = await register_usecase(dependencies).interactor(
         userCredentials
       );
       if (!userData) {

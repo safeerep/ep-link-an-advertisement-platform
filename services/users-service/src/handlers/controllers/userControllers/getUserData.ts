@@ -13,7 +13,7 @@ export = ( dependencies: any) => {
                 sellerId, 
                 uniqueId
             } = obj;
-            const seller = await findUserWithId_usecase(dependencies).execute(sellerId);
+            const seller = await findUserWithId_usecase(dependencies).interactor(sellerId);
             if (seller) {
                 // here we are responding through a unique que created;
                 sendDataThroughRabbitMq(`reply-${uniqueId}`, seller)

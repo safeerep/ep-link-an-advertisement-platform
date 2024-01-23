@@ -5,9 +5,9 @@ export const followUser_usecase = ( dependencies: any) => {
         }
     } = dependencies;
 
-    const execute = async ( currentUserId: string, userId: string) => {
+    const interactor = async ( currentUserId: string, userId: string) => {
         return await userRepo.followUser(currentUserId, userId)
     }
 
-    return { execute }
+    return { interactor }
 }

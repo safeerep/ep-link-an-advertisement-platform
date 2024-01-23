@@ -8,9 +8,9 @@ export const findExistingUser_usecase = (dependencies: any) => {
   
   if (!getUserData) throw new Error("dependecy is required for it");
 
-  const execute = async (email: string) => {
+  const interactor = async (email: string) => {
     return await getUserData(email);
   };
 
-  return { execute };
+  return { interactor };
 };

@@ -15,7 +15,7 @@ export = ( dependencies: any) => {
         
         try {
             // first we have to check is it admin's email?
-            const adminData = await findAdmin_usecase(dependencies).execute(email);
+            const adminData = await findAdmin_usecase(dependencies).interactor(email);
             
             // if there is no admin with the email specified just return
             if (!adminData) return res.json({ success: false, message: "email is not registered with us"})

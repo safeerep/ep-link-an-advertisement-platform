@@ -24,7 +24,7 @@ export = (dependencies: any) => {
             // to send back the users after the changes are made
             const userId = req.body._id;
             if (!userId) return res.json({ success: false, message: 'data is not enough' })
-            const users = await changeUserStatus_usecase(dependencies).execute(userId)
+            const users = await changeUserStatus_usecase(dependencies).interactor(userId)
             if (!users) return res.json({ success: false, message: "something went wrong"})
             return res.json({ success: true, message: "successfully updated user status", users })
         } catch (error) {

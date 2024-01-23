@@ -40,7 +40,7 @@ export = ( dependencies: any) => {
         // first we want to get userId to fetch userdata
         const userId = await getUserId(token);
         if (userId) {
-            const userData = await findUserWithId_usecase(dependencies).execute(userId);
+            const userData = await findUserWithId_usecase(dependencies).interactor(userId);
             // now we want to check user status 
             // if status is false - it means admin blocked this user
             if (!userData.status) {

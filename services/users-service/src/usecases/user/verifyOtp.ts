@@ -7,9 +7,9 @@ export const verifyOtp_usecase = (dependencies: any) => {
 
   if (!verifyOtp) throw new Error("dependecy is required for verifying otp");
 
-  const execute = async (email: string, otp: number) => {
+  const interactor = async (email: string, otp: number) => {
     return await verifyOtp(email, otp);
   };
 
-  return { execute };
+  return { interactor };
 };

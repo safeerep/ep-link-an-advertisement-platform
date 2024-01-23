@@ -38,7 +38,7 @@ export = ( dependencies: any) => {
         const adminId = await getUserId(token);
         
         if (adminId) {
-            const adminData = await findAdminWithId_usecase(dependencies).execute(adminId);
+            const adminData = await findAdminWithId_usecase(dependencies).interactor(adminId);
             console.log(adminData);
             
             return res.json({ success: true, message: `admin is authenticated`, adminData})
