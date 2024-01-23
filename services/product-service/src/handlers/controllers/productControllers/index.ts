@@ -4,6 +4,8 @@ import getSpecificUserProducts from "./getCurrentUserProducts"
 import getSpecificProduct from "./getSpecificProduct"
 import getAvailableProducts from "./getAvailableProducts"
 import updateProduct from "./updateProduct"
+import makeProductAvailable from "./makeProductAvailable"
+import makeProductSoldout from "./makeProductSoldout"
 
 
 export = ( dependencies: any) => {
@@ -13,6 +15,8 @@ export = ( dependencies: any) => {
         getSpecificUserProductsController : getSpecificUserProducts(dependencies),
         getSpecificProductController: getSpecificProduct(dependencies),
         getAvailableProductsController: getAvailableProducts(dependencies),
-        updateProductController: updateProduct(dependencies)
+        updateProductController: updateProduct(dependencies),
+        makeProductAvailableController: makeProductAvailable(dependencies),
+        makeProductSoldoutController: makeProductSoldout(dependencies)
     }
 }

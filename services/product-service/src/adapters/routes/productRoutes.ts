@@ -25,6 +25,10 @@ export = ( dependencies: any) => {
     router.get('/get-specific-product/:productId', verifyUserAuth, getSpecificProductController)
     // to update a product' details
     router.put('/update-product', verifyUserAuth, upload.array('images'), updateProductController)
+    // to make product as sold out
+    router.patch('/available/:productId', verifyUserAuth, )
+    // to make product as available
+    router.patch('/soldout/:productId', verifyUserAuth, )
 
     return router;
 } 

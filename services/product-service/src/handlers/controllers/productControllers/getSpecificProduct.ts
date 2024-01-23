@@ -37,7 +37,6 @@ export = (dependencies: any) => {
         }
 
         try {
-            console.log(`second try`);
             
             // now we have to check user is followed the seller or not
             // for to know that, first we have to get the curernt user' id 
@@ -63,9 +62,6 @@ export = (dependencies: any) => {
                         console.log('sent successfully');                    
                         await consumeDataFromQueue(`${REPLY_QUEUE}-${uniqueId}`)
                         .then((data: any) => {
-                            console.log(`response got successfully`);
-                            
-                            console.log(data);
                             if (data) {
                                 // data will be the document of seller
                                 const following = data.followers.filter((userId: any) => {
