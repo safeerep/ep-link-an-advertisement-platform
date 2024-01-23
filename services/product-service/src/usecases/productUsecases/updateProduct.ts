@@ -5,9 +5,9 @@ export const updateProduct_usecase = ( dependencies: any) => {
         }
     } = dependencies;
 
-    const execute = async ( productId: string, productDetails: any) => {
+    const interactor = async ( productId: string, productDetails: any) => {
         return await productRepo.updateProduct( productId, productDetails)
     }
 
-    return { execute }
+    return { interactor }
 }

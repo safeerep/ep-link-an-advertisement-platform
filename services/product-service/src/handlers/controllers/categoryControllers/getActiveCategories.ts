@@ -9,7 +9,7 @@ export = ( dependencies: any) => {
 
     const getActiveCategories = async ( req: Request, res: Response) => {
         try {
-            const categories = await categoryUsecases.getActiveCategories_usecase(dependencies).execute()
+            const categories = await categoryUsecases.getActiveCategories_usecase(dependencies).interactor()
             return res.json({ success: true, message: 'category fetch is successfull', categories })
         } catch (error) {
             console.log(`something went wrong during fetching the list of categories ${error}`);

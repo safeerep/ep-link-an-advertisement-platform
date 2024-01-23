@@ -6,9 +6,9 @@ export const getOneSpecificProduct_usecase = ( dependencies: any) => {
         }
     } = dependencies;
 
-    const execute = async ( productId: string) => {
+    const interactor = async ( productId: string) => {
         return await productRepo.getProductDetails(productId)
     }
 
-    return { execute }
+    return { interactor }
 }

@@ -7,9 +7,9 @@ export const addNewCategory_usecase = ( dependencies: any) => {
 
     if (!categoryRepo) throw new Error('category repo is not available to add category')
 
-    const execute = async ( categoryDetails: any) => {
+    const interactor = async ( categoryDetails: any) => {
         return await categoryRepo.addCategory(categoryDetails)
     }
     
-    return { execute };
+    return { interactor };
 }

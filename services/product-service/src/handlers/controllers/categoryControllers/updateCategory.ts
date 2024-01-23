@@ -12,7 +12,7 @@ export = ( dependencies: any) => {
             // at first we have to verify is there existing the category or not;
             const categoryId = req.body.categoryId;
             const categoryExisting = await categoryUsecases
-            .isCategoryExistWithId_usecase(dependencies).execute(categoryId);
+            .isCategoryExistWithId_usecase(dependencies).interactor(categoryId);
             // if there is no category with the Id provided, that means the category id is not valid
             // so, return;
             if (!categoryExisting) {
@@ -27,7 +27,7 @@ export = ( dependencies: any) => {
             // now we ensured that category id is valid, so we can update category details;
             const categoryId: string = req?.body?.categoryId;
             const categories = await categoryUsecases
-            .updateCategoryDetails_usecase(dependencies).execute(categoryId, req?.body)
+            .updateCategoryDetails_usecase(dependencies).interactor(categoryId, req?.body)
             if (!categories) {
                 return res.json({ success: false, message: "category name is already existing"})
             }

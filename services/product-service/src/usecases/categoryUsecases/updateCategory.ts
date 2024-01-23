@@ -5,9 +5,9 @@ export const updateCategoryDetails_usecase = ( dependencies: any) => {
         }
     } = dependencies;
 
-    const execute = async ( categoryId: string, categoryDetails: any) => {
+    const interactor = async ( categoryId: string, categoryDetails: any) => {
         return await categoryRepo.updateCategoryDetails(categoryId, categoryDetails)
     }
 
-    return { execute }
+    return { interactor }
 }

@@ -11,7 +11,7 @@ export = ( dependencies: any) => {
         try {
             // here we trying to fetch the products
             const products = await productUsecases
-            .getProducts_usecase(dependencies).execute()
+            .getProducts_usecase(dependencies).interactor()
             return res.json({ success: true, message: 'successfully retrieved products', products})
         } catch (error) {
             console.log(`something went wrong during fetching the products ${error}`);

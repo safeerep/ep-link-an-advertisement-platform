@@ -15,7 +15,7 @@ export = ( dependencies: any) => {
         let categories; 
         try {
             const categoriesAfterupdate = await categoryUsecases
-            .changeCategoryStatus_usecase(dependencies).execute(categoryId, status)
+            .changeCategoryStatus_usecase(dependencies).interactor(categoryId, status)
 
             // here we are setting category to the categories variable which is in the outer scope
             if (categoriesAfterupdate) categories = categoriesAfterupdate;
@@ -29,7 +29,7 @@ export = ( dependencies: any) => {
         try {
             // now we are changing the whole products' status under this category
             const productStatusUpdated = await categoryUsecases
-            .changeProductsStatusByCategory_usecase(dependencies).execute(categoryId, status)
+            .changeProductsStatusByCategory_usecase(dependencies).interactor(categoryId, status)
 
             if (productStatusUpdated) {
                 return res.json({ success: true, message: "successfully updated category status", categories })

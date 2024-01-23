@@ -13,7 +13,7 @@ export = ( dependencies: any) => {
             const categoryId = req?.params?.categoryId;
             // we have to pass this category id to the -> usecase -> repo to get details;
             const categoryDetails = await categoryUsecases
-            .getSpecificCategory_usecase(dependencies).execute(categoryId)
+            .getSpecificCategory_usecase(dependencies).interactor(categoryId)
             if (categoryDetails) {
                 return res.json({ success: true, categoryDetails, message: "current category fetch is successfull" })
             }

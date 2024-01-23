@@ -5,9 +5,9 @@ export const addProduct_usecase = ( dependencies: any) => {
         }
     } = dependencies;
 
-    const execute = async (productDetails: any) => {
+    const interactor = async (productDetails: any) => {
         return await productRepo.addProduct(productDetails)
     }
 
-    return { execute }
+    return { interactor }
 }

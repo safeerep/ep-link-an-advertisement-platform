@@ -5,9 +5,9 @@ export const getCurrentStatusOfCategory_usecase = ( dependencies: any) => {
         }
     } = dependencies;
 
-    const execute = async ( categoryId: string) => {
+    const interactor = async ( categoryId: string) => {
         return await categoryRepo.getCurrentStatus(categoryId)
     }
 
-    return { execute }
+    return { interactor }
 }

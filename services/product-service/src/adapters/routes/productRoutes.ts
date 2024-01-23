@@ -10,7 +10,8 @@ export = ( dependencies: any) => {
         getProductsController,
         getSpecificUserProductsController,
         getSpecificProductController,
-        getAvailableProductsController
+        getAvailableProductsController,
+        updateProductController
     }
     = productControllers(dependencies)
 
@@ -23,7 +24,7 @@ export = ( dependencies: any) => {
     // fetching details of a specific product to show detailed info
     router.get('/get-specific-product/:productId', verifyUserAuth, getSpecificProductController)
     // to update a product' details
-    router.put('/update-product', verifyUserAuth, upload.array('images'))
+    router.put('/update-product', verifyUserAuth, upload.array('images'), updateProductController)
 
     return router;
 } 
