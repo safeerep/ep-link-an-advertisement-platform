@@ -1,5 +1,6 @@
 import { userCollection, IUserData } from "../../index";
 import { otpCollection, IOtpDocument } from "../../index";
+import mongoose, { startSession } from "mongoose";
 
 export const createNewUser = async (
   userCredentials: IUserData
@@ -108,22 +109,31 @@ export const updatePassword = async (
 
 // to follow the user
 export const followUser =async (currentUserId: string, userId: string) => {
+  const session = await startSession()
     try {
+      session.startTransaction()
       const currentUser = await userCollection.findByIdAndUpdate(currentUserId, {
-        $push: {
+        $addToSet: {
           following: userId
         }
-      })
+      }, { session })
 
       const userGotFollowed = await userCollection.findByIdAndUpdate( userId, {
-        $push: {
+        $addToSet: {
           followers: currentUserId
         }
-      })
+      }, { session })
+
+      await session.commitTransaction()
+      session.endSession()
 
       return true;
     } catch (error) {
       console.log(`something went wrong during updating the profiles ${error}`);
+      
+      session.abortTransaction()
+      session.endSession()
+
       return false;
     }
 }
@@ -131,22 +141,31 @@ export const followUser =async (currentUserId: string, userId: string) => {
 
 // to unfollow the user
 export const unFollowUser =async (currentUserId: string, userId: string) => {
+  const session = await startSession()
     try {
+      session.startTransaction()
       const currentUser = await userCollection.findByIdAndUpdate(currentUserId, {
         $pull: {
           following: userId
         }
-      })
+      }, { session })
 
       const userGotUnFollowed = await userCollection.findByIdAndUpdate( userId, {
         $pull: {
           followers: currentUserId
         }
-      })
+      }, { session })
+
+      await session.commitTransaction()
+      session.endSession()
 
       return true;
     } catch (error) {
       console.log(`something went wrong during updating the profiles ${error}`);
+
+      session.abortTransaction()
+      session.endSession()
+
       return false;
     }
 }
