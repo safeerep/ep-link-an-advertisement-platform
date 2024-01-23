@@ -382,7 +382,7 @@ export const getSpecificProduct = createAsyncThunk(`/user/get-specific-product`,
 export const followUser = createAsyncThunk(`/user/follow-user`, 
     async (userId: string) => {
         try {
-            const response = await axios.patch(`${USERS_SERVICE_BASE_URL}/user/follow/${userId}`,{
+            const response = await axios.patch(`${USERS_SERVICE_BASE_URL}/user/follow/${userId}`,{},{
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true
             })
@@ -403,7 +403,7 @@ export const followUser = createAsyncThunk(`/user/follow-user`,
 export const unFollowUser = createAsyncThunk(`/user/unfollow-user`, 
     async (userId: string) => {
         try {
-            const response = await axios.patch(`${USERS_SERVICE_BASE_URL}/user/unfollow/${userId}`,{
+            const response = await axios.patch(`${USERS_SERVICE_BASE_URL}/user/unfollow/${userId}`,{},{
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true
             })
