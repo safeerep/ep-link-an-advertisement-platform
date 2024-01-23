@@ -109,30 +109,22 @@ export const updatePassword = async (
 
 // to follow the user
 export const followUser =async (currentUserId: string, userId: string) => {
-  const session = await startSession()
     try {
-      session.startTransaction()
       const currentUser = await userCollection.findByIdAndUpdate(currentUserId, {
         $addToSet: {
           following: userId
         }
-      }, { session })
+      })
 
       const userGotFollowed = await userCollection.findByIdAndUpdate( userId, {
         $addToSet: {
           followers: currentUserId
         }
-      }, { session })
-
-      await session.commitTransaction()
-      session.endSession()
+      })
 
       return true;
     } catch (error) {
       console.log(`something went wrong during updating the profiles ${error}`);
-      
-      session.abortTransaction()
-      session.endSession()
 
       return false;
     }
@@ -141,31 +133,22 @@ export const followUser =async (currentUserId: string, userId: string) => {
 
 // to unfollow the user
 export const unFollowUser =async (currentUserId: string, userId: string) => {
-  const session = await startSession()
     try {
-      session.startTransaction()
       const currentUser = await userCollection.findByIdAndUpdate(currentUserId, {
         $pull: {
           following: userId
         }
-      }, { session })
+      })
 
       const userGotUnFollowed = await userCollection.findByIdAndUpdate( userId, {
         $pull: {
           followers: currentUserId
         }
-      }, { session })
-
-      await session.commitTransaction()
-      session.endSession()
+      })
 
       return true;
     } catch (error) {
       console.log(`something went wrong during updating the profiles ${error}`);
-
-      session.abortTransaction()
-      session.endSession()
-
       return false;
     }
 }
