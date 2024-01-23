@@ -6,8 +6,9 @@ import {
   getProductDetails,
   changeProductsStatusByCategory,
   getAvailableProducts,
+  makeProductAsAvailable,
   makeProductAsSoldOut,
-  updateProduct
+  updateProduct,
 } from "./productRepo";
 
 export default {
@@ -19,5 +20,6 @@ export default {
     makeProductAsSoldOut,
     updateProduct,
     getProductDetails,
-    changeProductsStatusByCategory
+    changeProductsStatusByCategory,
+    makeProductAsAvailable
 }

@@ -82,6 +82,20 @@ export const makeProductAsSoldOut = async ( productId: string) :Promise<IProduct
     }
 }
 
+// to make the product status as available
+export const makeProductAsAvailable = async ( productId: string) :Promise<IProduct | boolean> => {
+    try {
+        const updatedProduct = await ProductsCollection.findByIdAndUpdate( productId, {
+            soldOut: false
+        })
+        if (updatedProduct) return updatedProduct as IProduct;
+        else return false
+    } catch (error) {
+        console.log(`an error happened during making a product as available ${error}`);
+        return false;
+    }
+}
+
 // to get products
 export const getProducts = async () :Promise< IProduct[] | boolean> => {
     try {
