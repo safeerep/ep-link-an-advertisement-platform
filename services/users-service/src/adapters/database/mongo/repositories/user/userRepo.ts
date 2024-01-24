@@ -16,33 +16,33 @@ export const createNewUser = async (
   }
 };
 
-export const getUserData = async (email: string) => {
+export const getUserData = async (email: string):Promise<IUserData | boolean> => {
   try {
     const userData = await userCollection.findOne({ email: email });
     if (!userData) return false;
-    return userData;
+    return userData as IUserData;
   } catch (error: any) {
     console.log(`here happened an error \n`, error);
     return false;
   }
 };
 
-export const getUserDataFromId = async (userId: string) => {
+export const getUserDataFromId = async (userId: string):Promise<IUserData | boolean> => {
   try {
     const userData = await userCollection.findOne({ _id: userId });
     if (!userData) return false;
-    return userData;
+    return userData as IUserData;
   } catch (error: any) {
     console.log(`here happened an error \n`, error);
     return false;
   }
 };
 
-export const getUserWithPhone = async (phone: number) => {
+export const getUserWithPhone = async (phone: number):Promise<IUserData | boolean> => {
   try {
     const userData = await userCollection.findOne({ phone: phone });
     if (!userData) return false;
-    return userData;
+    return userData as IUserData;
   } catch (error: any) {
     console.log(`here happened an error \n`, error);
     return true;
@@ -149,6 +149,19 @@ export const unFollowUser =async (currentUserId: string, userId: string) => {
       return true;
     } catch (error) {
       console.log(`something went wrong during updating the profiles ${error}`);
+      return false;
+    }
+}
+
+export const updateUserProfile = async (userId: string, userDetails: any):Promise<IUserData | boolean> => {
+    try {
+      const updatedUser = await userCollection.findByIdAndUpdate( userId, {
+        ...userDetails
+      }, { new: true})
+      if (updatedUser) return updatedUser as IUserData;
+      else return false;
+    } catch (error) {
+      console.log(`an error happened during updating user profile ${error}`);
       return false;
     }
 }

@@ -1,4 +1,5 @@
 import { sendDataThroughRabbitMq } from "../../../adapters/messageBroker/rabbitmq/messageSender";
+import { REPLY_QUEUE } from "../../../queues";
 
 export = ( dependencies: any) => {
     const {
@@ -16,7 +17,7 @@ export = ( dependencies: any) => {
             const seller = await findUserWithId_usecase(dependencies).interactor(sellerId);
             if (seller) {
                 // here we are responding through a unique que created;
-                sendDataThroughRabbitMq(`reply-${uniqueId}`, seller)
+                sendDataThroughRabbitMq(`${REPLY_QUEUE}-${uniqueId}`, seller)
             }
             else {
                 console.log(`something went wrong safeer, check it`);

@@ -1,6 +1,7 @@
 import amqp, { Channel, Connection } from 'amqplib'
 import { consumeDataFromQueue } from './commonMessageReceiver';
 import dependencies = require('../../../utils/config/dependencies');
+import { USER_DATA_QUEUE } from '../../../queues';
 
 let channel: Channel;
 let connection: Connection;
@@ -9,7 +10,7 @@ const connectRabbitMq = async ( ) => {
     try {
         connection = await amqp.connect("amqp://localhost:5672");
         channel = await connection.createChannel()
-        await channel.assertQueue("user-queue");
+        await channel.assertQueue(`${USER_DATA_QUEUE}`);
         consumeDataFromQueue(dependencies);
         console.log(`successfully connected with rabbit mq in user-service`);
         

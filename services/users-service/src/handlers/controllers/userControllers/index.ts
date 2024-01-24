@@ -10,6 +10,8 @@ import verifyResetPassword from "./verifyResetPassword";
 import getUserData from "./getUserData";
 import follow from "./follow";
 import unfollow from "./unfollow";
+import updateProfile from "./updateProfile";
+import getSellerProfile from "./getSellerProfile";
 
 export = (dependencies: any) => {
     return {
@@ -25,5 +27,7 @@ export = (dependencies: any) => {
         getUserDataController: getUserData(dependencies),
         followController: follow(dependencies),
         unfollowController: unfollow(dependencies),
+        updateProfileController: updateProfile(dependencies),
+        getSellerProfileController: getSellerProfile(dependencies),
     }
 }
