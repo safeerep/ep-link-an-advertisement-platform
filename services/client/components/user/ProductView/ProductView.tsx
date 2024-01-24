@@ -10,7 +10,7 @@ import { AiOutlineEdit } from 'react-icons/ai'
 const ProductView = () => {
     const dispatch: any = useDispatch()
     const router: any = useRouter()
-    const [ mainImage, setMainImage] = useState <number>(0)
+    const [mainImage, setMainImage] = useState<number>(0)
 
     const searchParams = useSearchParams();
     const productId: string | any = searchParams.get("product");
@@ -48,8 +48,8 @@ const ProductView = () => {
     const seller = useSelector((state: any) => state?.user?.data?.seller)
     const sellerLoading = useSelector((state: any) => state?.user?.loading?.seller)
     const sellerStatus = useSelector((state: any) => state?.user?.data?.status)
-    console.log(sellerStatus,'ok status now');
-    
+    console.log(sellerStatus, 'ok status now');
+
 
     return (
         <>
@@ -58,20 +58,22 @@ const ProductView = () => {
                     <div className="w-full sm:w-full md:w-1/2 lg:w-3/4">
                         <div className=" h-96 p-4 border border-black flex justify-center object-center" >
                             <img
-                                src={product?.images? product?.images[mainImage] : ''} alt="" />
+                                src={product?.images ? product?.images[mainImage] : ''} alt="" />
                         </div>
                         <div className='flex justify-start px-2' >
                             {
                                 product?.images && product?.images.map((image: any, index: number) => (
-                                    <img 
-                                    className="m-2" 
-                                    src={image} 
-                                    onClick={() => {
-                                        setMainImage(index)
-                                    }}
-                                    alt="" 
-                                    height={100} 
-                                    width={100} 
+                                    <img
+                                        // starting
+                                        key={index}
+                                        className="m-2"
+                                        src={image}
+                                        onClick={() => {
+                                            setMainImage(index)
+                                        }}
+                                        alt=""
+                                        height={100}
+                                        width={100}
                                     />
                                 )
                                 )}
@@ -125,28 +127,40 @@ const ProductView = () => {
                         <>
                             <p>{seller?.userName}</p>
                             <div className='w-full flex justify-center items-center gap-2'>
-                                {sellerLoading? 
-                                'loading':
-                                sellerStatus && sellerStatus == "following" && (
-                                    <>
-                                        <button className='bg-slate-950 px-4 rounded-md'>
-                                            <span
+                                {sellerLoading ?
+                                    'loading' :
+                                    sellerStatus && sellerStatus == "following" && (
+                                        <>
+                                            <button className='bg-slate-950 px-4 rounded-md'
                                                 onClick={handleUnfollow}
-                                                className='px-4 text-teal-50' >UNFOLLOW</span>
-                                        </button>
-                                        <button
-                                            onClick={handleClickForChat}
-                                            className='bg-slate-700 p-1 text-white'>
-                                            <BsChatDots />
-                                        </button>
-                                    </>
-                                )}
+                                            >
+                                                <span
+                                                    className='px-4 text-teal-50' >UNFOLLOW</span>
+                                            </button>
+                                            <button className='bg-slate-950 px-4 rounded-md'
+                                                onClick={() => router.push(`/view-user?id=${seller?._id}`)}
+                                            >
+                                                <span
+                                                    className='px-4 text-teal-50' >VIEW SELLER PROFILE</span>
+                                            </button>
+                                            <button
+                                                onClick={handleClickForChat}
+                                                className='bg-slate-700 p-1 text-white'>
+                                                <BsChatDots />
+                                            </button>
+                                        </>
+                                    )}
                                 {sellerStatus && sellerStatus == "not-following" && (
                                     <>
                                         <button
                                             onClick={handleFollow}
                                             className='bg-slate-950 px-4 rounded-md'>
                                             <span className='px-4 text-teal-50' >FOLLOW</span>
+                                        </button>
+                                        <button
+                                            onClick={() => router.push(`/view-user?id=${seller?._id}`)}
+                                            className='bg-slate-950 px-4 rounded-md'>
+                                            <span className='px-4 text-teal-50' >VIEW SELLER PROFILE</span>
                                         </button>
                                         <button
                                             onClick={handleClickForChat}
@@ -169,8 +183,8 @@ const ProductView = () => {
                         <>
                             {(!seller && !sellerStatus) ?
                                 <p className="text-red-800">
-                                Sorry for the inconvenience! Seller details are not available.
-                            </p> :
+                                    Sorry for the inconvenience! Seller details are not available.
+                                </p> :
                                 ''}
                         </>
                     </div>

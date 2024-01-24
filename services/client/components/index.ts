@@ -4,10 +4,13 @@ import SignIn from "./auth/SignIn/SignIn";
 import ForgotPassword from "./auth/ForgotPassword/ForgotPassword";
 import ChangePassword from "./auth/ChangePassword/ChangePassword";
 import Navbar from "./shared/userSide/Navbar";
+import Footer from "./shared/userSide/Footer";
 import Home from "./user/Home/Home";
 import AddProduct from "./user/AddProduct/AddProduct";
 import EditProduct from "./user/EditProduct/EditProduct";
 import ProductView from "./user/ProductView/ProductView";
+import Chat from "./user/Chat/Chat";
+import ViewUserProfile from "./user/ViewUserProfile/ViewUserProfile";
 
 import AdminSignIn from "./auth/AdminSignIn/AdminSignIn";
 import AdminForgotPassword from "./auth/AdminForgotPassword/AdminForgotPassword";
@@ -25,10 +28,13 @@ export {
     ForgotPassword,
     ChangePassword,
     Navbar,
+    Footer,
     Home,
     AddProduct,
     EditProduct,
     ProductView,
+    Chat,
+    ViewUserProfile,
     
     AdminSignIn,
     AdminForgotPassword,

@@ -2,15 +2,15 @@ import React from 'react';
 
 const Footer = () => {
   return (
-    <footer className="bg-white py-4">
-      <div className="container">
-        <div className="flex flex-wrap -mx-4">
+    <>
+        <div className="flex flex-wrap p-4 border-t-2 border-black">
           <div className="w-full md:w-1/4 px-4 mb-8 md:mb-0">
-            <img
-              src=""
-              alt="logo"
-              className="w-full mb-5"
-            />
+          <img src="/brand.png"
+          alt='logo'
+          width={200} height={200}
+          className='mb-5'>
+            
+        </img>
             <ul className="list-none">
               <li>
                 <a href="" className="text-dark text-decoration-none">
@@ -47,11 +47,6 @@ const Footer = () => {
                   Categories
                 </a>
               </li>
-              <li>
-                <a href="" className="text-dark text-decoration-none">
-                  Cart
-                </a>
-              </li>
             </ul>
           </div>
           <div className="w-full md:w-1/4 px-4">
@@ -70,11 +65,6 @@ const Footer = () => {
               <li>
                 <a href="" className="text-dark text-decoration-none">
                   Features
-                </a>
-              </li>
-              <li>
-                <a href="" className="text-dark text-decoration-none">
-                  Resources
                 </a>
               </li>
             </ul>
@@ -97,8 +87,10 @@ const Footer = () => {
             </form>
           </div>
         </div>
-      </div>
-    </footer>
+        <div className='bg-slate-900 h-10'>
+
+        </div>
+        </>
   );
 };
 
