@@ -3,6 +3,7 @@ import { userControllers } from "../../handlers/controllers";
 import passport from "passport";
 import "../../utils/externalServices/passportJs/googleAuth";
 import verifyUserAuth from "../../utils/middlewares/verifyUserAuth";
+import upload from "../../utils/externalServices/multerWithS3/upload";
 
 export = (dependencies: any) => {
   const router = express.Router();
@@ -18,7 +19,9 @@ export = (dependencies: any) => {
     sendResetPasswordMailController,
     changePasswordController,
     followController,
-    unfollowController
+    unfollowController,
+    updateProfileController,
+    getSellerProfileController
   } = userControllers(dependencies);
 
   router.use(passport.initialize());
@@ -51,6 +54,11 @@ export = (dependencies: any) => {
 
   router.patch("/follow/:userId",verifyUserAuth, followController)
   router.patch("/unfollow/:userId",verifyUserAuth, unfollowController)
+
+  // update user profile
+  router.put("/update-profile",verifyUserAuth, upload.single('profilePhoto'), updateProfileController)
+  // to retrieve seller details including seller's own products;
+  router.get("/get-seller-profile/:sellerId",verifyUserAuth, getSellerProfileController)
 
   return router;
 };

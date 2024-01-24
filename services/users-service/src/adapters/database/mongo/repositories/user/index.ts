@@ -8,7 +8,8 @@ import {
   verifyOtp,
   updatePassword,
   followUser,
-  unFollowUser
+  unFollowUser,
+  updateUserProfile
 } from "./userRepo";
 
 export = {
@@ -22,4 +23,5 @@ export = {
   updatePassword,
   followUser,
   unFollowUser,
+  updateUserProfile
 };

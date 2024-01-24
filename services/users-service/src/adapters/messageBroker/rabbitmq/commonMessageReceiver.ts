@@ -1,4 +1,5 @@
 import { userControllers } from "../../../handlers/controllers";
+import { USER_DATA_QUEUE } from "../../../queues";
 import { connectRabbitMq, channel } from "./rabbitmqConnection";
 
 export const consumeDataFromQueue = async (dependencies: any) => {
@@ -11,8 +12,8 @@ export const consumeDataFromQueue = async (dependencies: any) => {
     if (!channel) await connectRabbitMq();
 
     // then, assertQueue
-    await channel.assertQueue("user-queue");
-    channel.consume("user-queue", (data) => {
+    await channel.assertQueue(`${USER_DATA_QUEUE}`);
+    channel.consume(`${USER_DATA_QUEUE}`, (data) => {
       if (data) {
         const response = Buffer.from(data.content).toString();
         // acknowledging
