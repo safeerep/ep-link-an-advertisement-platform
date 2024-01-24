@@ -9,7 +9,7 @@ import makeProductSoldout from "./makeProductSoldout"
 import getSpecificSellerProducts from "./getSpecificSellerProducts"
 
 
-export = ( dependencies: any) => {
+export default ( dependencies: any) => {
     return {
         addProductController: addProduct(dependencies),
         getProductsController: getProducts(dependencies),
