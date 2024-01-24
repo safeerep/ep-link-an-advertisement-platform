@@ -14,7 +14,7 @@ const Favourites = () => {
     return (
         <>
             <h1 className='p-6 text-xl'>Your Favourites</h1>
-            <Posts />
+            <Posts from={'favourites'}/>
         </>
     )
 }

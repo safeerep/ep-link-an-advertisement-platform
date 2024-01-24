@@ -1,16 +1,24 @@
 // "use client"
-import React from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation'
 import { useDispatch, useSelector } from 'react-redux'
 import { logout } from '@/store/actions/userActions/userActions'
 import Link from 'next/link';
+import EditProfileModal from '../Modals/EditProfileModal';
 
 const ProfileSidebar = () => {
     const dispatch: any = useDispatch()
-  const router = useRouter()
+    const router = useRouter()
+    const [updateProfileModalIsOpen, setUpdateProfileModalIsOpen] = useState(false);
+
     const handleLogout = () => {
         dispatch(logout(router))
     }
+
+    const handleUpdateProfile = () => {
+        setUpdateProfileModalIsOpen(!updateProfileModalIsOpen)
+    }
+
     return (
         <div className="lg:w-1/5 flex flex-col justify-center border-0 border-e-2">
             <div className='w-full flex justify-center'>
@@ -25,6 +33,10 @@ const ProfileSidebar = () => {
                 href={'/profile'}
                 className={`border flex justify-center my-1 mx-2 p-2 rounded-md bg-slate-100 whitespace-nowrap`}
             >My Profile</Link>
+            <button
+                onClick={handleUpdateProfile}
+                className={`border flex justify-center my-1 mx-2 p-2 rounded-md bg-slate-100 whitespace-nowrap`}
+            >Edit Profile</button>
             <Link
                 href={'/add-product'}
                 className={`border flex justify-center my-1 mx-2 p-2 rounded-md bg-slate-100 whitespace-nowrap`}
@@ -37,6 +49,10 @@ const ProfileSidebar = () => {
                 onClick={handleLogout}
                 className={`border flex justify-center my-1 mx-2 p-2 rounded-md bg-slate-100 whitespace-nowrap`}
             >Sign out</button>
+            <EditProfileModal
+                isModalOpen={updateProfileModalIsOpen}
+                setIsModalOpen={setUpdateProfileModalIsOpen}
+            />
         </div>
     );
 };

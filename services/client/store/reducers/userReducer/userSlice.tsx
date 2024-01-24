@@ -15,7 +15,10 @@ import {
     unFollowUser,
     editProduct,
     makeProductAvailable,
-    makeProductSoldOut
+    makeProductSoldOut,
+    getSellerProfile,
+    updateProfile,
+    
 } from "@/store/actions/userActions/userActions";
 import { UserState } from "@/types/user";
 
@@ -243,6 +246,32 @@ const userSlice = createSlice({
                 state.error = null;
             })
             .addCase(unFollowUser.rejected, (state: UserState, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            })
+            // on the time when a user is trying to view seller profile
+            .addCase(getSellerProfile.pending, (state: UserState) => {
+                state.loading = true;
+            })
+            .addCase(getSellerProfile.fulfilled, (state: UserState, action) => {
+                state.loading = false;
+                state.data = { ...state.data, ...action.payload };
+                state.error = null;
+            })
+            .addCase(getSellerProfile.rejected, (state: UserState, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            })
+            // on the time when a user is updating data
+            .addCase(updateProfile.pending, (state: UserState) => {
+                state.loading = true;
+            })
+            .addCase(updateProfile.fulfilled, (state: UserState, action) => {
+                state.loading = false;
+                state.data = { ...state.data, ...action.payload };
+                state.error = null;
+            })
+            .addCase(updateProfile.rejected, (state: UserState, action) => {
                 state.loading = false;
                 state.error = action.error.message;
             })

@@ -5,8 +5,8 @@ import { USERS_SERVICE_BASE_URL, PRODUCT_SERVICE_BASE_URL, CHAT_SERVICE_BASE_URL
 import toast from "react-hot-toast";
 
 
-export const register = createAsyncThunk('/user/register', async ({userCredentials, setIsModalOpen, router, setModalError}:
-    {userCredentials: signUpCredentialsWithOtp, setIsModalOpen: any, router: any, setModalError: any}) => {
+export const register = createAsyncThunk('/user/register', async ({ userCredentials, setIsModalOpen, router, setModalError }:
+    { userCredentials: signUpCredentialsWithOtp, setIsModalOpen: any, router: any, setModalError: any }) => {
     try {
         const response: any = await axios.post(`${USERS_SERVICE_BASE_URL}/user/signup`, { ...userCredentials }, {
             headers: { "Content-Type": "application/json" },
@@ -15,7 +15,7 @@ export const register = createAsyncThunk('/user/register', async ({userCredentia
         if (response) {
             console.log('hey ');
             console.log(response);
-            
+
             if (response?.data?.success) {
                 // close the modal
                 setModalError(response?.data?.message)
@@ -197,10 +197,68 @@ export const RequestToResetPassword = createAsyncThunk('/user/reset-password',
     }
 )
 
-export const getAllCategories = createAsyncThunk(`/user/categories`, 
+export const updateProfile = createAsyncThunk(`/user/update-profile`,
+    async ({ userName, phone, image }: { userName: string | any, phone: number | any, image: any }) => {
+        try {
+            console.log(`from action`);
+            console.log(userName, phone, image );
+            
+            const userData = new FormData()
+            if (image) {
+                userData.append('profilePhoto', image)
+            }
+            userData.append('userName', userName)
+            userData.append('phone', phone)
+
+            const response = await axios.put(`${USERS_SERVICE_BASE_URL}/update-profile`, userData, {
+                headers: { "Content-Type": "multipart/form-data" },
+                withCredentials: true
+            })
+            if (response?.data) {
+                console.log(response.data);
+                if (response?.data?.success) {
+                    toast.success(response.data?.message)
+                    return response.data;
+                }
+                else {
+                    toast.error(response?.data?.message)
+                }
+                return response.data;
+            }
+        } catch (error: any) {
+            console.log(`an error happened during updating user profile info ${error}`);
+            toast.error(error?.response?.data?.message)
+            return error?.response?.data;
+        }
+    }
+)
+
+export const getSellerProfile = createAsyncThunk('/user/get-seller-profile', 
+    async (sellerId: string) => {
+        try {
+            const response = await axios.get(`${USERS_SERVICE_BASE_URL}/get-seller-profile/${sellerId}`, {
+                headers: { "Content-Type": "application/json"},
+                withCredentials: true
+            })
+            if (response?.data?.success) {
+                console.log(response.data);
+                return response.data;
+            } else {
+                toast.error(response?.data?.message)
+                throw new Error('something went wrong')
+            }
+        } catch (error: any) {
+            toast.error(error?.response?.data?.message)
+            console.log(`an error happened during fetching the seller profile details ${error}`);
+            return error.response.data;
+        }
+    }
+)
+
+export const getAllCategories = createAsyncThunk(`/user/categories`,
     async () => {
         try {
-            const response = await axios.get(`${PRODUCT_SERVICE_BASE_URL}/category/get-all-categories-user`,{
+            const response = await axios.get(`${PRODUCT_SERVICE_BASE_URL}/category/get-all-categories-user`, {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true
             })
@@ -307,10 +365,10 @@ export const editProduct = createAsyncThunk(`/user/edit-product`, async ({ produ
     }
 });
 
-export const getProducts = createAsyncThunk(`/user/get-products`, 
+export const getProducts = createAsyncThunk(`/user/get-products`,
     async () => {
         try {
-            const response = await axios.get(`${PRODUCT_SERVICE_BASE_URL}/get-all-products`,{
+            const response = await axios.get(`${PRODUCT_SERVICE_BASE_URL}/get-all-products`, {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true
             })
@@ -318,7 +376,7 @@ export const getProducts = createAsyncThunk(`/user/get-products`,
                 console.log(response.data);
                 if (response?.data?.success) {
                     return response.data;
-                }      
+                }
                 return response.data;
             }
         } catch (error: any) {
@@ -329,36 +387,12 @@ export const getProducts = createAsyncThunk(`/user/get-products`,
 )
 
 
-export const getCurrentUserProducts = createAsyncThunk(`/user/user-products`, 
+export const getCurrentUserProducts = createAsyncThunk(`/user/user-products`,
     async () => {
         console.log('called');
-        
-        try {
-            const response = await axios.get(`${PRODUCT_SERVICE_BASE_URL}/current-user-products`,{
-                headers: { "Content-Type": "application/json" },
-                withCredentials: true
-            })        
-            if (response?.data) {
-                console.log(response.data);
-                if (response?.data?.success) {
-                    return response.data;
-                } 
-                return response.data;
-            } else {
-                console.log(`no response`);
-                return;
-            }
-        } catch (error: any) {
-            console.log(`an error happened during fetching current user' products ${error}`);
-            return error?.response?.data;
-        }
-    }
-)
 
-export const getSpecificProduct = createAsyncThunk(`/user/get-specific-product`, 
-    async ( productId: string) => {
         try {
-            const response = await axios.get(`${PRODUCT_SERVICE_BASE_URL}/get-specific-product/${productId}`,{
+            const response = await axios.get(`${PRODUCT_SERVICE_BASE_URL}/current-user-products`, {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true
             })
@@ -366,7 +400,7 @@ export const getSpecificProduct = createAsyncThunk(`/user/get-specific-product`,
                 console.log(response.data);
                 if (response?.data?.success) {
                     return response.data;
-                } 
+                }
                 return response.data;
             } else {
                 console.log(`no response`);
@@ -379,10 +413,34 @@ export const getSpecificProduct = createAsyncThunk(`/user/get-specific-product`,
     }
 )
 
-export const followUser = createAsyncThunk(`/user/follow-user`, 
+export const getSpecificProduct = createAsyncThunk(`/user/get-specific-product`,
+    async (productId: string) => {
+        try {
+            const response = await axios.get(`${PRODUCT_SERVICE_BASE_URL}/get-specific-product/${productId}`, {
+                headers: { "Content-Type": "application/json" },
+                withCredentials: true
+            })
+            if (response?.data) {
+                console.log(response.data);
+                if (response?.data?.success) {
+                    return response.data;
+                }
+                return response.data;
+            } else {
+                console.log(`no response`);
+                return;
+            }
+        } catch (error: any) {
+            console.log(`an error happened during fetching current user' products ${error}`);
+            return error?.response?.data;
+        }
+    }
+)
+
+export const followUser = createAsyncThunk(`/user/follow-user`,
     async (userId: string) => {
         try {
-            const response = await axios.patch(`${USERS_SERVICE_BASE_URL}/user/follow/${userId}`,{},{
+            const response = await axios.patch(`${USERS_SERVICE_BASE_URL}/user/follow/${userId}`, {}, {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true
             })
@@ -390,7 +448,7 @@ export const followUser = createAsyncThunk(`/user/follow-user`,
                 console.log(response.data);
                 if (response?.data?.success) {
                     return response.data;
-                }      
+                }
                 return response.data;
             }
         } catch (error: any) {
@@ -400,10 +458,10 @@ export const followUser = createAsyncThunk(`/user/follow-user`,
     }
 )
 
-export const unFollowUser = createAsyncThunk(`/user/unfollow-user`, 
+export const unFollowUser = createAsyncThunk(`/user/unfollow-user`,
     async (userId: string) => {
         try {
-            const response = await axios.patch(`${USERS_SERVICE_BASE_URL}/user/unfollow/${userId}`,{},{
+            const response = await axios.patch(`${USERS_SERVICE_BASE_URL}/user/unfollow/${userId}`, {}, {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true
             })
@@ -411,7 +469,7 @@ export const unFollowUser = createAsyncThunk(`/user/unfollow-user`,
                 console.log(response.data);
                 if (response?.data?.success) {
                     return response.data;
-                }      
+                }
                 return response.data;
             }
         } catch (error: any) {
@@ -421,10 +479,10 @@ export const unFollowUser = createAsyncThunk(`/user/unfollow-user`,
     }
 )
 
-export const chatWithSeller = createAsyncThunk(`/user/chat-with-seller`, 
+export const chatWithSeller = createAsyncThunk(`/user/chat-with-seller`,
     async (userId: string) => {
         try {
-            const response = await axios.patch(`${CHAT_SERVICE_BASE_URL}/${userId}`,{},{
+            const response = await axios.patch(`${CHAT_SERVICE_BASE_URL}/${userId}`, {}, {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true
             })
@@ -432,7 +490,7 @@ export const chatWithSeller = createAsyncThunk(`/user/chat-with-seller`,
                 console.log(response.data);
                 if (response?.data?.success) {
                     return response.data;
-                }      
+                }
                 return response.data;
             }
         } catch (error: any) {
@@ -442,10 +500,10 @@ export const chatWithSeller = createAsyncThunk(`/user/chat-with-seller`,
     }
 )
 
-export const makeProductAvailable = createAsyncThunk('/user/make-product-available', 
+export const makeProductAvailable = createAsyncThunk('/user/make-product-available',
     async (productId: string) => {
         try {
-            const response = await axios.patch(`${PRODUCT_SERVICE_BASE_URL}/available/${productId}`,{},{
+            const response = await axios.patch(`${PRODUCT_SERVICE_BASE_URL}/available/${productId}`, {}, {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true
             })
@@ -463,10 +521,10 @@ export const makeProductAvailable = createAsyncThunk('/user/make-product-availab
         }
     }
 )
-export const makeProductSoldOut = createAsyncThunk('/user/make-product-soldout', 
+export const makeProductSoldOut = createAsyncThunk('/user/make-product-soldout',
     async (productId: string) => {
         try {
-            const response = await axios.patch(`${PRODUCT_SERVICE_BASE_URL}/soldout/${productId}`,{},{
+            const response = await axios.patch(`${PRODUCT_SERVICE_BASE_URL}/soldout/${productId}`, {}, {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true
             })
