@@ -6,6 +6,7 @@ import cookieParser from 'cookie-parser'
 import session from 'express-session'
 import { routes } from './adapters/routes';
 import dependencies from './utils/config/dependencies';
+import connectSocketIO from './infra/socket/connection';
 
 const app: Express = express();
 const PORT: number = Number(process.env.PORT) || 3003;
@@ -29,5 +30,7 @@ app.use('/api/chat', routes(dependencies))
 app.listen( PORT, () => {
     console.log(`chat service starte successfully at the port ${PORT}`);
 })
+
+connectSocketIO(app.get("server"))
 
 export default app;
