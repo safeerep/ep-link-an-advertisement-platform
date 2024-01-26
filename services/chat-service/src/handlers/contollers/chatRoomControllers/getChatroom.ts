@@ -14,15 +14,14 @@ export default (dependencies: any) => {
             },
             messageUsecases: {
                 getMessagesFromOneChatroom_usecase
+            },
+            userUsecases: {
+                updateUser_usecase
             }
         }
     } = dependencies;
 
     const getChatroom = async (req: Request, res: Response) => {
-        console.log('--------------------');
-
-        console.log(dependencies);
-
 
         // we are setting variable with default value false;
         let chatRoomExisting: boolean = false;
@@ -30,58 +29,83 @@ export default (dependencies: any) => {
         const sellerId = req.params?.sellerId;
 
         try {
-            if (!sellerId) return res.json({ success: false, message: "there is no seller id in params" })
-            // we have to get current user id;
+            // first we will create a user account for current user in this service
+            // with only essential things;
+            const token: string = req.cookies.userJwt;
+                getUserId(token)
+                    .then(async (userId) => {
+                        const currentUserId = String(userId)
+                        const uniqueId: string = uuidV4();
+                        await sendDataThroughRabbitMq(USER_DATA_QUEUE, { currentUserId, uniqueId });
+
+                        try {
+                            const currentUserDetails: any = await consumeDataFromQueue(`${REPLY_QUEUE}-${uniqueId}`);
+                            if (currentUserDetails) {
+                                const currentUserUpdated = await updateUser_usecase(dependencies).interactor(currentUserId, { userName: currentUserDetails?.userName})
+                            }
+                        } catch (error) {
+                            console.log(`something went wrong during savinge current userdata in chat service`);
+                        }
+                    })
+        } catch (error) {
+            console.log(`something went wrong during creating a user account for current user ${error}`);
+            return res.json({ success: false, message: "something went wrong"})
+        }
+
+        try {
+            if (!sellerId) return res.json({ success: false, message: "there is no seller id in params" });
+        
             const token: string = req.cookies.userJwt;
             console.log(token);
+        
+            const userId = await getUserId(token);
+            const currentUserId = String(userId);
+        
+            try {
+                const existingChatRoom = await findIsChatRoomExistingWithTwoSpecificUsers_usecase(dependencies).interactor(currentUserId, sellerId);
+        
+                if (existingChatRoom) {
+                    chatRoomExisting = true;
+                    const messages = await getMessagesFromOneChatroom_usecase(dependencies).interactor(existingChatRoom?._id);
+                    const uniqueId: string = uuidV4();
+        
+                    // sending data through rabbit mq to get seller details
+                    await sendDataThroughRabbitMq(USER_DATA_QUEUE, { sellerId, uniqueId });
+        
+                    try {
+                        const sellerDetails: any = await consumeDataFromQueue(`${REPLY_QUEUE}-${uniqueId}`);
+                        console.log(`got response from users service`);
+                        console.log(sellerDetails);
 
-            getUserId(token)
-                .then(async (userId) => {
-                    const currentUserId = String(userId)
-                    // first we have to check that, is there have a chatroom with the seller and current user;
-                    const existingChatRoom = await
-                        findIsChatRoomExistingWithTwoSpecificUsers_usecase(dependencies).interactor(currentUserId, sellerId)
-                    // if there have one chatroom with this user we don't have to create new one, 
-                    // but we have to fetch the data from that chatroom;
-                    if (existingChatRoom) {
-                        chatRoomExisting = true;
-                        const messages = await
-                            getMessagesFromOneChatroom_usecase(dependencies).interactor(existingChatRoom?._id)
-
-                        const uniqueId: string = uuidV4();
-                        // sending seller id for to get seller data;
-                        sendDataThroughRabbitMq(USER_DATA_QUEUE, {
-                            sellerId,
-                            uniqueId
-                        }).then(() => {
-                            console.log(`seller id sent successfully through rabbit mq`);
-                            // then, consuming the user data from user queue;
-                            consumeDataFromQueue(`${REPLY_QUEUE}-${uniqueId}`)
-                                .then((sellerDetails) => {
-                                    console.log(`got response from users service`);
-                                    console.log(sellerDetails);
-                                    return res.json({ success: true, seller: sellerDetails, messages, message: 'successfully fetched data from already existing chatroom' })
-                                })
-                                .catch((err: any) => {
-                                    console.log(`something went wrong during consuming data from user queue ${err}`);
-                                    return res.json({ success: true, message: 'fetched chatroom details and messages, but seller details are not available right now' })
-                                })
-                        })
-                            .catch((err: any) => {
-                                console.log(`something went wrong during sending data to user queue ${err}`);
-                                return res.json({ success: true, message: 'chat room is existing, but seller details are not available right now' })
-                            })
+                        // now we can save seller data as userdata in the user collection of this service
+                        const sellerDataUpdated = await updateUser_usecase(dependencies).interactor(sellerId, {userName: sellerDetails?.userName})
+        
+                        return res.json({
+                            success: true,
+                            chatroom: existingChatRoom,
+                            seller: sellerDetails,
+                            messages,
+                            message: 'successfully fetched data from already existing chatroom'
+                        });
+                    } catch (err) {
+                        console.log(`something went wrong during consuming data from user queue ${err}`);
+                        return res.json({
+                            success: true,
+                            messages,
+                            chatroom: existingChatRoom,
+                            message: 'fetched chatroom details and messages, but seller details are not available right now'
+                        });
                     }
-                }).catch((err: any) => {
-                    console.log('ok');
-
-                    console.log(`something went wrong during destructuring token for getting current user id ${err}`);
-                    throw new Error('something went wrong during destructuring token for getting current user id')
-                })
+                }
+            } catch (error) {
+                console.log(`something went wrong during chatroom operations ${error}`);
+                return res.status(503).json({ success: false, message: 'something went wrong during chatroom operations' });
+            }
         } catch (error) {
             console.log(`something went wrong during fetching the chatroom details ${error}`);
-            return res.status(503).json({ success: false, message: "something went wrong" })
+            return res.status(503).json({ success: false, message: 'something went wrong' });
         }
+        
 
         try {
             // if there is no chat room is existing? we will create;
@@ -109,10 +133,20 @@ export default (dependencies: any) => {
                                 console.log(`seller id sent successfully through rabbit mq`);
                                 // then, consuming the user data from user queue;
                                 consumeDataFromQueue(`${REPLY_QUEUE}-${uniqueId}`)
-                                    .then((sellerDetails) => {
+                                    .then( async (sellerDetails: any) => {
                                         console.log(`got response from users service`);
                                         console.log(sellerDetails);
-                                        return res.json({ success: true, seller: sellerDetails, message: 'successfully created new chatroom' })
+                                        // now we are updating seller data into this service' users collection;
+                                        const sellerDataUpdated = await updateUser_usecase(dependencies).interactor(sellerId, {userName: sellerDetails?.userName})
+
+                                        return res.json(
+                                            { 
+                                                success: true, 
+                                                chatroom: newChatroom, 
+                                                seller: sellerDetails, 
+                                                messages: [],
+                                                message: 'successfully created new chatroom' 
+                                            })
                                     })
                                     .catch((err: any) => {
                                         console.log(`something went wrong during consuming data from user queue ${err}`);
@@ -126,7 +160,7 @@ export default (dependencies: any) => {
                     .catch((err) => {
                         console.log(`something went wrong during destructuring token for getting current user id ${err}`);
                         // throw new Error('something went wrong during destructuring token for getting current user id')
-                        return res.json({ success: true, message: err })
+                        return res.json({ success: false, message: err })
                     })
             }
         } catch (error) {

@@ -1,14 +1,16 @@
-import { chatRepo, messageRepo } from "../../adapters/database/mongo/repositories"
-import { chatRoomUsecases, messageUsecases } from "../../usecases"
+import { chatRepo, messageRepo, userRepo } from "../../adapters/database/mongo/repositories"
+import { chatRoomUsecases, messageUsecases, userUsecases } from "../../usecases"
 
 const usecases = {
     chatRoomUsecases,
-    messageUsecases
+    messageUsecases,
+    userUsecases
 }
 
 const repositories = { 
     chatRepo, 
-    messageRepo 
+    messageRepo,
+    userRepo 
 }
 
 export default {

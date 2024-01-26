@@ -5,10 +5,12 @@ import verifyUserAuth from "../../utils/middlewares/verifyUserAuth";
 const chatRoomRoutes = (dependencies: any) => {
     const router = Router()
     const {
-        getChatroomController
+        getChatroomController,
+        getCurrentUserChatRoomsController
     } = chatRoomControllers(dependencies)
 
     router.get(`/get-chat-room/with/:sellerId`, verifyUserAuth, getChatroomController)
+    router.get(`/get-current-user-chats`, verifyUserAuth, getCurrentUserChatRoomsController)
 
     return router;
 }

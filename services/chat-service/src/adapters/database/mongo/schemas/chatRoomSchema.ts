@@ -5,9 +5,13 @@ const ChatRoomSchema: Schema = new Schema({
     users: [
         {
             type: Schema.Types.ObjectId,
-            required: true
+            required: true,
+            ref: "users"
         }
     ],
+    lastMessage: {
+        type: String
+    }
 }, {
     timestamps: true
 });
