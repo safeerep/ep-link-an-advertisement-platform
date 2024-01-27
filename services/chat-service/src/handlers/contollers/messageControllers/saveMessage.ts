@@ -15,10 +15,10 @@ export default ( dependencies: any) => {
             // first we have to check is receiver is active to listen the current user or blocked the current user
             // for that we have to get current user id and receiver Id;
             // current userId will be the sender Id ;
-            // with the chatroomId and current userId, we have to find receiver Id
-            const { chatroomId, senderId } = req.body;
+            // with the chatRoomId and current userId, we have to find receiver Id
+            const { chatRoomId, senderId } = req.body;
             const users = await chatRoomUsecases
-            .getUsersIdFromChatroom_usecase(dependencies).interactor(chatroomId)
+            .getUsersIdFromChatroom_usecase(dependencies).interactor(chatRoomId)
 
             // then we have to check the receiver blocked or not 
 

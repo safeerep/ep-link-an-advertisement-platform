@@ -1,5 +1,6 @@
 import dotenv from 'dotenv'
 dotenv.config()
+import http from 'http'
 import express, { Express } from "express";
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
@@ -27,10 +28,12 @@ app.use(session({
 
 app.use('/api/chat', routes(dependencies))
 
-app.listen( PORT, () => {
+const server = http.createServer(app)
+
+server.listen( PORT, () => {
     console.log(`chat service starte successfully at the port ${PORT}`);
 })
 
-connectSocketIO(app.get("server"))
+connectSocketIO(server)
 
 export default app;

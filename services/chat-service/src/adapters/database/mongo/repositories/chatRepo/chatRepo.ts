@@ -56,9 +56,9 @@ export const getAllChatsOfCurrentUser = async (currentUserId: string): Promise<C
     }
 }
 
-export const getUsersId = async ( chatroomId: string) :Promise< boolean | any> => {
+export const getUsersId = async ( chatRoomId: string) :Promise< boolean | any> => {
     try {
-        const chatRoom = await ChatRoomCollection.findById( chatroomId, {
+        const chatRoom = await ChatRoomCollection.findById( chatRoomId, {
             _id: 0,
             users: 1
         })
