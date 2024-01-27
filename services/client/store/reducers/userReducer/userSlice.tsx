@@ -18,6 +18,10 @@ import {
     makeProductSoldOut,
     getSellerProfile,
     updateProfile,
+    chatWithSeller,
+    getCurrentUserChatRooms,
+    saveNewMessage,
+    changeRoom
     
 } from "@/store/actions/userActions/userActions";
 import { UserState } from "@/types/user";
@@ -272,6 +276,58 @@ const userSlice = createSlice({
                 state.error = null;
             })
             .addCase(updateProfile.rejected, (state: UserState, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            })
+            // on viewing chat page
+            .addCase(getCurrentUserChatRooms.pending, (state: UserState) => {
+                state.loading = true;
+            })
+            .addCase(getCurrentUserChatRooms.fulfilled, (state: UserState, action) => {
+                state.loading = false;
+                state.data = { ...state.data, ...action.payload };
+                state.error = null;
+            })
+            .addCase(getCurrentUserChatRooms.rejected, (state: UserState, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            })
+            // on clicking chatwith seller
+            .addCase(chatWithSeller.pending, (state: UserState) => {
+                state.loading = true;
+            })
+            .addCase(chatWithSeller.fulfilled, (state: UserState, action) => {
+                state.loading = false;
+                state.data = { ...state.data, ...action.payload };
+                state.error = null;
+            })
+            .addCase(chatWithSeller.rejected, (state: UserState, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            })
+            // on clicking for change room
+            .addCase(changeRoom.pending, (state: UserState) => {
+                state.loading = true;
+            })
+            .addCase(changeRoom.fulfilled, (state: UserState, action) => {
+                state.loading = false;
+                state.data = { ...state.data, ...action.payload };
+                state.error = null;
+            })
+            .addCase(changeRoom.rejected, (state: UserState, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            })
+            // on sending new message
+            .addCase(saveNewMessage.pending, (state: UserState) => {
+                state.loading = true;
+            })
+            .addCase(saveNewMessage.fulfilled, (state: UserState, action) => {
+                state.loading = false;
+                state.data = { ...state.data, ...action.payload };
+                state.error = null;
+            })
+            .addCase(saveNewMessage.rejected, (state: UserState, action) => {
                 state.loading = false;
                 state.error = action.error.message;
             })

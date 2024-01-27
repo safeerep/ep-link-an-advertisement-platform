@@ -491,13 +491,33 @@ export const chatWithSeller = createAsyncThunk('/user/chat-with-seller',
                 console.log(response.data);
                 console.log('-------------------------');
                 if (response?.data?.success) {
-                    router.push(`/chat?room=${response?.data?.chatroom?._id}`)
+                    router.push(`/chat`)
                     return response.data;
                 }
                 return response.data;
             }
         } catch (error: any) {
-            console.log(`an error happened during trying to unfollow ${error}`);
+            console.log(`an error happened during trying to chat with seller ${error}`);
+            return error?.response?.data;
+        }
+    }
+)
+
+export const changeRoom = createAsyncThunk('/user/room-change',
+    async (userId: string) => {
+        try {
+            const response = await axios.get(`${CHAT_SERVICE_BASE_URL}/room/get-chat-room/with/${userId}`, {
+                headers: { "Content-Type": "application/json" },
+                withCredentials: true
+            })
+            if (response?.data) {
+                console.log('-------------------------');
+                console.log(response.data);
+                console.log('-------------------------');
+                return response.data;
+            }
+        } catch (error: any) {
+            console.log(`an error happened during trying to change the room ${error}`);
             return error?.response?.data;
         }
     }
@@ -520,7 +540,30 @@ export const getCurrentUserChatRooms = createAsyncThunk('/user/chat-rooms',
                 return response.data;
             }
         } catch (error: any) {
-            console.log(`an error happened during trying to unfollow ${error}`);
+            console.log(`an error happened during trying to fetch current user chatrooms ${error}`);
+            return error?.response?.data;
+        }
+    }
+)
+
+export const saveNewMessage = createAsyncThunk('/user/new-message',
+    async (messageDetails: any) => {
+        console.log('called to save new message');
+        
+        try {
+            const response = await axios.post(`${CHAT_SERVICE_BASE_URL}/save-message`, messageDetails, {
+                headers: { "Content-Type": "application/json" },
+                withCredentials: true
+            })
+            if (response?.data) {
+                console.log('-------------------------');
+                console.log('new message saved');
+                console.log(response.data);
+                console.log('-------------------------');
+                return response.data;
+            }
+        } catch (error: any) {
+            console.log(`an error happened during saving a new message ${error}`);
             return error?.response?.data;
         }
     }

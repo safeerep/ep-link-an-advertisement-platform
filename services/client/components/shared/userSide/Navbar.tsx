@@ -37,7 +37,7 @@ const Navbar = () => {
         style={{
           backgroundSize: 'cover',
         }}
-        className=' flex justify-center items-center'
+        className='cursor-pointer flex justify-center items-center'
         onClick={() => router.push('/')}>
         <img src="/brand.png"
           alt='logo'
@@ -52,7 +52,9 @@ const Navbar = () => {
         <BsSearch className='absolute top-6 left-2' />
       </div>
       <div className='flex items-center pe-10'>
-        <BsChatDots />
+        <BsChatDots 
+        className='cursor-pointer'
+        onClick={() => router.push('/chat')} />
         {(user && user?.userData?.userName !== undefined) ? (
           <>
             <div className="relative inline-block text-left mx-4">
