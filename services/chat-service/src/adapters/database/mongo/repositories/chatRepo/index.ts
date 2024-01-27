@@ -1,11 +1,13 @@
 import { 
     findIsChatRoomExistingWithTwoSpecificUsers,
     createANewChatroom,
-    getAllChatsOfCurrentUser 
+    getAllChatsOfCurrentUser,
+    getUsersId 
 } from "./chatRepo"
 
 export default {
     findIsChatRoomExistingWithTwoSpecificUsers,
     createANewChatroom,
-    getAllChatsOfCurrentUser
+    getAllChatsOfCurrentUser,
+    getUsersId
 }

@@ -55,3 +55,21 @@ export const getAllChatsOfCurrentUser = async (currentUserId: string): Promise<C
         return false;
     }
 }
+
+export const getUsersId = async ( chatroomId: string) :Promise< boolean | any> => {
+    try {
+        const chatRoom = await ChatRoomCollection.findById( chatroomId, {
+            _id: 0,
+            users: 1
+        })
+        if (chatRoom) {
+            console.log(`users in this chatroom is`);
+            console.log(chatRoom);
+            return chatRoom?.users;
+        }
+        return false;
+    } catch (error) {
+        console.log(`something went wrong during fetching the users with chatroom id`);
+        return false;
+    }
+}

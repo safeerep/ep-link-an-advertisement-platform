@@ -41,7 +41,7 @@ export default (dependencies: any) => {
                         try {
                             const currentUserDetails: any = await consumeDataFromQueue(`${REPLY_QUEUE}-${uniqueId}`);
                             if (currentUserDetails) {
-                                const currentUserUpdated = await updateUser_usecase(dependencies).interactor(currentUserId, { userName: currentUserDetails?.userName})
+                                const currentUserUpdated = await updateUser_usecase(dependencies).interactor(currentUserId, currentUserDetails)
                             }
                         } catch (error) {
                             console.log(`something went wrong during savinge current userdata in chat service`);
@@ -78,7 +78,9 @@ export default (dependencies: any) => {
                         console.log(sellerDetails);
 
                         // now we can save seller data as userdata in the user collection of this service
-                        const sellerDataUpdated = await updateUser_usecase(dependencies).interactor(sellerId, {userName: sellerDetails?.userName})
+                        if (sellerDetails) {
+                            const sellerDataUpdated = await updateUser_usecase(dependencies).interactor(sellerId, sellerDetails)
+                        }
         
                         return res.json({
                             success: true,
@@ -137,7 +139,9 @@ export default (dependencies: any) => {
                                         console.log(`got response from users service`);
                                         console.log(sellerDetails);
                                         // now we are updating seller data into this service' users collection;
-                                        const sellerDataUpdated = await updateUser_usecase(dependencies).interactor(sellerId, {userName: sellerDetails?.userName})
+                                        if (sellerDetails) {
+                                            const sellerDataUpdated = await updateUser_usecase(dependencies).interactor(sellerId, sellerDetails)
+                                        }
 
                                         return res.json(
                                             { 

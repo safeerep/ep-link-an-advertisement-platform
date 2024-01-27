@@ -1,12 +1,13 @@
+import { IMessages } from "../../../../../entities/messageEntities";
 import { MessagesCollection, MessageDocument } from "../../schemas";
 
-export const saveMessage = async ( messageDocument: any): Promise<boolean | MessageDocument> => {
+export const saveMessage = async ( messageDocument: IMessages): Promise<boolean | MessageDocument> => {
     try {
         const newMessage = await MessagesCollection.create(messageDocument)
         if (!newMessage) return false;
         return newMessage as MessageDocument;
     } catch (error) {
-        console.log();
+        console.log(`an error happened during saving a new message ${error}`);
         return false;
     }
 }
