@@ -84,7 +84,7 @@ export const checkIsBlockedOrNot = async ( receiverId: string, currentUserId: st
         if (receiverData) return true;
         return false;
     } catch (error) {
-        console.log(`something went wrong in userrepo during checking is blocked or not`);
+        console.log(`something went wrong in userrepo during checking is blocked or not ${error}`);
         // here we are sending true 
         // bcz if there happened any errors, we don't want to do further actions;
         return true;
