@@ -55,7 +55,7 @@ const Chat = () => {
         console.log(`yes message have `, message);
         const messageDoc = {
             message: message,
-            chatroomId: roomId,
+            chatRoomId: roomId,
             senderId: user?._id
         }
 
