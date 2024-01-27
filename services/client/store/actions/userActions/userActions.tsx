@@ -479,15 +479,41 @@ export const unFollowUser = createAsyncThunk(`/user/unfollow-user`,
     }
 )
 
-export const chatWithSeller = createAsyncThunk(`/user/chat-with-seller`,
-    async (userId: string) => {
+export const chatWithSeller = createAsyncThunk('/user/chat-with-seller',
+    async ({userId, router}: {userId: string, router: any}) => {
         try {
-            const response = await axios.patch(`${CHAT_SERVICE_BASE_URL}/${userId}`, {}, {
+            const response = await axios.get(`${CHAT_SERVICE_BASE_URL}/room/get-chat-room/with/${userId}`, {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true
             })
             if (response?.data) {
+                console.log('-------------------------');
                 console.log(response.data);
+                console.log('-------------------------');
+                if (response?.data?.success) {
+                    router.push(`/chat?room=${response?.data?.chatroom?._id}`)
+                    return response.data;
+                }
+                return response.data;
+            }
+        } catch (error: any) {
+            console.log(`an error happened during trying to unfollow ${error}`);
+            return error?.response?.data;
+        }
+    }
+)
+
+export const getCurrentUserChatRooms = createAsyncThunk('/user/chat-rooms',
+    async () => {
+        try {
+            const response = await axios.get(`${CHAT_SERVICE_BASE_URL}/room/get-current-user-chats`, {
+                headers: { "Content-Type": "application/json" },
+                withCredentials: true
+            })
+            if (response?.data) {
+                console.log('-------------------------');
+                console.log(response.data);
+                console.log('-------------------------');
                 if (response?.data?.success) {
                     return response.data;
                 }
