@@ -5,8 +5,8 @@ export const getMessagesFromOneChatroom_usecase = (dependencies: any) => {
         }
     } = dependencies;
 
-    const interactor = async ( chatroomId: string) => {
-        return await messageRepo.getMessagesFromASpecificRoom(chatroomId)
+    const interactor = async ( chatRoomId: string) => {
+        return await messageRepo.getMessagesFromASpecificRoom(chatRoomId)
     }
 
     return { interactor }

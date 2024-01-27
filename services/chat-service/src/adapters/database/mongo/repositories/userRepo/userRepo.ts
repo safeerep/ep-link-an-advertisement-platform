@@ -29,6 +29,50 @@ export const updateUser = async (userId: string, userData: IUser):Promise<UserDo
     }
 }
 
+export const blockASeller = async ( currentUserId: string, sellerId: string):Promise<UserDocument | boolean> => {
+    try {
+        const updatedCurrentUserDocument = await UserCollection.findOneAndUpdate( 
+            {
+                userId: currentUserId
+            }, {
+                $addToSet: {
+                    blockedPersons: sellerId
+                }
+            },
+            {
+                new: true
+            }
+        )
+        if (!updatedCurrentUserDocument) return false;
+        return updatedCurrentUserDocument as UserDocument;
+    } catch (error) {
+        console.log(`something went wrong during blocking seller ${error}`);     
+        return false;
+    }
+}
+
+export const unBlockASeller = async ( currentUserId: string, sellerId: string):Promise<UserDocument | boolean> => {
+    try {
+        const updatedCurrentUserDocument = await UserCollection.findOneAndUpdate( 
+            {
+                userId: currentUserId
+            }, {
+                $pull: {
+                    blockedPersons: sellerId
+                }
+            },
+            {
+                new: true
+            }
+        )
+        if (!updatedCurrentUserDocument) return false;
+        return updatedCurrentUserDocument as UserDocument;
+    } catch (error) {
+        console.log(`something went wrong during unblocking seller ${error}`);     
+        return false;
+    }
+}
+
 export const checkIsBlockedOrNot = async ( receiverId: string, currentUserId: string ):Promise<boolean> => {
     try {
         const receiverData = await UserCollection.findOne({ 
