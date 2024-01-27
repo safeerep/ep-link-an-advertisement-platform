@@ -1,10 +1,15 @@
 import React, { useState, useEffect } from 'react'
 import { useRouter, useSearchParams } from 'next/navigation'
-import { authRequired, chatWithSeller, followUser, getSpecificProduct, unFollowUser } from '@/store/actions/userActions/userActions'
+import { 
+    authRequired, 
+    chatWithSeller, 
+    followUser, 
+    getSpecificProduct, 
+    unFollowUser 
+} from '@/store/actions/userActions/userActions'
 import { useDispatch, useSelector } from 'react-redux'
 import { FiUserCheck } from 'react-icons/fi'
 import { ImPower } from 'react-icons/im'
-import { BsChatDots } from 'react-icons/bs'
 import { AiOutlineEdit } from 'react-icons/ai'
 
 const ProductView = () => {
@@ -16,18 +21,18 @@ const ProductView = () => {
     const productId: string | any = searchParams.get("product");
 
     const handleFollow = async () => {
-        console.log(`clicked for follow`);
+        console.log('clicked for follow');
         dispatch(followUser(product?.userId))
     }
 
     const handleUnfollow = async () => {
-        console.log(`clicked for unfollow`);
+        console.log('clicked for unfollow');
         dispatch(unFollowUser(product?.userId))
     }
 
     const handleClickForChat = async () => {
-        console.log(`clicked for to chat with seller`);
-        dispatch(chatWithSeller(product?.userId))
+        console.log('clicked for to chat with seller');
+        dispatch(chatWithSeller({userId: product?.userId, router}))
     }
 
     useEffect(() => {
@@ -131,13 +136,14 @@ const ProductView = () => {
                                     'loading' :
                                     sellerStatus && sellerStatus == "following" && (
                                         <>
-                                            <button className='bg-slate-950 px-4 rounded-md'
+                                            <button className='bg-slate-950 px-4  p-1 rounded-md'
                                                 onClick={handleUnfollow}
                                             >
                                                 <span
                                                     className='px-4 text-teal-50' >UNFOLLOW</span>
                                             </button>
-                                            <button className='bg-slate-950 px-4 rounded-md'
+                                            <button 
+                                                className='bg-slate-950 px-4 p-1 rounded-md'
                                                 onClick={() => router.push(`/view-user?id=${seller?._id}`)}
                                             >
                                                 <span
@@ -145,8 +151,8 @@ const ProductView = () => {
                                             </button>
                                             <button
                                                 onClick={handleClickForChat}
-                                                className='bg-slate-700 p-1 text-white'>
-                                                <BsChatDots />
+                                                className='bg-white border rounded-md p-1 text-white'>
+                                                <span className='px-4 text-black' >Message</span>
                                             </button>
                                         </>
                                     )}
@@ -154,18 +160,18 @@ const ProductView = () => {
                                     <>
                                         <button
                                             onClick={handleFollow}
-                                            className='bg-slate-950 px-4 rounded-md'>
+                                            className='bg-slate-950 px-4 p-1 rounded-md'>
                                             <span className='px-4 text-teal-50' >FOLLOW</span>
                                         </button>
                                         <button
                                             onClick={() => router.push(`/view-user?id=${seller?._id}`)}
-                                            className='bg-slate-950 px-4 rounded-md'>
+                                            className='bg-slate-950 px-4 p-1 rounded-md'>
                                             <span className='px-4 text-teal-50' >VIEW SELLER PROFILE</span>
                                         </button>
                                         <button
                                             onClick={handleClickForChat}
-                                            className='bg-slate-700 p-1 text-white'>
-                                            <BsChatDots />
+                                            className='bg-white p-1 text-white'>
+                                            <span className='px-4 text-black' >Message</span>
                                         </button></>
                                 )}
                                 {sellerStatus && sellerStatus == "same_user" && (

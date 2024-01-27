@@ -9,6 +9,9 @@ export const PRODUCT_SERVICE_BASE_URL = `http://localhost:3002/api/product`
 // chat service
 export const CHAT_SERVICE_BASE_URL = `http://localhost:3003/api/chat`
 
+// socket io base
+export const SOCKET_BASE_URL = `http://localhost:3003`
+
 // product images base url
 export const PRODUCT_IMAGES_URL = `http://localhost:3002/products`
 
