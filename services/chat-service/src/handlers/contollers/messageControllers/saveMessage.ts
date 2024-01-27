@@ -23,9 +23,9 @@ export default ( dependencies: any) => {
             // then we have to check the receiver blocked or not 
 
             try {
-                const receiverId = users.filter((userId: string) => userId !== senderId)
+                const receiverId = users.filter((userId: string) => String(userId) !== senderId)
                 const isBlocked = await userUsecases
-                .checkIsReceiverBlockedSender_usecase(dependencies).interactor(receiverId, senderId)
+                .checkIsReceiverBlockedSender_usecase(dependencies).interactor(String(receiverId), senderId)
 
                 if (isBlocked) {
                     return res.json({ success: true, message: "current user is not able to send message to this receiver"})
