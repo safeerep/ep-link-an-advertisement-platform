@@ -9,7 +9,15 @@ const UsersSchema: Schema = new Schema({
     userName: {
         type: String,
         required: true
-    }
+    },
+    profilePhoto: {
+        type: String,
+    },
+    blockedPersons: [
+        {
+            type: Schema.Types.ObjectId,
+        }
+    ]
 }, {
     timestamps: true
 });

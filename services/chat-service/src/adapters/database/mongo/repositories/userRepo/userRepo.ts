@@ -1,10 +1,9 @@
-import mongoose from "mongoose";
 import { IUser } from "../../../../../entities/userEntities";
 import { UserCollection, UserDocument } from "../../schemas";
 
 // its we are using to create new user on creating new chatroom;
 // and also for updating user info on getting into chatroom;
-export const updateUser = async (userId: string, userData: any):Promise<UserDocument | boolean> => {
+export const updateUser = async (userId: string, userData: IUser):Promise<UserDocument | boolean> => {
     console.log(`in repo`, userData);
     
     try {
@@ -27,5 +26,23 @@ export const updateUser = async (userId: string, userData: any):Promise<UserDocu
     } catch (error) {
         console.log(`an error happened during updating user data ${error}`);
         return false;
+    }
+}
+
+export const checkIsBlockedOrNot = async ( receiverId: string, currentUserId: string ):Promise<boolean> => {
+    try {
+        const receiverData = await UserCollection.findOne({ 
+            userId: receiverId, 
+            blockedPersons: {
+                $in: [currentUserId]
+            }
+        })
+        if (receiverData) return true;
+        return false;
+    } catch (error) {
+        console.log(`something went wrong in userrepo during checking is blocked or not`);
+        // here we are sending true 
+        // bcz if there happened any errors, we don't want to do further actions;
+        return true;
     }
 }
