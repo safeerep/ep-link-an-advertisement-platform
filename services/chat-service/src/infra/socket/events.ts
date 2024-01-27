@@ -18,10 +18,10 @@ export const handleSocketEvents = ( socket: Socket) => {
         console.log(data);
         const isBlocked: boolean | any = await checkIsReceiverBlockedController(data);
         if (!isBlocked) {
-            socket.to(data?.chatroomId).emit("show-message", data)
+            socket.in(data?.chatRoomId).emit("show-message", data)
         }
         else {
-            socket.to(data?.chatroomId).emit("receiver-blocked", data)
+            socket.in(data?.chatRoomId).emit("receiver-blocked", data)
         }
     })
 
