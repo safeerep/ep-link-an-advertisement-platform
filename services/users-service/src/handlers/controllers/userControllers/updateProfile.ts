@@ -11,11 +11,11 @@ export = ( dependencies: any) => {
     const updateProfileData = async ( req: Request, res: Response) => {
         // first we setting profile photo from aws s3
         if (req?.file) {
-            req.body.profilePhoto = req?.file?.filename;
+            req.body.profilePhoto = (req?.file as any).location;
         }
-        console.log(`yes here`);
-        console.log(`file` , req?.file);
-        
+        if (req.body?.phone) {
+            req.body.phone = Number(req.body?.phone);
+        }
 
         let currentUserId: string;
 
