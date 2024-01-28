@@ -198,7 +198,8 @@ export const RequestToResetPassword = createAsyncThunk('/user/reset-password',
 )
 
 export const updateProfile = createAsyncThunk(`/user/update-profile`,
-    async ({ userName, phone, image }: { userName: string | any, phone: number | any, image: any }) => {
+    async ({ values, setModalState }: { values: {userName: string | any, phone: number | any, image: any}, setModalState: any }) => {
+        const { userName, phone, image } = values;
         try {
             console.log('from action');
             console.log(userName, phone, image );
@@ -219,6 +220,7 @@ export const updateProfile = createAsyncThunk(`/user/update-profile`,
             if (response?.data) {
                 console.log(response.data);
                 if (response?.data?.success) {
+                    setModalState(false)
                     toast.success(response.data?.message)
                     return response.data;
                 }

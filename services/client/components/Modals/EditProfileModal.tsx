@@ -14,7 +14,7 @@ const EditProfileModal = ({ isModalOpen, setIsModalOpen }: { isModalOpen: boolea
         console.log('clicked for update');
         console.log(values);
         values.image = image;
-        dispatch(updateProfile(values))
+        dispatch(updateProfile({ values, setModalState: setIsModalOpen}))
     }
     return (
         <>
