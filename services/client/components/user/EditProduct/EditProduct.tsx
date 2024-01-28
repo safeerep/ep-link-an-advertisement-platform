@@ -1,19 +1,20 @@
-import { 
-    authRequired, 
-    editProduct, 
-    getAllCategories, 
-    getSpecificProduct 
+import {
+    authRequired,
+    editProduct,
+    getAllCategories,
+    getSpecificProduct
 } from '@/store/actions/userActions/userActions'
-import React, { 
-    useState, 
-    ChangeEvent, 
-    useEffect 
+import React, {
+    useState,
+    ChangeEvent,
+    useEffect
 } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useRouter, useSearchParams } from 'next/navigation'
 import { Formik, Form, Field, ErrorMessage } from 'formik'
 import { Toaster } from 'react-hot-toast'
 import addProductValidationSchema from '@/models/validationSchemas/user/addProductSchema'
+import { Skeleton } from '@mui/material'
 
 const EditProduct = () => {
     let imagesArray = new Array(8).fill(null)
@@ -144,7 +145,7 @@ const EditProduct = () => {
                 radioButtons: { ...selectedOptionsInRadioButton }
             };
             console.log(`yes its final`, productDetails);
-            dispatch(editProduct({productId, productDetails, router }))
+            dispatch(editProduct({ productId, productDetails, router }))
 
         } catch (err: any) {
             // Validation failed, handle the error
@@ -168,9 +169,9 @@ const EditProduct = () => {
     }
 
     if (!currentProduct) {
-        return <div>Loading...</div>;
+        return <Skeleton variant="rectangular" className='w-full h-screen' sx={{ bgcolor: '#e3f2fd' }} />
     }
-   
+
 
     return (
         <>
@@ -182,7 +183,7 @@ const EditProduct = () => {
                         description: currentProduct?.description,
                         price: currentProduct?.price,
                         ...currentProduct?.inputFields,
-                        checkboxes: { ...currentProduct?.checkBoxes}, 
+                        checkboxes: { ...currentProduct?.checkBoxes },
                     }}
                     onSubmit={(values: any) => {
                         console.log(`from values`, values)
@@ -329,13 +330,13 @@ const EditProduct = () => {
                                         onChange={(e) => handleImageChange(index, e)}
                                     />
                                     <div className="w-56 h-56 bg-gray-200 relative cursor-pointer">
-                                        {(imageUrls[index] || currentProduct?.images[index] ) && (
+                                        {(imageUrls[index] || currentProduct?.images[index]) && (
                                             <img
                                                 src={
                                                     imageUrls[index]
-                                                      ? imageUrls[index]
-                                                      : currentProduct?.images[index]
-                                                  }
+                                                        ? imageUrls[index]
+                                                        : currentProduct?.images[index]
+                                                }
                                                 alt={`Image ${index + 1}`}
                                                 className="object-cover w-full h-full"
                                             />
