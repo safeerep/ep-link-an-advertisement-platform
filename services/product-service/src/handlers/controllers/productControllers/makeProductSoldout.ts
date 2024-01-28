@@ -41,7 +41,7 @@ export = (dependencies: any) => {
             getUserId(token)
             .then( async (userId) => {
                 const products = await productUsecases.getCurrentUserProducts_usecase(dependencies).interactor(userId)
-                return res.json({ success: true, products, message: 'successfully updated product status as available'})
+                return res.json({ success: true, products, message: 'successfully updated product status sold out'})
             })
             .catch((err) => {
                 throw new Error(err)
