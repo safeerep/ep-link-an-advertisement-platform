@@ -200,17 +200,19 @@ export const RequestToResetPassword = createAsyncThunk('/user/reset-password',
 export const updateProfile = createAsyncThunk(`/user/update-profile`,
     async ({ userName, phone, image }: { userName: string | any, phone: number | any, image: any }) => {
         try {
-            console.log(`from action`);
+            console.log('from action');
             console.log(userName, phone, image );
             
             const userData = new FormData()
             if (image) {
                 userData.append('profilePhoto', image)
             }
+            if (phone) {
+                userData.append('phone', phone)
+            }
             userData.append('userName', userName)
-            userData.append('phone', phone)
 
-            const response = await axios.put(`${USERS_SERVICE_BASE_URL}/update-profile`, userData, {
+            const response = await axios.put(`${USERS_SERVICE_BASE_URL}/user/update-profile`, userData, {
                 headers: { "Content-Type": "multipart/form-data" },
                 withCredentials: true
             })

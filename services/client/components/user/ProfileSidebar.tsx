@@ -1,4 +1,3 @@
-// "use client"
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation'
 import { useDispatch, useSelector } from 'react-redux'
@@ -10,20 +9,24 @@ const ProfileSidebar = () => {
     const dispatch: any = useDispatch()
     const router = useRouter()
     const [updateProfileModalIsOpen, setUpdateProfileModalIsOpen] = useState(false);
+    const [ currentlyIn, setCurrentlyIn] = useState('profile')
 
     const handleLogout = () => {
+        setCurrentlyIn('logout')
         dispatch(logout(router))
     }
 
     const handleUpdateProfile = () => {
+        setCurrentlyIn('edit')
         setUpdateProfileModalIsOpen(!updateProfileModalIsOpen)
     }
+    const user = useSelector((state: any) => state?.user?.data?.userData)
 
     return (
         <div className="lg:w-1/5 flex flex-col justify-center border-0 border-e-2">
             <div className='w-full flex justify-center'>
                 <img
-                    src="/profile.jpg"
+                    src={user?.profilePhoto}
                     className="bg-slate-200 rounded-full"
                     alt="Profile Picture"
                     style={{ width: '150px', height: '150px' }}
@@ -31,11 +34,11 @@ const ProfileSidebar = () => {
             </div>
             <Link
                 href={'/profile'}
-                className={`border flex justify-center my-1 mx-2 p-2 rounded-md bg-slate-100 whitespace-nowrap`}
+                className={`border flex justify-center my-1 mx-2 p-2 rounded-md ${currentlyIn === 'profile' ? 'bg-slate-200' : 'bg-slate-100'} whitespace-nowrap`}
             >My Profile</Link>
             <button
                 onClick={handleUpdateProfile}
-                className={`border flex justify-center my-1 mx-2 p-2 rounded-md bg-slate-100 whitespace-nowrap`}
+                className={`border flex justify-center my-1 mx-2 p-2 rounded-md ${currentlyIn === 'edit' ? 'bg-slate-200' : 'bg-slate-100'} whitespace-nowrap`}
             >Edit Profile</button>
             <Link
                 href={'/add-product'}
@@ -47,7 +50,7 @@ const ProfileSidebar = () => {
             >My Favourites</Link>
             <button
                 onClick={handleLogout}
-                className={`border flex justify-center my-1 mx-2 p-2 rounded-md bg-slate-100 whitespace-nowrap`}
+                className={`border flex justify-center my-1 mx-2 p-2 rounded-md ${currentlyIn === 'logout' ? 'bg-slate-200' : 'bg-slate-100'}0 whitespace-nowrap`}
             >Sign out</button>
             <EditProfileModal
                 isModalOpen={updateProfileModalIsOpen}

@@ -36,15 +36,12 @@ const EditProfileModal = ({ isModalOpen, setIsModalOpen }: { isModalOpen: boolea
                                 initialValues={{
                                     userName: user?.userData?.userName,
                                     phone: user?.userData?.phone,
-                                    image: user?.userData?.profilePhoto
                                 }}
                                 validationSchema={updateProfileSchema}
                                 onSubmit={(userCredentials) => {
                                     handleUpdateProfile(userCredentials);
                                 }}>
                                 <Form className="space-y-6">
-                                    {/* startin */}
-                                    {(user?.userData?.profilePhoto || image) ? (
                                         <div className="w-full flex justify-center">
                                             <div className="w-40 rounded-full object-fill overflow-hidden h-40">
                                                 <img
@@ -52,36 +49,24 @@ const EditProfileModal = ({ isModalOpen, setIsModalOpen }: { isModalOpen: boolea
                                                     src={
                                                         image
                                                             ? URL.createObjectURL(image)
-                                                            : `${user?.userData?.profilePhoto || image}`
+                                                            : `${user?.userData?.profilePhoto}`
                                                     }
                                                     alt=""
                                                 />
                                             </div>
                                         </div>
-                                    ) : (
-                                        <div className="w-full flex justify-center">
-                                            <div className="w-40 rounded-full object-fill overflow-hidden h-40">
-                                                <img
-                                                    className="h-40 w-40 object-cover"
-                                                    src="/profile.jpg"
-                                                    alt=""
-                                                />
-                                            </div>
-                                        </div>
-                                    )}
 
                                     <div className="w-full flex justify-center">
                                         <label
                                             htmlFor="profile-photo-input"
                                             className="bg-slate-100 border text-black py-2 px-4 rounded cursor-pointer"
                                         >
-                                            {user?.userData?.profilePhoto ? 'Edit profile photo' : 'Add Profile Photo'}
+                                            <span>Edit profile photo</span>
                                         </label>
-                                        <Field
+                                        <input
                                         onChange={(e: any) => {
                                             setImage(e.target.files[0])
                                         }}
-                                            name='image'
                                             type="file"
                                             id="profile-photo-input"
                                             className="hidden"
