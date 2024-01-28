@@ -22,6 +22,7 @@ const UsersSchema: Schema = new Schema(
     },
     profilePhoto: {
       type: String,
+      default: "https://usersimagebucketformain.s3.ap-south-1.amazonaws.com/1706418311720-208998111.jpg"
     },
     status: {
       type: Boolean,
