@@ -9,6 +9,7 @@ import { BsChatDots } from 'react-icons/bs'
 import { BsSearch } from 'react-icons/bs'
 import { RiArrowDownSLine } from 'react-icons/ri'
 import { logout } from '@/store/actions/userActions/userActions'
+import { Skeleton } from '@mui/material'
 
 
 
@@ -30,9 +31,13 @@ const Navbar = () => {
   }
 
   const user: any = useSelector((state: any) => state.user.data)
+  const userLoading: any = useSelector((state: any) => state.user.loading)
   console.log(user?.userData?.userName);
+  if (userLoading) {
+    return <Skeleton variant="rectangular" className='w-full' sx={{ bgcolor: '#e3f2fd' }} height={60} />
+  }
   return (
-    <div className='w-full h-16 shadow bg-blue-100 flex justify-between'>
+     !userLoading && (<div className='w-full h-16 shadow bg-blue-100 flex justify-between'>
       <div
         style={{
           backgroundSize: 'cover',
@@ -99,7 +104,7 @@ const Navbar = () => {
         ) : <Link href='/sign-up' className='text-black font-semibold ps-10 pe-2'>LOGIN</Link>}
         <FiUser />
       </div>
-    </div>
+    </div>)
   )
 }
 
