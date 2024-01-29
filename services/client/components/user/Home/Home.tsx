@@ -7,6 +7,7 @@ import Navbar from '../../shared/userSide/Navbar'
 import Banner from '../Banner'
 import Posts from '../Posts'
 import { Footer } from '@/components'
+import { Toaster } from 'react-hot-toast'
 
 const Home = () => {
   const dispatch: any = useDispatch();
@@ -25,6 +26,7 @@ const Home = () => {
         <Posts from={'home'} />
       </div>
       <Footer />
+      <Toaster />
     </>
   )
 }

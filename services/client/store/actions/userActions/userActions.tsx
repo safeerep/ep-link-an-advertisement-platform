@@ -325,7 +325,7 @@ export const addProduct = createAsyncThunk(`/user/add-product`, async ({ product
 });
 
 
-export const editProduct = createAsyncThunk(`/user/edit-product`, async ({ productId, productDetails, router }: { productId: string, productDetails: any, router: any }) => {
+export const editProduct = createAsyncThunk('/user/edit-product', async ({ productId, productDetails, router }: { productId: string, productDetails: any, router: any }) => {
     try {
         const formData = new FormData();
 
@@ -337,15 +337,16 @@ export const editProduct = createAsyncThunk(`/user/edit-product`, async ({ produ
         formData.append('price', productDetails.price);
 
         // appending images
-        productDetails.images.forEach((imageFile: any) => {
-            formData.append('images', imageFile);
-        });
-
+        Object.keys(productDetails?.images).forEach((key) => {
+            const value = productDetails?.images[key];
+            if (value !== null) {
+                formData.append(`${key}`, value);
+            }
+        })
         // serializing complex fields
         formData.append('inputFields', JSON.stringify(productDetails.inputFields));
         formData.append('checkBoxes', JSON.stringify(productDetails.checkBoxes));
-        formData.append('radioButtons', JSON.stringify(productDetails.radioButtons));
-
+        formData.append('radioButtons', JSON.stringify(productDetails.radioButtons))
 
         const response = await axios.put(`${PRODUCT_SERVICE_BASE_URL}/update-product`, formData, {
             headers: { "Content-Type": "multipart/form-data" },
