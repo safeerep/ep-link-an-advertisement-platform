@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import generateResetPasswordToken from "../../../utils/externalServices/jwt/generateResetPasswondToken";
 import sendEmail from "../../../utils/externalServices/nodemailer/sendResetPasswordEmail";
 
-export = ( dependencies: any) => {
+export default ( dependencies: any) => {
     const {
         usecases: {
             findExistingUser_usecase

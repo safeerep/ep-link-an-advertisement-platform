@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import verifyToken from "../../../utils/externalServices/jwt/tokenChecker";
 
-export = ( dependencies: any) => {
+export default ( dependencies: any) => {
 
     const {
         adminUsecases: {

@@ -1,7 +1,7 @@
 import express from "express";
 import { adminControllers } from "../../handlers/controllers";
 
-export = (dependencies: any) => {
+export default (dependencies: any) => {
   const router = express.Router();
 
   const { 

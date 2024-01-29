@@ -4,7 +4,7 @@ import { getAllUsers } from "./adminRepo"
 import { changeUserStatus } from "./adminRepo"
 import { updatePassword } from "./adminRepo"
 
-export = {
+export default {
     findAdminWithEmail,
     getAdminDataFromId,
     getAllUsers,

@@ -5,7 +5,7 @@ import { sendDataThroughRabbitMq } from "../../../adapters/messageBroker/rabbitm
 import { PRODUCT_QUEUE, REPLY_QUEUE } from "../../../queues";
 import { v4 as uuidv4 } from 'uuid'
 
-export = ( dependencies: any) => {
+export default ( dependencies: any) => {
     const {
         usecases: {
             findUserWithId_usecase

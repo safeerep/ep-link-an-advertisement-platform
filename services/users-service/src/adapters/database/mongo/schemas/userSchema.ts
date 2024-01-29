@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document, ObjectId } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import { IUser } from "../../../../entities/userEntities";
 
 const UsersSchema: Schema = new Schema(

@@ -1,5 +1,5 @@
 import signupValidationSchema from "./signup.validator";
 
-export = {
+export default {
     signupValidationSchema
 }

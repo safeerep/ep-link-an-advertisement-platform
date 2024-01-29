@@ -7,7 +7,7 @@ const repositories: any = {
     adminRepo
 };
 
-export = {
+export default {
   usecases,
   adminUsecases,
   repositories,

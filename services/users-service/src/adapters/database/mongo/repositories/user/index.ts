@@ -9,10 +9,11 @@ import {
   updatePassword,
   followUser,
   unFollowUser,
-  updateUserProfile
+  updateUserProfile,
+  reportSeller
 } from "./userRepo";
 
-export = {
+export default {
   createNewUser,
   getUserData,
   getUserDataFromId,
@@ -23,5 +24,6 @@ export = {
   updatePassword,
   followUser,
   unFollowUser,
-  updateUserProfile
+  updateUserProfile,
+  reportSeller
 };

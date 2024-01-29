@@ -1,4 +1,4 @@
-import mongoose, { Schema, Document, ObjectId } from "mongoose";
+import mongoose, { Schema } from "mongoose";
 import { IAdmin } from "../../../../entities/adminEntities";
 
 

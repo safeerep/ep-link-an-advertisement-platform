@@ -1,6 +1,11 @@
-import { userCollection, IUserData } from "../../index";
-import { otpCollection, IOtpDocument } from "../../index";
-import mongoose, { startSession } from "mongoose";
+import { 
+  userCollection, 
+  IUserData, 
+  otpCollection, 
+  reportedUserCollection
+} from "../../index";
+import { ReportType } from "../../../../../entities/reportedUserEntities";
+
 
 export const createNewUser = async (
   userCredentials: IUserData
@@ -16,7 +21,7 @@ export const createNewUser = async (
   }
 };
 
-export const getUserData = async (email: string):Promise<IUserData | boolean> => {
+export const getUserData = async (email: string): Promise<IUserData | boolean> => {
   try {
     const userData = await userCollection.findOne({ email: email });
     if (!userData) return false;
@@ -27,7 +32,7 @@ export const getUserData = async (email: string):Promise<IUserData | boolean> =>
   }
 };
 
-export const getUserDataFromId = async (userId: string):Promise<IUserData | boolean> => {
+export const getUserDataFromId = async (userId: string): Promise<IUserData | boolean> => {
   try {
     const userData = await userCollection.findOne({ _id: userId });
     if (!userData) return false;
@@ -38,7 +43,7 @@ export const getUserDataFromId = async (userId: string):Promise<IUserData | bool
   }
 };
 
-export const getUserWithPhone = async (phone: number):Promise<IUserData | boolean> => {
+export const getUserWithPhone = async (phone: number): Promise<IUserData | boolean> => {
   try {
     const userData = await userCollection.findOne({ phone: phone });
     if (!userData) return false;
@@ -66,7 +71,7 @@ export const storeOtp = async (email: string, otp: number): Promise<void> => {
   try {
     // making upert true because if otp is existing, it should update
     // other wise, it will create new one document; 
-    await otpCollection.findOneAndUpdate({ email: email}, { otp: otp}, { upsert: true})
+    await otpCollection.findOneAndUpdate({ email: email }, { otp: otp }, { upsert: true })
   } catch (error: any) {
     if (error.code === 11000)
       console.log(`already an otp is there which is not expired`);
@@ -108,60 +113,82 @@ export const updatePassword = async (
 };
 
 // to follow the user
-export const followUser =async (currentUserId: string, userId: string) => {
-    try {
-      const currentUser = await userCollection.findByIdAndUpdate(currentUserId, {
-        $addToSet: {
-          following: userId
-        }
-      })
+export const followUser = async (currentUserId: string, userId: string) => {
+  try {
+    const currentUser = await userCollection.findByIdAndUpdate(currentUserId, {
+      $addToSet: {
+        following: userId
+      }
+    })
 
-      const userGotFollowed = await userCollection.findByIdAndUpdate( userId, {
-        $addToSet: {
-          followers: currentUserId
-        }
-      })
+    const userGotFollowed = await userCollection.findByIdAndUpdate(userId, {
+      $addToSet: {
+        followers: currentUserId
+      }
+    })
 
-      return true;
-    } catch (error) {
-      console.log(`something went wrong during updating the profiles ${error}`);
+    return true;
+  } catch (error) {
+    console.log(`something went wrong during updating the profiles ${error}`);
 
-      return false;
-    }
+    return false;
+  }
 }
 
 
 // to unfollow the user
-export const unFollowUser =async (currentUserId: string, userId: string) => {
-    try {
-      const currentUser = await userCollection.findByIdAndUpdate(currentUserId, {
-        $pull: {
-          following: userId
-        }
-      })
+export const unFollowUser = async (currentUserId: string, userId: string) => {
+  try {
+    const currentUser = await userCollection.findByIdAndUpdate(currentUserId, {
+      $pull: {
+        following: userId
+      }
+    })
 
-      const userGotUnFollowed = await userCollection.findByIdAndUpdate( userId, {
-        $pull: {
-          followers: currentUserId
-        }
-      })
+    const userGotUnFollowed = await userCollection.findByIdAndUpdate(userId, {
+      $pull: {
+        followers: currentUserId
+      }
+    })
 
-      return true;
-    } catch (error) {
-      console.log(`something went wrong during updating the profiles ${error}`);
-      return false;
-    }
+    return true;
+  } catch (error) {
+    console.log(`something went wrong during updating the profiles ${error}`);
+    return false;
+  }
 }
 
-export const updateUserProfile = async (userId: string, userDetails: any):Promise<IUserData | boolean> => {
-    try {
-      const updatedUser = await userCollection.findByIdAndUpdate( userId, {
-        ...userDetails
-      }, { new: true})
-      if (updatedUser) return updatedUser as IUserData;
-      else return false;
-    } catch (error) {
-      console.log(`an error happened during updating user profile ${error}`);
-      return false;
+export const updateUserProfile = async (userId: string, userDetails: any): Promise<IUserData | boolean> => {
+  try {
+    const updatedUser = await userCollection.findByIdAndUpdate(userId, {
+      ...userDetails
+    }, { new: true })
+    if (updatedUser) return updatedUser as IUserData;
+    else return false;
+  } catch (error) {
+    console.log(`an error happened during updating user profile ${error}`);
+    return false;
+  }
+}
+
+export const reportSeller = async ( sellerId: string, report: ReportType) => {
+  try {
+    // first we will look that, this seller is reported by anyone before
+    const userBeingReported = await reportedUserCollection.findOne({ userId: sellerId})
+    if (userBeingReported) {
+      userBeingReported.reports.push(report)
+      userBeingReported.save()
+      return true;
     }
+    else {
+      const newReportOnSeller = await reportedUserCollection.create({
+        userId: sellerId,
+        reports: [report]
+      })
+      return true;
+    }
+  } catch (error) {
+    console.log(`something went wrong in repo duirng reporting a seller ${error}`);
+    return false;
+  }
 }
