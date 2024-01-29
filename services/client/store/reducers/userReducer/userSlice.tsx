@@ -21,7 +21,9 @@ import {
     chatWithSeller,
     getCurrentUserChatRooms,
     saveNewMessage,
-    changeRoom
+    changeRoom,
+    blockSeller,
+    unBlockSeller
     
 } from "@/store/actions/userActions/userActions";
 import { UserState } from "@/types/user";
@@ -328,6 +330,31 @@ const userSlice = createSlice({
                 state.error = null;
             })
             .addCase(saveNewMessage.rejected, (state: UserState, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            })
+            .addCase(blockSeller.pending, (state: UserState) => {
+                state.loading = true;
+            })
+            .addCase(blockSeller.fulfilled, (state: UserState, action) => {
+                state.loading = false;
+                state.data = { ...state.data, ...action.payload };
+                state.error = null;
+            })
+            .addCase(blockSeller.rejected, (state: UserState, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            })
+            // on un-blocking a seller;
+            .addCase(unBlockSeller.pending, (state: UserState) => {
+                state.loading = true;
+            })
+            .addCase(unBlockSeller.fulfilled, (state: UserState, action) => {
+                state.loading = false;
+                state.data = { ...state.data, ...action.payload };
+                state.error = null;
+            })
+            .addCase(unBlockSeller.rejected, (state: UserState, action) => {
                 state.loading = false;
                 state.error = action.error.message;
             })

@@ -616,3 +616,45 @@ export const makeProductSoldOut = createAsyncThunk('/user/make-product-soldout',
         }
     }
 )
+
+export const blockSeller = createAsyncThunk('/user/block-seller', 
+    async ( sellerId: string) => {
+        try {
+            const response = await axios.patch(`${CHAT_SERVICE_BASE_URL}/user/user/block/${sellerId}`, {}, {
+                headers: { "Content-Type": "application/json" },
+                withCredentials: true
+            })
+            if (response?.data) {
+                console.log(response?.data);
+                if (response?.data?.success) toast.success(response?.data?.message)
+                else toast.error(response?.data?.message)
+            return response.data;
+            }
+        } catch (error: any) {
+            console.log(`something went wrong during blocking seller`);
+            toast.error(error?.response?.data?.message)
+            return error?.response?.data;
+        }
+    }
+)
+
+export const unBlockSeller = createAsyncThunk('/user/un-block-seller', 
+    async ( sellerId: string) => {
+        try {
+            const response = await axios.patch(`${CHAT_SERVICE_BASE_URL}/user/user/un-block/${sellerId}`, {}, {
+                headers: { "Content-Type": "application/json" },
+                withCredentials: true
+            })
+            if (response?.data) {
+                console.log(response?.data);
+                if (response?.data?.success) toast.success(response?.data?.message)
+                else toast.error(response?.data?.message)
+            return response.data;
+            }
+        } catch (error: any) {
+            console.log(`something went wrong during unblocking seller`);
+            toast.error(error?.response?.data?.message)
+            return error?.response?.data;
+        }
+    }
+)
