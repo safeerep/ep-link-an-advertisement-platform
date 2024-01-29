@@ -14,6 +14,11 @@ const MessagesSchema: Schema = new Schema({
         type: String,
         required: true
     },
+    unRead: {
+        type: Boolean,
+        default: true,
+        required: true
+    },
     showToSender: {
         type: Boolean,
         default: true,

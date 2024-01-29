@@ -24,5 +24,41 @@ export const getMessagesFromASpecificRoom =
             console.log(`an error happened during fetching messages from a specific room ${error}`);
             return false;
         }
+}
 
+export const countOfUnreadMessagesInEachChat = async ( userId: string, chats: any) => {
+    try {
+        const allRoomsWithUnreadMessagesCount = [];
+        const takeCount = async ( chatRoomId: string) => {
+            const unReadMessageCounts = await MessagesCollection.aggregate([
+                {
+                    $match: {
+                        chatRoomId: chatRoomId,
+                        senderId: {
+                            $ne: userId
+                        },
+                        unRead: true
+                    }
+                }, {
+                    $group: {
+                        _id: chatRoomId,
+                        totalUnread: {
+                            $sum: 1
+                        }
+                    }
+                }
+            ])
+            return unReadMessageCounts;
+        }
+
+        for (const chatDoc of chats) {
+            const roomIdAndCount = await takeCount(chatDoc?.chatRoomId);
+            allRoomsWithUnreadMessagesCount.push(roomIdAndCount[0]);
+        }
+
+        return allRoomsWithUnreadMessagesCount;
+    } catch (error) {
+        console.log(`an error happened during taking the count of unread messages in each chat`);
+        return false;
+    }
 }

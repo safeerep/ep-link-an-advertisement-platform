@@ -30,28 +30,28 @@ export default (dependencies: any) => {
         const sellerId = req.params?.sellerId;
 
         try {
-            // first we will create a user account for current user in this service
-            // with only essential things;
             const token: string = req.cookies.userJwt;
-            getUserId(token)
-                .then(async (userId) => {
-                    const currentUserId = String(userId)
-                    const uniqueId: string = uuidV4();
-                    await sendDataThroughRabbitMq(USER_DATA_QUEUE, { currentUserId, uniqueId });
+            const userId = await getUserId(token);
 
-                    try {
-                        const currentUserDetails: any = await consumeDataFromQueue(`${REPLY_QUEUE}-${uniqueId}`);
-                        if (currentUserDetails) {
-                            const currentUserUpdated = await updateUser_usecase(dependencies).interactor(currentUserId, currentUserDetails)
-                        }
-                    } catch (error) {
-                        console.log(`something went wrong during savinge current userdata in chat service`);
-                    }
-                })
+            const currentUserId = String(userId);
+            const uniqueId: string = uuidV4();
+
+            await sendDataThroughRabbitMq(USER_DATA_QUEUE, { sellerId: currentUserId, uniqueId });
+            console.log(`current user id sent successfully through rabbit mq`);
+
+            // consuming the user data from user queue;
+            const currentUserDetails: any = await consumeDataFromQueue(`${REPLY_QUEUE}-${uniqueId}`);
+
+            if (currentUserDetails) {
+                const currentUserDetailsUpdated = await updateUser_usecase(dependencies).interactor(currentUserId, currentUserDetails);
+                console.log(currentUserDetailsUpdated);
+            }
         } catch (error) {
-            console.log(`something went wrong during creating a user account for current user ${error}`);
-            return res.status(503).json({ success: false, message: "something went wrong" })
+            console.log(`something went wrong: ${error}`);
+            return res.status(503).json({ success: false, message: "something went wrong" });
         }
+
+
 
         // we have to know current user is blocked the receiver or not
         let currentUserBlockedReceiver: boolean = false;
@@ -146,12 +146,12 @@ export default (dependencies: any) => {
                                     userId: currentUserId,
                                     onlineStatus: true,
                                 }
-                                , 
+                                ,
                                 {
                                     userId: sellerId,
                                     onlineStatus: false,
                                 }
-                                
+
                             ]
                         }
                         const newChatroom = await
@@ -167,11 +167,11 @@ export default (dependencies: any) => {
                                 sellerId,
                                 uniqueId
                             }).then(() => {
-                                console.log(`seller id sent successfully through rabbit mq`);
+                                console.log('seller id sent successfully through rabbit mq');
                                 // then, consuming the user data from user queue;
                                 consumeDataFromQueue(`${REPLY_QUEUE}-${uniqueId}`)
                                     .then(async (sellerDetails: any) => {
-                                        console.log(`got response from users service`);
+                                        console.log('got response from users service');
                                         console.log(sellerDetails);
                                         // now we are updating seller data into this service' users collection;
                                         if (sellerDetails) {
