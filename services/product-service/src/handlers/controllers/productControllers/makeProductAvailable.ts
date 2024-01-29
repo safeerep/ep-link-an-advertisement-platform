@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import getUserId from "../../../utils/externalServices/jwt/getUserId";
 
-export = (dependencies: any) => {
+export default (dependencies: any) => {
     const {
         usecases: {
             productUsecases

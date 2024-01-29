@@ -3,7 +3,7 @@ import productValidationSchema from "../../../utils/validators/productSchemaVali
 import { ICategory } from "../../../entities/categoryEntities";
 import getUserId from "../../../utils/externalServices/jwt/getUserId";
 
-export = ( dependencies: any) => {
+export default ( dependencies: any) => {
     const {
         usecases: {
             productUsecases,

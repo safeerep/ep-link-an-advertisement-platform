@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 
-export = ( dependencies: any) => {
+export default ( dependencies: any) => {
     const {
         usecases: {
             productUsecases

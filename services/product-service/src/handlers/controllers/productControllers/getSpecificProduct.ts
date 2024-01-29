@@ -7,7 +7,7 @@ import { v4 as uuidv4 } from 'uuid'
 import { consumeDataFromQueue } from "../../../adapters/messageBroker/rabbitmq/messageReceiver";
 import { REPLY_QUEUE, USER_DATA_QUEUE } from "../../../queues";
 
-export = (dependencies: any) => {
+export default (dependencies: any) => {
     const {
         usecases: {
             productUsecases
