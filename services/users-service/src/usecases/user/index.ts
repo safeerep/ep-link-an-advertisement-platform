@@ -9,8 +9,9 @@ import { upadatePassword_usecase } from "./updateUserPassword";
 import { followUser_usecase } from "./followUser";
 import { unFollowUser_usecase } from "./unFollowUser";
 import { updateProfile_usecase } from "./updateProfile";
+import { reportSeller_usecase } from "./reportSeller";
 
-export = {
+export default {
     findExistingUser_usecase,
     findUserWithPhone_usecase,
     findUserWithId_usecase,
@@ -21,5 +22,6 @@ export = {
     upadatePassword_usecase,
     followUser_usecase,
     unFollowUser_usecase,
-    updateProfile_usecase
+    updateProfile_usecase,
+    reportSeller_usecase
 }

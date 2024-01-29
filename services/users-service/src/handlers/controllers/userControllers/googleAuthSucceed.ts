@@ -1,7 +1,7 @@
 import { Response } from 'express'
 import generateToken from "../../../utils/externalServices/jwt/tokenGenerator"
 
-export = (dependencies: any) => {
+export default (dependencies: any) => {
 
     const {
         usecases: { findExistingUser_usecase, register_usecase}

@@ -1,13 +1,14 @@
 import { Request, Response, NextFunction } from "express";
 import { sendOtp } from "../../../utils/externalServices";
 
-export = ( dependencies: any): any => {
+export default ( dependencies: any): any => {
     const { usecases: {
         storeOtp_usecase,
         findExistingUser_usecase,
         findUserWithPhone_usecase,
     }} = dependencies;
-    const sendOtpForSignupController = async ( req: Request, res: Response, next: NextFunction) => {
+
+    const sendOtpForSignup = async ( req: Request, res: Response, next: NextFunction) => {
         const email: string = req.body.email;
         const phone: number = req.body.phone;
         try {
@@ -42,6 +43,6 @@ export = ( dependencies: any): any => {
         }
     }
 
-    return sendOtpForSignupController;
+    return sendOtpForSignup;
 }
 

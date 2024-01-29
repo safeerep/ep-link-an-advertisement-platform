@@ -3,7 +3,7 @@ import signupValidationSchema from "../../../utils/validators/signup.validator";
 import generateToken from "../../../utils/externalServices/jwt/tokenGenerator";
 import bcrypt from "bcrypt";
 
-export = (dependencies: any): any => {
+export default (dependencies: any): any => {
   const {
     usecases: { findExistingUser_usecase, register_usecase, verifyOtp_usecase },
   } = dependencies;

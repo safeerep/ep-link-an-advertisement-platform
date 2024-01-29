@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import verifyToken from "../../../utils/externalServices/jwt/tokenChecker";
 import getUserId from "../../../utils/externalServices/jwt/getUserId";
 
-export = ( dependencies: any) => {
+export default ( dependencies: any) => {
     const {
         adminUsecases : { findAdminWithId_usecase }
     } = dependencies;

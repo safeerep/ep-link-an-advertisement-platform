@@ -7,7 +7,7 @@ import adminResetPassword from "./adminResetPassword";
 import changePassword from "./changePassword";
 
 
-export = ( dependencies: any) => {
+export default ( dependencies: any) => {
     return {
         adminLoginController: adminLogin(dependencies),
         adminAuthCheckController: adminAuthCheck(dependencies),

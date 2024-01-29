@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import bcrypt from "bcrypt"
 import generateToken from "../../../utils/externalServices/jwt/tokenGenerator";
 
-export = (dependencies: any) => {
+export default (dependencies: any) => {
     const {
         adminUsecases: {
             findAdmin_usecase

@@ -1,7 +1,7 @@
 import { sendDataThroughRabbitMq } from "../../../adapters/messageBroker/rabbitmq/messageSender";
 import { REPLY_QUEUE } from "../../../queues";
 
-export = ( dependencies: any) => {
+export default ( dependencies: any) => {
     const {
         usecases: {
             findUserWithId_usecase

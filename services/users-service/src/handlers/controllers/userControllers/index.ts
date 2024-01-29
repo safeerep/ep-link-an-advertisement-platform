@@ -1,5 +1,5 @@
 import userSignupController from "./userSignup";
-import sendOtpForSignupController from "./sendOtpForSignup";
+import sendOtpForSignup from "./sendOtpForSignup";
 import loginController from "./login";
 import googleAuthSucceedController from "./googleAuthSucceed";
 import googleAuthFailedController from "./googleAuthFailed";
@@ -12,10 +12,11 @@ import follow from "./follow";
 import unfollow from "./unfollow";
 import updateProfile from "./updateProfile";
 import getSellerProfile from "./getSellerProfile";
+import reportSeller from "./reportSeller";
 
-export = (dependencies: any) => {
+export default (dependencies: any) => {
     return {
-        sendOtpForSignupController: sendOtpForSignupController(dependencies),
+        sendOtpForSignupController: sendOtpForSignup(dependencies),
         userSignupController: userSignupController(dependencies),
         loginController: loginController(dependencies),
         googleAuthSucceedController: googleAuthSucceedController(dependencies),
@@ -29,5 +30,6 @@ export = (dependencies: any) => {
         unfollowController: unfollow(dependencies),
         updateProfileController: updateProfile(dependencies),
         getSellerProfileController: getSellerProfile(dependencies),
+        reportSellerController: reportSeller(dependencies)
     }
 }

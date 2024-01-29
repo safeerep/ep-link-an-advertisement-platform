@@ -5,7 +5,7 @@ import "../../utils/externalServices/passportJs/googleAuth";
 import verifyUserAuth from "../../utils/middlewares/verifyUserAuth";
 import upload from "../../utils/externalServices/multerWithS3/upload";
 
-export = (dependencies: any) => {
+export default (dependencies: any) => {
   const router = express.Router();
 
   const {
@@ -21,7 +21,8 @@ export = (dependencies: any) => {
     followController,
     unfollowController,
     updateProfileController,
-    getSellerProfileController
+    getSellerProfileController,
+    reportSellerController
   } = userControllers(dependencies);
 
   router.use(passport.initialize());
@@ -59,6 +60,8 @@ export = (dependencies: any) => {
   router.put("/update-profile",verifyUserAuth, upload.single('profilePhoto'), updateProfileController)
   // to retrieve seller details including seller's own products;
   router.get("/get-seller-profile/:sellerId",verifyUserAuth, getSellerProfileController)
+  // to report on a seller account;
+  router.post("/report-seller", verifyUserAuth, reportSellerController)
 
   return router;
 };

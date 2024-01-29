@@ -1,6 +1,6 @@
 import { Response } from "express";
 
-export = () => {
+export default () => {
     const adminLogout = (req: any, res: Response) => {
         try {
             res.clearCookie("adminJwt");
