@@ -94,9 +94,11 @@ const Chat = () => {
         const sellerId = seller?._id;
         if (action === 'block') {
             dispatch(blockSeller(sellerId))
+            setIsDropdownOpen(false)
         }
         else if (action === `un-block`){
             dispatch(unBlockSeller(sellerId))
+            setIsDropdownOpen(false)
         }
     }
 
