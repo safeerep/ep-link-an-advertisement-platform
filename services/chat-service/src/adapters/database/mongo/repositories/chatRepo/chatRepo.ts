@@ -6,7 +6,14 @@ export const findIsChatRoomExistingWithTwoSpecificUsers =
         try {
             const existingChatRoom = await ChatRoomCollection.findOne({
                 users: {
-                    $all: [currentUserId, sellerId]
+                    $all: [
+                        { $elemMatch: {
+                            userId: currentUserId
+                        } },
+                        { $elemMatch: {
+                            userId: sellerId
+                        }}
+                    ]
                 }
             })
             // there is no chat room is existing with this two users;
@@ -34,16 +41,13 @@ export const createANewChatroom =
 export const getAllChatsOfCurrentUser = async (currentUserId: string): Promise<ChatRoomDocument[] | boolean> => {
     try {
         const chats = await ChatRoomCollection.find({
-            users: {
-                $in: [
-                    currentUserId
-                ]
-            }
+            'users.userId': currentUserId
         }).populate({
-            path: 'users',
-            model: UserCollection,
-            foreignField: 'userId'
-        })
+            path: 'users.userId',  
+            model: UserCollection
+        });
+
+        
 
         console.log(`-------------------------`);
         console.log(chats);
@@ -65,7 +69,8 @@ export const getUsersId = async ( chatRoomId: string) :Promise< boolean | any> =
         if (chatRoom) {
             console.log(`users in this chatroom is`);
             console.log(chatRoom);
-            return chatRoom?.users;
+            const users = chatRoom.users.map(user => user.userId);
+            return users;
         }
         return false;
     } catch (error) {

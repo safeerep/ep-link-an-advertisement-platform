@@ -17,7 +17,10 @@ const UsersSchema: Schema = new Schema({
         {
             type: Schema.Types.ObjectId,
         }
-    ]
+    ],
+    onlineStatus: {
+        type: Boolean,
+    }
 }, {
     timestamps: true
 });

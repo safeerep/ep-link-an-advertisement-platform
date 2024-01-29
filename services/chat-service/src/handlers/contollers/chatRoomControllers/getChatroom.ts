@@ -16,7 +16,8 @@ export default (dependencies: any) => {
                 getMessagesFromOneChatroom_usecase
             },
             userUsecases: {
-                updateUser_usecase
+                updateUser_usecase,
+                getUserData_usecase
             }
         }
     } = dependencies;
@@ -32,46 +33,67 @@ export default (dependencies: any) => {
             // first we will create a user account for current user in this service
             // with only essential things;
             const token: string = req.cookies.userJwt;
-                getUserId(token)
-                    .then(async (userId) => {
-                        const currentUserId = String(userId)
-                        const uniqueId: string = uuidV4();
-                        await sendDataThroughRabbitMq(USER_DATA_QUEUE, { currentUserId, uniqueId });
+            getUserId(token)
+                .then(async (userId) => {
+                    const currentUserId = String(userId)
+                    const uniqueId: string = uuidV4();
+                    await sendDataThroughRabbitMq(USER_DATA_QUEUE, { currentUserId, uniqueId });
 
-                        try {
-                            const currentUserDetails: any = await consumeDataFromQueue(`${REPLY_QUEUE}-${uniqueId}`);
-                            if (currentUserDetails) {
-                                const currentUserUpdated = await updateUser_usecase(dependencies).interactor(currentUserId, currentUserDetails)
-                            }
-                        } catch (error) {
-                            console.log(`something went wrong during savinge current userdata in chat service`);
+                    try {
+                        const currentUserDetails: any = await consumeDataFromQueue(`${REPLY_QUEUE}-${uniqueId}`);
+                        if (currentUserDetails) {
+                            const currentUserUpdated = await updateUser_usecase(dependencies).interactor(currentUserId, currentUserDetails)
                         }
-                    })
+                    } catch (error) {
+                        console.log(`something went wrong during savinge current userdata in chat service`);
+                    }
+                })
         } catch (error) {
             console.log(`something went wrong during creating a user account for current user ${error}`);
-            return res.json({ success: false, message: "something went wrong"})
+            return res.status(503).json({ success: false, message: "something went wrong" })
+        }
+
+        // we have to know current user is blocked the receiver or not
+        let currentUserBlockedReceiver: boolean = false;
+        try {
+            const token: string = req.cookies.userJwt;
+            getUserId(token)
+                .then(async (userId) => {
+                    const currentUserId = String(userId)
+                    const currentUser = await getUserData_usecase(dependencies).interactor(currentUserId)
+
+                    if (currentUser?.blockedPersons?.includes(sellerId)) {
+                        currentUserBlockedReceiver = true;
+                    }
+                })
+                .catch((error: any) => {
+                    console.log(`something went wrong during destructuring token to get current user data ${error}`);
+                })
+        } catch (error) {
+            console.log(`something went wrong during fetching current user data ${error}`);
+            return res.status(503).json({ success: false, message: "something went wrong" })
         }
 
         try {
             if (!sellerId) return res.json({ success: false, message: "there is no seller id in params" });
-        
+
             const token: string = req.cookies.userJwt;
             console.log(token);
-        
+
             const userId = await getUserId(token);
             const currentUserId = String(userId);
-        
+
             try {
                 const existingChatRoom = await findIsChatRoomExistingWithTwoSpecificUsers_usecase(dependencies).interactor(currentUserId, sellerId);
-        
+
                 if (existingChatRoom) {
                     chatRoomExisting = true;
                     const messages = await getMessagesFromOneChatroom_usecase(dependencies).interactor(existingChatRoom?._id);
                     const uniqueId: string = uuidV4();
-        
+
                     // sending data through rabbit mq to get seller details
                     await sendDataThroughRabbitMq(USER_DATA_QUEUE, { sellerId, uniqueId });
-        
+
                     try {
                         const sellerDetails: any = await consumeDataFromQueue(`${REPLY_QUEUE}-${uniqueId}`);
                         console.log(`got response from users service`);
@@ -81,11 +103,12 @@ export default (dependencies: any) => {
                         if (sellerDetails) {
                             const sellerDataUpdated = await updateUser_usecase(dependencies).interactor(sellerId, sellerDetails)
                         }
-        
+
                         return res.json({
                             success: true,
                             chatroom: existingChatRoom,
                             seller: sellerDetails,
+                            currentUserBlockedReceiver,
                             messages,
                             message: 'successfully fetched data from already existing chatroom'
                         });
@@ -94,6 +117,7 @@ export default (dependencies: any) => {
                         return res.json({
                             success: true,
                             messages,
+                            currentUserBlockedReceiver,
                             chatroom: existingChatRoom,
                             message: 'fetched chatroom details and messages, but seller details are not available right now'
                         });
@@ -107,7 +131,7 @@ export default (dependencies: any) => {
             console.log(`something went wrong during fetching the chatroom details ${error}`);
             return res.status(503).json({ success: false, message: 'something went wrong' });
         }
-        
+
 
         try {
             // if there is no chat room is existing? we will create;
@@ -117,7 +141,18 @@ export default (dependencies: any) => {
                     .then(async (userId) => {
                         const currentUserId = String(userId)
                         const usersId = {
-                            users: [currentUserId, sellerId]
+                            users: [
+                                {
+                                    userId: currentUserId,
+                                    onlineStatus: true,
+                                }
+                                , 
+                                {
+                                    userId: sellerId,
+                                    onlineStatus: false,
+                                }
+                                
+                            ]
                         }
                         const newChatroom = await
                             createANewChatroom_usecase(dependencies).interactor(usersId)
@@ -135,7 +170,7 @@ export default (dependencies: any) => {
                                 console.log(`seller id sent successfully through rabbit mq`);
                                 // then, consuming the user data from user queue;
                                 consumeDataFromQueue(`${REPLY_QUEUE}-${uniqueId}`)
-                                    .then( async (sellerDetails: any) => {
+                                    .then(async (sellerDetails: any) => {
                                         console.log(`got response from users service`);
                                         console.log(sellerDetails);
                                         // now we are updating seller data into this service' users collection;
@@ -144,12 +179,13 @@ export default (dependencies: any) => {
                                         }
 
                                         return res.json(
-                                            { 
-                                                success: true, 
-                                                chatroom: newChatroom, 
-                                                seller: sellerDetails, 
+                                            {
+                                                success: true,
+                                                chatroom: newChatroom,
+                                                seller: sellerDetails,
+                                                currentUserBlockedReceiver,
                                                 messages: [],
-                                                message: 'successfully created new chatroom' 
+                                                message: 'successfully created new chatroom'
                                             })
                                     })
                                     .catch((err: any) => {
