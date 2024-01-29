@@ -30,14 +30,14 @@ const Chat = () => {
     const messages = useSelector((state: any) => state?.user?.data?.messages)
     const chats = useSelector((state: any) => state?.user?.data?.chats)
     const user: any = useSelector((state: any) => state?.user?.data?.userData)
-    console.log(`-----------------------------------`);
+    console.log('-----------------------------------');
     console.log(chats);
     console.log(seller);
 
-    console.log(`-----------------------------------`);
+    console.log('-----------------------------------');
 
     const handleRoomChange = (userId: string) => {
-        console.log(`clicked for room change`);
+        console.log('clicked for room change');
         dispatch(changeRoom(userId))
     }
 
@@ -54,7 +54,7 @@ const Chat = () => {
     }, [roomId])
 
     const sendMessage = () => {
-        console.log(`clicked for sendMessage`);
+        console.log('clicked for sendMessage');
 
         if (!message) return;
         console.log(`yes message have `, message);
@@ -69,14 +69,14 @@ const Chat = () => {
     }
 
     socket.on("show-message", (data: any) => {
-        console.log(`----show message received in front end-----------`);
+        console.log('----show message received in front end-----------');
         console.log(data);
         setNewMessages((newMessages: any) => [...newMessages, data]);
         setMessage('')
     })
 
     socket.on("receiver-blocked", (data: any) => {
-        console.log(`----show message received in front end-----------`);
+        console.log('----receiver-blocked received in front end-----------');
         console.log(data);
         if (data?.senderId === user?._id) {
             setBlockedMessageStatus(true)
@@ -96,7 +96,7 @@ const Chat = () => {
             dispatch(blockSeller(sellerId))
             setIsDropdownOpen(false)
         }
-        else if (action === `un-block`){
+        else if (action === 'un-block'){
             dispatch(unBlockSeller(sellerId))
             setIsDropdownOpen(false)
         }
@@ -122,19 +122,27 @@ const Chat = () => {
                     (chats.map((chatroom: any) => {
                         // every chatroom contains two users
                         // first we have to show the user which is not currently using
-                        const behindUser = chatroom?.users?.find((userDoc: any) => userDoc?.userId !== user?._id)
+                        const behindUser = chatroom?.users?.find((userDoc: any) => {
+                            console.log('okdaa');
+                            console.log(userDoc?.userId);
+                            console.log(user?._id);
+                            console.log('okdaa');
+                            if (userDoc?.userId?.userId !== user?._id) {
+                                return userDoc?.userId;
+                            }
+                        })
                         return (
                             <div
                                 key={behindUser?._id}
                                 className="w-full flex justify-between h-16 border-b items-center border-black"
-                                onClick={() => handleRoomChange(behindUser?.userId)}
+                                onClick={() => handleRoomChange(behindUser?.userId?.userId)}
                             >
                                 <div className="flex justify-start gap-2 items-center">
-                                    <div className="w-10 bg-green-600 h-10 rounded-full">
-                                        <img className="object-cover" src={behindUser?.profilePhoto} alt="" />
+                                    <div className="w-10 bg-gray-600 h-10 rounded-full">
+                                        <img className="object-cover w-full h-full rounded-full" src={behindUser?.userId?.profilePhoto} alt="" />
                                     </div>
                                     <div className="flex flex-col">
-                                        <span className="font-semibold">{behindUser?.userName}</span>
+                                        <span className="font-semibold">{behindUser?.userId?.userName}</span>
                                         <span>{chatroom?.lastMessage}</span>
                                     </div>
                                 </div>
