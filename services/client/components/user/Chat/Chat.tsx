@@ -6,12 +6,15 @@ import { useEffect, useRef, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import {
     authRequired,
+    blockSeller,
     changeRoom,
     getCurrentUserChatRooms,
-    saveNewMessage
+    saveNewMessage,
+    unBlockSeller
 } from '@/store/actions/userActions/userActions'
 import { io } from 'socket.io-client'
 import { SOCKET_BASE_URL } from '@/constants'
+import { Toaster } from 'react-hot-toast'
 
 const Chat = () => {
     const socket = io(`${SOCKET_BASE_URL}`)
@@ -19,7 +22,8 @@ const Chat = () => {
     const router = useRouter()
     const [message, setMessage] = useState('')
     const [isDropdownOpen, setIsDropdownOpen] = useState(false)
-    const [newMessages, setNewMessage] = useState<any>([])
+    const [blockedMessageStatus, setBlockedMessageStatus] = useState(false)
+    const [newMessages, setNewMessages] = useState<any>([])
     const inputRef = useRef<HTMLInputElement | null>(null)
     const roomId = useSelector((state: any) => state?.user?.data?.chatroom?._id)
     const seller = useSelector((state: any) => state?.user?.data?.seller)
@@ -28,6 +32,7 @@ const Chat = () => {
     const user: any = useSelector((state: any) => state?.user?.data?.userData)
     console.log(`-----------------------------------`);
     console.log(chats);
+    console.log(seller);
 
     console.log(`-----------------------------------`);
 
@@ -66,13 +71,48 @@ const Chat = () => {
     socket.on("show-message", (data: any) => {
         console.log(`----show message received in front end-----------`);
         console.log(data);
-        setNewMessage((newMessages: any) => [...newMessages, data]);
+        setNewMessages((newMessages: any) => [...newMessages, data]);
+        setMessage('')
     })
+
+    socket.on("receiver-blocked", (data: any) => {
+        console.log(`----show message received in front end-----------`);
+        console.log(data);
+        if (data?.senderId === user?._id) {
+            setBlockedMessageStatus(true)
+        }
+    })
+
+    socket.on("typing", (data: any) => {
+        if (data?.senderId !== user?._id) {
+            // show typing 
+        }
+    })
+
+    const handleMoreAction = ( action: string) => {
+        // we will get seller id from state;
+        const sellerId = seller?._id;
+        if (action === 'block') {
+            dispatch(blockSeller(sellerId))
+        }
+        else if (action === `un-block`){
+            dispatch(unBlockSeller(sellerId))
+        }
+    }
+
+    const inputChanged = (e: any) => {
+        setMessage(e.target.value)
+        const data = {
+            chatRoomId: roomId,
+            senderId: user?._id
+        }
+        socket.emit("typing", data)
+    }
 
     return (
         <div className="flex justify-around gap-2 p-4">
             {/* inbox  */}
-            <div className="lg:w-1/3 md:w-1/2 w-full bg-blue-200 p-2 min-h-screen rounded-lg">
+            <div className="lg:w-1/3 md:w-1/2 w-full bg-blue-100 p-2 min-h-screen rounded-lg">
                 <div className="w-full flex justify-center border-b-2 border-black">
                     INBOX
                 </div>
@@ -96,7 +136,7 @@ const Chat = () => {
                                         <span>{chatroom?.lastMessage}</span>
                                     </div>
                                 </div>
-                                <span className="bg-purple-600 p-1 rounded-full"> 77</span>
+                                {/* <span className="bg-purple-600 p-1 rounded-full"> 77</span> */}
                             </div>
                         )
                     })) :
@@ -109,7 +149,7 @@ const Chat = () => {
             {/* if no chat is being selected it will shows in the right side */}
             {
                 !roomId &&
-                <div className="lg:w-2/3 md:w-1/2 w-full bg-blue-200 p-4 min-h-screen rounded-lg flex flex-col justify-center items-center">
+                <div className="lg:w-2/3 md:w-1/2 w-full bg-blue-100 p-4 min-h-screen rounded-lg flex flex-col justify-center items-center">
                     <span>Connect with sellers through ep-link</span>
                     <span>Get your needs fulfilled</span>
                 </div>}
@@ -117,7 +157,7 @@ const Chat = () => {
 
             {
                 roomId &&
-                <div className="lg:w-2/3 md:w-1/2 w-full bg-blue-200 p-4 pt-0 h-screen flex flex-col rounded-lg">
+                <div className="lg:w-2/3 md:w-1/2 w-full bg-blue-100 p-4 pt-0 h-screen flex flex-col rounded-lg">
                     {/* user name and head */}
                     <div className="w-full flex justify-between h-16 mb-1 border-b items-center border-black">
                         <div className="flex justify-start gap-2 items-center">
@@ -134,18 +174,23 @@ const Chat = () => {
                             <>
                                 <button
                                     onClick={() => setIsDropdownOpen(!isDropdownOpen)} // Corrected the onClick handler
-                                    className="absolute top-0 right-0 p-2">
+                                    >
                                     <GrMore />
                                 </button>
                                 {isDropdownOpen && (
-                                    <div className="absolute cursor-pointer top-6 right-2 p-1 z-10 rounded-md bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+                                    <div className="absolute cursor-pointer top-32 right-10 p-1 z-10 rounded-md bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
                                         <button
-                                            // onClick={()=> 'ih'}
+                                            onClick={()=> handleMoreAction('block')}
                                             className="block px-4 py-2 text-sm text-black">
                                             Block user
                                         </button>
                                         <button
-                                            // onClick={()=> 'ih'}
+                                            onClick={()=> handleMoreAction('un-block')}
+                                            className="block px-4 py-2 text-sm text-black">
+                                            unblock
+                                        </button>
+                                        <button
+                                            onClick={()=> handleMoreAction('blockandreport')}
                                             className="block px-4 py-2 text-sm text-black">
                                             Block & Report
                                         </button>
@@ -157,7 +202,7 @@ const Chat = () => {
                     {/* user name and head ends here*/}
 
                     {/* messages shows in this div */}
-                    <div className="flex-grow bg-blue-200 overflow-y-auto">
+                    <div className="flex-grow bg-blue-100 overflow-y-auto">
                         {/* <div className='bg-white p-1 px-2 mb-1 w-fit rounded-md'>message</div> */}
                         {
                             messages?.length > 0 &&
@@ -179,6 +224,11 @@ const Chat = () => {
                                 >{messageDoc?.message}</div>
                             ))
                         }
+                        {
+                            blockedMessageStatus &&
+                            <div className={`bg-slate-200 border border-black  p-1 px-2 mb-1 w-fit rounded-md text-center mx-auto`}
+                                >currently you are not able to send message</div>
+                        }
 
                     </div>
                     {/* message showing div ended here */}
@@ -188,7 +238,7 @@ const Chat = () => {
                         <input
                             ref={inputRef}
                             value={message}
-                            onChange={(e) => setMessage(e.target.value)}
+                            onChange={(e) => inputChanged(e)}
                             type="text"
                             placeholder="Type your message..."
                             className="flex-grow bg-white border border-gray-300 p-2 rounded-md mr-2"
@@ -201,7 +251,7 @@ const Chat = () => {
                         </button>
                     </div>
                 </div>}
-
+                <Toaster />
         </div>
     )
 }
