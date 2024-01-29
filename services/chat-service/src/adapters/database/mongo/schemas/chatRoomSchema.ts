@@ -4,10 +4,18 @@ import { IChatroom } from '../../../../entities/chatRoomEntities';
 const ChatRoomSchema: Schema = new Schema({
     users: [
         {
-            type: Schema.Types.ObjectId,
-            required: true,
-            ref: "users"
+            userId: {
+                type: Schema.Types.ObjectId,
+                required: true,
+                ref: "users"
+            },
+            onlineStatus: {
+                type: Boolean,
+                required: true,
+                default: false
+            }
         }
+        
     ],
     lastMessage: {
         type: String

@@ -29,6 +29,17 @@ export const updateUser = async (userId: string, userData: IUser):Promise<UserDo
     }
 }
 
+export const getUserData = async ( userId: string):Promise<UserDocument | boolean> => {
+    try {
+        const currentUser = await UserCollection.findOne({ userId: userId})
+        if (!currentUser) return false;
+        return currentUser as UserDocument;
+    } catch (error) {
+        console.log(`an error happened during fetching current user data ${error}`);
+        return false;
+    }
+}
+
 export const blockASeller = async ( currentUserId: string, sellerId: string):Promise<UserDocument | boolean> => {
     try {
         const updatedCurrentUserDocument = await UserCollection.findOneAndUpdate( 

@@ -14,7 +14,7 @@ export default ( dependencies: any) => {
             // that will be in the params
             const sellerId: string = req.params?.sellerId;
             // we want to get the current user id 
-            const token: string = req.cookies.token;
+            const token: string = req.cookies.userJwt;
             getUserId(token)
             .then( async (userId: any) => {
                 const currentUserId: string = String(userId)
@@ -25,7 +25,7 @@ export default ( dependencies: any) => {
                 if (!updatedCurrentUserDocument) {
                     return res.json({ success: false, message: "something went wrong during unblocking seller"})
                 }
-                return res.json({ success: true, message: "successfully unblocked the seller" })
+                return res.json({ success: true, currentUserBlockedReceiver: false, message: "successfully unblocked the seller" })
             })
             .catch((error) => {
                 console.log(`something went wrong during destructuring current user id ${error}`);
