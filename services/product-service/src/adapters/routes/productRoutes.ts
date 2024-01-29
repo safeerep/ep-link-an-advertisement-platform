@@ -3,7 +3,7 @@ import verifyUserAuth from "../../utils/middlewares/userAuthCheck";
 import productControllers from "../../handlers/controllers/productControllers";
 import upload from "../../utils/externalServices/multer/fileUpload";
 
-export = ( dependencies: any) => {
+export default ( dependencies: any) => {
     const router = Router();
     const {
         addProductController,
@@ -26,7 +26,16 @@ export = ( dependencies: any) => {
     // fetching details of a specific product to show detailed info
     router.get('/get-specific-product/:productId', verifyUserAuth, getSpecificProductController)
     // to update a product' details
-    router.put('/update-product', verifyUserAuth, upload.array('images'), updateProductController)
+    router.put('/update-product', verifyUserAuth, upload.fields([
+        { name: '0', maxCount: 1 },
+        { name: '1', maxCount: 1 },
+        { name: '2', maxCount: 1 },
+        { name: '3', maxCount: 1 },
+        { name: '4', maxCount: 1 },
+        { name: '5', maxCount: 1 },
+        { name: '6', maxCount: 1 },
+        { name: '7', maxCount: 1 },
+    ]), updateProductController)
     // to make product as sold out
     router.patch('/available/:productId', verifyUserAuth, makeProductAvailableController)
     // to make product as available

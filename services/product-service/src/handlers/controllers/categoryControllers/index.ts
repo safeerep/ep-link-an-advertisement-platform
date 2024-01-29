@@ -5,7 +5,7 @@ import getCurrentCategory from "./getCurrentCategory"
 import updateCategory from "./updateCategory"
 import getActiveCategories from "./getActiveCategories"
 
-export = ( dependencies: any) => {
+export default ( dependencies: any) => {
     return {
         addNewCategoryController: addNewCategory(dependencies),
         getAllCategoriesController: getAllCategories(dependencies),

@@ -2,7 +2,7 @@ import { Request, Response } from "express";
 import { ICategory } from "../../../entities/categoryEntities";
 import getUserId from "../../../utils/externalServices/jwt/getUserId";
 
-export = ( dependencies: any) => {
+export default (dependencies: any) => {
     const {
         usecases: {
             productUsecases,
@@ -10,18 +10,35 @@ export = ( dependencies: any) => {
         }
     } = dependencies;
 
-    const updatedProduct = async ( req: Request, res: Response) => {
+    const updatedProduct = async (req: Request, res: Response) => {
         // we should get product id with the update information
         let currentProductToEdit: any;
+
         try {
             const productId = req.body.productId;
             const existingProduct = await productUsecases
-            .getOneSpecificProduct_usecase(dependencies).interactor(productId)
+                .getOneSpecificProduct_usecase(dependencies).interactor(productId)
             if (!existingProduct) {
                 // if there is no product with this id, it means invalid product id
-                return res.json({ success: false, message: "sorry, product is not existing"}) 
+                return res.json({ success: false, message: "sorry, product is not existing" })
             }
-            else currentProductToEdit = existingProduct;
+            else {
+                currentProductToEdit = existingProduct;
+                let images = existingProduct?.images || [];
+                if (req.files) {
+                    const files = req.files as Record<string, Express.Multer.File[] | any>;
+                    Object.keys(files).forEach((key) => {
+                        const fileArray = files[key];
+                        const file = fileArray[0];
+                        const index = parseInt(key, 10);
+                        while (images.length <= index) {
+                            images.push('');
+                        }         
+                        images[index] = file?.location;
+                    });
+                }
+                req.body.images = images;
+            }
         } catch (error) {
             console.log(` an error happened during checking the product is existing or not ${error}`);
             return res.json({ success: false, message: "something went wrong" })
@@ -33,17 +50,17 @@ export = ( dependencies: any) => {
             // for that, first we have to get current user's id
             const token = req.cookies.userJwt;
             getUserId(token)
-            .then((userId: any) => {
-                if ( String(userId) !== String(currentProductToEdit?.userId)) {
-                    // if its not same, it means user is not authenticated to do the action
-                    return res.json({ success: false, message: "user is not authenticated to do it" })
-                }
-                // else we will continue in the next try catch block
-            })
-            .catch((err) => {
-                console.log(`an error happened during getting current user' id ${err}`);
-                return res.json({ success: false, message: "something went wrong"})
-            })
+                .then((userId: any) => {
+                    if (String(userId) !== String(currentProductToEdit?.userId)) {
+                        // if its not same, it means user is not authenticated to do the action
+                        return res.json({ success: false, message: "user is not authenticated to do it" })
+                    }
+                    // else we will continue in the next try catch block
+                })
+                .catch((err) => {
+                    console.log(`an error happened during getting current user' id ${err}`);
+                    return res.json({ success: false, message: "something went wrong" })
+                })
         } catch (error) {
             console.log(`some wrong things happened during checking user is authenticated to do it or not ${error}`);
             return res.json({ success: false, message: "something went wrong" })
@@ -51,17 +68,12 @@ export = ( dependencies: any) => {
 
         try {
             // here we are making the body for ready to save structure
-            console.log('body',req.body);
+            console.log('body', req.body);
             req.body.inputFields = JSON.parse(req.body.inputFields);
             req.body.checkBoxes = JSON.parse(req.body.checkBoxes);
-            req.body.radioButtons = JSON.parse(req.body.radioButtons);            
-            req.body.images = Array.isArray(req?.files)? 
-            (req.files as Express.Multer.File[]).map((file: any) => {
-                return file?.location;
-              })
-            : [];
+            req.body.radioButtons = JSON.parse(req.body.radioButtons);
         } catch (error: any) {
-            console.log(`an error happened during structuring request body`, error);
+            console.log(`an error happened during structuring request body, error ${error}`);
             return res.json({ success: false, message: 'something went wrong' })
         }
 
@@ -71,10 +83,10 @@ export = ( dependencies: any) => {
             // then, we want to check category is existing or not
             const categoryName: string = req?.body?.categoryName;
             const existingCategory = await categoryUsecases
-            .checkIsCategoryExisting_usecase(dependencies).interactor(categoryName)
+                .checkIsCategoryExisting_usecase(dependencies).interactor(categoryName)
             if (!existingCategory) {
                 // if category name is not valid, we will return 
-                return res.status(400).json({ success: false, message: 'category name is not valid'})
+                return res.status(400).json({ success: false, message: 'category name is not valid' })
             }
             else {
                 productCategory = existingCategory;
@@ -94,11 +106,11 @@ export = ( dependencies: any) => {
 
             // when new product is being added we will get the products as newproduct included
             const products = await productUsecases
-            .updateProduct_usecase(dependencies).interactor( req?.body?.productId, req?.body)
-            return res.json({ success: true, message: 'successfully updated product details', products});
+                .updateProduct_usecase(dependencies).interactor(req?.body?.productId, req?.body)
+            return res.json({ success: true, message: 'successfully updated product details', products });
         } catch (error) {
             console.log(`an error happened during adding new product ${error}`);
-            return res.status(503).json({ success: false, message: 'something went wrong'})
+            return res.status(503).json({ success: false, message: 'something went wrong' })
         }
     }
 

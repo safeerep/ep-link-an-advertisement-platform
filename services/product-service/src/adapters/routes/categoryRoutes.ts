@@ -3,7 +3,7 @@ import categoryControllers from "../../handlers/controllers/categoryControllers"
 import verifyAdminAuth from "../../utils/middlewares/adminAuthCheck";
 import verifyUserAuth from "../../utils/middlewares/userAuthCheck";
 
-export = ( dependencies: any) => {    
+export default ( dependencies: any) => {    
     const router = Router();
 
     const {
