@@ -22,6 +22,7 @@ const Chat = () => {
     const router = useRouter()
     const [message, setMessage] = useState('')
     const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+    const [showTyping, setShowTyping] = useState(false)
     const [blockedMessageStatus, setBlockedMessageStatus] = useState(false)
     const [newMessages, setNewMessages] = useState<any>([])
     const inputRef = useRef<HTMLInputElement | null>(null)
@@ -86,9 +87,13 @@ const Chat = () => {
         }
     })
 
-    socket.on("typing", (data: any) => {
-        if (data?.senderId !== user?._id) {
+    socket.on("typing", ({ chatRoomId, senderId}:{chatRoomId: string,senderId: string}) => {
+        if (chatRoomId === roomId && senderId !== user?._id) {
             // show typing 
+            setShowTyping(true)
+            setTimeout(() => {
+                setShowTyping(false)
+            },3000)
         }
     })
 
@@ -183,6 +188,7 @@ const Chat = () => {
                             </div>
                             <div className="flex flex-col">
                                 <span className="font-semibold">{seller ? seller.userName : 'User'}</span>
+                                {showTyping && <span className='text-green-500'>Typing...</span>}
                             </div>
                         </div>
                         <div className="flex justify-center gap-6">
