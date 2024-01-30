@@ -51,8 +51,15 @@ const Chat = () => {
         }
     }, [])
 
+    // start
+    useEffect(() => {
+        dispatch(getCurrentUserChatRooms())
+    }, [socket])
+    // end
+
     useEffect(() => {
         socket.emit("join-room", roomId, user?._id)
+        setNewMessages([])
     }, [roomId])
 
     const sendMessage = () => {
