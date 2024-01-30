@@ -4,7 +4,8 @@ import {
     getAllChatsOfCurrentUser,
     getUsersId,
     changeUserStatusAsOffline,
-    changeUserStatusAsOnline 
+    changeUserStatusAsOnline,
+    checkUserStatusInRoom 
 } from "./chatRepo"
 
 export default {
@@ -13,5 +14,6 @@ export default {
     getAllChatsOfCurrentUser,
     getUsersId,
     changeUserStatusAsOffline,
-    changeUserStatusAsOnline
+    changeUserStatusAsOnline,
+    checkUserStatusInRoom
 }
