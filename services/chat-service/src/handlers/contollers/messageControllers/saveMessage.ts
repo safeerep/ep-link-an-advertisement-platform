@@ -32,7 +32,7 @@ export default (dependencies: any) => {
                 }
                 // else we will store message in the next try catch block;
                 else {
-                    const chatRoomDocument = await userUsecases
+                    const chatRoomDocument = await chatRoomUsecases
                         .checkUserOnlineStatusInARoom_usecase(dependencies).interactor(chatRoomId, String(receiverId))
 
                     if (chatRoomDocument) {
