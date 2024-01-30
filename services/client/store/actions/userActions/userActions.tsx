@@ -240,7 +240,7 @@ export const updateProfile = createAsyncThunk(`/user/update-profile`,
 export const getSellerProfile = createAsyncThunk('/user/get-seller-profile', 
     async (sellerId: string) => {
         try {
-            const response = await axios.get(`${USERS_SERVICE_BASE_URL}/get-seller-profile/${sellerId}`, {
+            const response = await axios.get(`${USERS_SERVICE_BASE_URL}/user/get-seller-profile/${sellerId}`, {
                 headers: { "Content-Type": "application/json"},
                 withCredentials: true
             })
