@@ -1,9 +1,9 @@
-import { Profile } from '@/components'
+import { Connections } from '@/components'
 import React from 'react'
 
 const page = () => {
   return (
-    <Profile />
+    <Connections />
   )
 }
 

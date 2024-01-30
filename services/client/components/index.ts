@@ -5,11 +5,15 @@ import ForgotPassword from "./auth/ForgotPassword/ForgotPassword";
 import ChangePassword from "./auth/ChangePassword/ChangePassword";
 import Navbar from "./shared/userSide/Navbar";
 import Footer from "./shared/userSide/Footer";
+import ProfileSidebar from "./user/ProfileSidebar";
 import Home from "./user/Home/Home";
 import AddProduct from "./user/AddProduct/AddProduct";
 import EditProduct from "./user/EditProduct/EditProduct";
 import ProductView from "./user/ProductView/ProductView";
 import Chat from "./user/Chat/Chat";
+import Profile from "./user/Profile/Profile";
+import Connections from "./user/Connections/Connections";
+import Favourites from "./user/Favourites/Favourites";
 import ViewUserProfile from "./user/ViewUserProfile/ViewUserProfile";
 
 import AdminSignIn from "./auth/AdminSignIn/AdminSignIn";
@@ -29,11 +33,15 @@ export {
     ChangePassword,
     Navbar,
     Footer,
+    ProfileSidebar,
     Home,
     AddProduct,
     EditProduct,
     ProductView,
     Chat,
+    Profile,
+    Connections,
+    Favourites,
     ViewUserProfile,
     
     AdminSignIn,

@@ -1,4 +1,4 @@
-import Favourites from '@/components/user/Favourites/Favourites'
+import { Favourites } from '@/components'
 import React from 'react'
 
 const page = () => {
