@@ -27,6 +27,8 @@ export const getMessagesFromASpecificRoom =
 }
 
 export const countOfUnreadMessagesInEachChat = async ( userId: string, chats: any) => {
+    console.log('yes here to take count');
+    
     try {
         const allRoomsWithUnreadMessagesCount = [];
         const takeCount = async ( chatRoomId: string) => {
@@ -55,7 +57,8 @@ export const countOfUnreadMessagesInEachChat = async ( userId: string, chats: an
             const roomIdAndCount = await takeCount(chatDoc?.chatRoomId);
             allRoomsWithUnreadMessagesCount.push(roomIdAndCount[0]);
         }
-
+        console.log(allRoomsWithUnreadMessagesCount);
+        
         return allRoomsWithUnreadMessagesCount;
     } catch (error) {
         console.log(`an error happened during taking the count of unread messages in each chat`);
