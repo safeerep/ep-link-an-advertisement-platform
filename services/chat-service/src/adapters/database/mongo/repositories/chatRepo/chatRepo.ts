@@ -78,3 +78,53 @@ export const getUsersId = async ( chatRoomId: string) :Promise< boolean | any> =
         return false;
     }
 }
+
+export const changeUserStatusAsOnline = async ( currentUserId: string, currentRoomId: string) => {
+    try {
+        const updatedUserStatusInChatroom = await ChatRoomCollection.findOneAndUpdate(
+            {
+                _id: currentRoomId,
+                'users.userId': currentUserId
+            },
+            {
+                $set: {
+                    'users.$.onlineStatus': true
+                }
+            },
+            {
+                new: true
+            }
+        )
+
+        console.log(updatedUserStatusInChatroom);
+        return true;
+    } catch (error) {
+        console.log(`an error happened during changing current user status as true in a room ${error}`);
+        return false;
+    }
+}
+
+export const changeUserStatusAsOffline = async ( currentUserId: string, currentRoomId: string) => {
+    try {
+        const updatedUserStatusInChatroom = await ChatRoomCollection.findOneAndUpdate(
+            {
+                _id: currentRoomId,
+                'users.userId': currentUserId
+            },
+            {
+                $set: {
+                    'users.$.onlineStatus': false
+                }
+            },
+            {
+                new: true
+            }
+        )
+
+        console.log(updatedUserStatusInChatroom);
+        return true;
+    } catch (error) {
+        console.log(`an error happened during changing current user status as false in a room ${error}`);
+        return false;
+    }
+}
