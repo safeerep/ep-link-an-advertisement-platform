@@ -20,6 +20,11 @@ const ProfileSidebar = () => {
         setCurrentlyIn('edit')
         setUpdateProfileModalIsOpen(!updateProfileModalIsOpen)
     }
+
+    const showFollowers = ( ) => {
+        console.log(`called`);    
+    }
+
     const user = useSelector((state: any) => state?.user?.data?.userData)
 
     return (
@@ -32,25 +37,41 @@ const ProfileSidebar = () => {
                     style={{ width: '150px', height: '150px' }}
                 />
             </div>
+            {/* starting */}
+            <div className="flex mx-2 p-2 justify-around">
+                <div 
+                    onClick={() => showFollowers()}
+                    className='flex flex-col cursor-pointer'>
+                    <span className='text-center font-bold'>Followers</span>
+                    <span className='text-center font-bold'>{user?.followers?.length}77</span>
+                </div>
+                <div 
+                onClick={() => showFollowers()}
+                className='flex flex-col cursor-pointer'>
+                    <span className='text-center font-bold'>Following</span>
+                    <span className='text-center font-bold'>{user?.following?.length}77</span>
+                </div>
+            </div>
+            {/* ending  */}
             <Link
                 href={'/profile'}
-                className={`border flex justify-center my-1 mx-2 p-2 rounded-md ${currentlyIn === 'profile' ? 'bg-slate-200' : 'bg-slate-100'} whitespace-nowrap`}
+                className={`border flex justify-center my-1 mx-2 p-2 rounded-md ${currentlyIn === 'profile' ? 'bg-blue-100' : 'bg-blue-50'} whitespace-nowrap`}
             >My Profile</Link>
             <button
                 onClick={handleUpdateProfile}
-                className={`border flex justify-center my-1 mx-2 p-2 rounded-md ${currentlyIn === 'edit' ? 'bg-slate-200' : 'bg-slate-100'} whitespace-nowrap`}
+                className={`border flex justify-center my-1 mx-2 p-2 rounded-md ${currentlyIn === 'edit' ? 'bg-blue-100' : 'bg-blue-50'} whitespace-nowrap`}
             >Edit Profile</button>
             <Link
                 href={'/add-product'}
-                className={`border flex justify-center my-1 mx-2 p-2 rounded-md bg-slate-100 whitespace-nowrap`}
+                className={`border flex justify-center my-1 mx-2 p-2 rounded-md bg-blue-50 whitespace-nowrap`}
             >Add new product</Link>
             <Link
                 href={'/favourites'}
-                className={`border flex justify-center my-1 mx-2 p-2 rounded-md bg-slate-100 whitespace-nowrap`}
+                className={`border flex justify-center my-1 mx-2 p-2 rounded-md bg-blue-50 whitespace-nowrap`}
             >My Favourites</Link>
             <button
                 onClick={handleLogout}
-                className={`border flex justify-center my-1 mx-2 p-2 rounded-md ${currentlyIn === 'logout' ? 'bg-slate-200' : 'bg-slate-100'}0 whitespace-nowrap`}
+                className={`border flex justify-center my-1 mx-2 p-2 rounded-md ${currentlyIn === 'logout' ? 'bg-blue-100' : 'bg-blue-50'} whitespace-nowrap`}
             >Sign out</button>
             <EditProfileModal
                 isModalOpen={updateProfileModalIsOpen}
