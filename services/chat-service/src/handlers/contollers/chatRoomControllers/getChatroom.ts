@@ -15,7 +15,8 @@ export default (dependencies: any) => {
                 makeUserOnlineInRoom_usecase
             },
             messageUsecases: {
-                getMessagesFromOneChatroom_usecase
+                getMessagesFromOneChatroom_usecase,
+                changeMessageStatusAsRead_usecase
             },
             userUsecases: {
                 updateUser_usecase,
@@ -107,6 +108,29 @@ export default (dependencies: any) => {
                 const existingChatRoom = await findIsChatRoomExistingWithTwoSpecificUsers_usecase(dependencies).interactor(currentUserId, sellerId);
 
                 if (existingChatRoom) {
+
+                    try {
+                        // if we got chatroom we have update current user status as online in that particular room;
+                        const currentRoomId = existingChatRoom?._id;
+                        const token: string = req.cookies.userJwt;
+                        const userId = await getUserId(token);
+                        const currentUserId = String(userId);
+                        const updated = await makeUserOnlineInRoom_usecase(dependencies).interactor( currentUserId, currentRoomId);
+                    } catch (error) {
+                        console.log(`something went wrong during updating current user status as online ${error}`);
+                    }
+
+                    try {
+                        // if we got chatroom we have update current user status as online in that particular room;
+                        const currentRoomId = existingChatRoom?._id;
+                        const token: string = req.cookies.userJwt;
+                        const userId = await getUserId(token);
+                        const currentUserId = String(userId);
+                        const updatedMessageStatus = await changeMessageStatusAsRead_usecase(dependencies).interactor( currentUserId, currentRoomId);
+                    } catch (error) {
+                        console.log(`something went wrong during updating message status as ${error}`);
+                    }
+
                     chatRoomExisting = true;
                     const messages = await getMessagesFromOneChatroom_usecase(dependencies).interactor(existingChatRoom?._id);
                     const uniqueId: string = uuidV4();
@@ -180,6 +204,18 @@ export default (dependencies: any) => {
                             return res.json({ success: false, message: 'something went wrong' })
                         }
                         else {
+
+                            try {
+                                // if we got chatroom we have to update current user status as online in that particular room;
+                                const currentRoomId = newChatroom?._id;
+                                const token: string = req.cookies.userJwt;
+                                const userId = await getUserId(token);
+                                const currentUserId = String(userId);
+                                await makeUserOnlineInRoom_usecase(dependencies).interactor( currentUserId, currentRoomId);
+                            } catch (error) {
+                                console.log(`something went wrong during updating current user status as online ${error}`);
+                            }
+
                             // now we created a new room for chat then wa have to give seller data to client service;
                             const uniqueId: string = uuidV4();
                             // sending seller id for to get seller data;

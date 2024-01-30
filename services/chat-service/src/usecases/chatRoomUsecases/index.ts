@@ -4,6 +4,7 @@ import { getAllChatsOfCurrentUser_usecase } from "./getCurrentUserChats"
 import { getUsersIdFromChatroom_usecase } from "./getUserIdFromChatroom"
 import { makeUserOfflineInRoom_usecase } from "./makeUserOfflineInRoom"
 import { makeUserOnlineInRoom_usecase } from "./makeUserOnlineInRoom"
+import { checkUserOnlineStatusInARoom_usecase } from "./checkUserOnlineStatus"
 
 export default {
     findIsChatRoomExistingWithTwoSpecificUsers_usecase,
@@ -11,5 +12,6 @@ export default {
     getAllChatsOfCurrentUser_usecase,
     getUsersIdFromChatroom_usecase,
     makeUserOfflineInRoom_usecase,
-    makeUserOnlineInRoom_usecase
+    makeUserOnlineInRoom_usecase,
+    checkUserOnlineStatusInARoom_usecase
 }

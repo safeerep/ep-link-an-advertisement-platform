@@ -65,3 +65,22 @@ export const countOfUnreadMessagesInEachChat = async ( userId: string, chats: an
         return false;
     }
 }
+
+export const makeMessageStatusAsRead = 
+    async ( currentUserId: string, chatRoomId: string):Promise<boolean> => {
+    try {
+        const statusUpdatedMessages = await MessagesCollection.updateMany(
+            {
+                senderId: {
+                    $ne: currentUserId
+                },
+                chatRoomId: chatRoomId,
+                unRead: true
+            }
+        )
+        return true;
+    } catch (error) {
+        console.log(`something went wrong during making message status as read in room ${chatRoomId}`);
+        return false;
+    }
+}

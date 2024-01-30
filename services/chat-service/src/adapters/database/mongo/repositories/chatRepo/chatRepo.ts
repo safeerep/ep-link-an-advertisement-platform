@@ -128,3 +128,20 @@ export const changeUserStatusAsOffline = async ( currentUserId: string, currentR
         return false;
     }
 }
+
+export const checkUserStatusInRoom = 
+    async ( chatRoomId: string, userId: string ):Promise< ChatRoomDocument | boolean> => {
+    try {
+        const roomDocument = await ChatRoomCollection.findOne(
+            {
+                _id: chatRoomId,
+                'users.userId': userId
+            }
+        )
+
+        return roomDocument as ChatRoomDocument;
+    } catch (error) {
+        console.log(`something went wrong during checking a user's status in room ${chatRoomId}`);
+        return false;
+    }
+}

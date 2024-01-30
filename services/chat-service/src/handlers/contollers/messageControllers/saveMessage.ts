@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 
-export default ( dependencies: any) => {
+export default (dependencies: any) => {
     const {
         usecases: {
             messageUsecases,
@@ -9,7 +9,7 @@ export default ( dependencies: any) => {
         }
     } = dependencies;
 
-    const saveNewMessage = async ( req: Request, res: Response) => {
+    const saveNewMessage = async (req: Request, res: Response) => {
         // we will get roomId, message, senderId as req.body;
         try {
             // first we have to check is receiver is active to listen the current user or blocked the current user
@@ -18,19 +18,32 @@ export default ( dependencies: any) => {
             // with the chatRoomId and current userId, we have to find receiver Id
             const { chatRoomId, senderId } = req.body;
             const users = await chatRoomUsecases
-            .getUsersIdFromChatroom_usecase(dependencies).interactor(chatRoomId)
+                .getUsersIdFromChatroom_usecase(dependencies).interactor(chatRoomId)
 
             // then we have to check the receiver blocked or not 
 
             try {
                 const receiverId = users.filter((userId: string) => String(userId) !== senderId)
                 const isBlocked = await userUsecases
-                .checkIsReceiverBlockedSender_usecase(dependencies).interactor(String(receiverId), senderId)
+                    .checkIsReceiverBlockedSender_usecase(dependencies).interactor(String(receiverId), senderId)
 
                 if (isBlocked) {
-                    return res.json({ success: true, message: "current user is not able to send message to this receiver"})
+                    return res.json({ success: true, message: "current user is not able to send message to this receiver" })
                 }
                 // else we will store message in the next try catch block;
+                else {
+                    const chatRoomDocument = await userUsecases
+                        .checkUserOnlineStatusInARoom_usecase(dependencies).interactor(chatRoomId, String(receiverId))
+
+                    if (chatRoomDocument) {
+                        const receiver = chatRoomDocument.users?.find((user: any) => user.userId.toString() === receiverId);
+                        if (receiver?.onlineStatus) {
+                            // its the condition that the receiver is currently online and active in this room;
+                            req.body.unRead = false;
+                        }
+                    
+                    }
+                }
             } catch (error) {
                 console.log(`something went wrong during checking receiver is blocked sender or not`);
                 return res.status(503).json({ success: false, message: "something went wrong" })
@@ -44,9 +57,9 @@ export default ( dependencies: any) => {
         try {
             // here we will save new message
             const newMessage = await messageUsecases
-            .saveNewMessage_usecase(dependencies).interactor(req.body)
+                .saveNewMessage_usecase(dependencies).interactor(req.body)
             if (newMessage) {
-                return res.json({ success: true, message: 'successfully saved new message'})
+                return res.json({ success: true, message: 'successfully saved new message' })
             }
             throw new Error('something went wrong')
         } catch (error) {
