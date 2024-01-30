@@ -31,6 +31,7 @@ const Chat = () => {
     const chats = useSelector((state: any) => state?.user?.data?.chats)
     const user: any = useSelector((state: any) => state?.user?.data?.userData)
     const currentUserBlockedReceiver: any = useSelector((state: any) => state?.user?.data?.currentUserBlockedReceiver)
+    const unreadMessages: any = useSelector((state: any) => state?.user?.data?.unreadMessages)
     console.log('-----------------------------------');
     console.log(chats);
     console.log(seller);
@@ -39,7 +40,7 @@ const Chat = () => {
 
     const handleRoomChange = (userId: string) => {
         console.log('clicked for room change');
-        dispatch(changeRoom(userId))
+        dispatch(changeRoom({userId, currentRoomId: roomId}))
     }
 
     useEffect(() => {
@@ -124,7 +125,7 @@ const Chat = () => {
                     INBOX
                 </div>
                 {chats?.length > 0 ?
-                    (chats.map((chatroom: any) => {
+                    (chats.map((chatroom: any, index: number) => {
                         // every chatroom contains two users
                         // first we have to show the user which is not currently using
                         const behindUser = chatroom?.users?.find((userDoc: any) => {
@@ -151,7 +152,7 @@ const Chat = () => {
                                         <span>{chatroom?.lastMessage}</span>
                                     </div>
                                 </div>
-                                {/* <span className="bg-purple-600 p-1 rounded-full"> 77</span> */}
+                                <span className="bg-purple-300 px-2 rounded-full">{unreadMessages && unreadMessages[index]?.totalUnread > 0 && unreadMessages[index]?.totalUnread}</span>
                             </div>
                         )
                     })) :
