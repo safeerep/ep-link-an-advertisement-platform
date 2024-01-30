@@ -9,7 +9,7 @@ const chatRoomRoutes = (dependencies: any) => {
         getCurrentUserChatRoomsController
     } = chatRoomControllers(dependencies)
 
-    router.get(`/get-chat-room/with/:sellerId`, verifyUserAuth, getChatroomController)
+    router.patch(`/get-chat-room/with/:sellerId`, verifyUserAuth, getChatroomController)
     router.get(`/get-current-user-chats`, verifyUserAuth, getCurrentUserChatRoomsController)
 
     return router;

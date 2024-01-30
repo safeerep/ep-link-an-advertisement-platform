@@ -54,7 +54,7 @@ export const countOfUnreadMessagesInEachChat = async ( userId: string, chats: an
         }
 
         for (const chatDoc of chats) {
-            const roomIdAndCount = await takeCount(chatDoc?.chatRoomId);
+            const roomIdAndCount = await takeCount(chatDoc?._id);
             allRoomsWithUnreadMessagesCount.push(roomIdAndCount[0]);
         }
         console.log(allRoomsWithUnreadMessagesCount);

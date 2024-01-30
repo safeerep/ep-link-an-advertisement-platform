@@ -10,7 +10,9 @@ export default (dependencies: any) => {
         usecases: {
             chatRoomUsecases: {
                 findIsChatRoomExistingWithTwoSpecificUsers_usecase,
-                createANewChatroom_usecase
+                createANewChatroom_usecase,
+                makeUserOfflineInRoom_usecase,
+                makeUserOnlineInRoom_usecase
             },
             messageUsecases: {
                 getMessagesFromOneChatroom_usecase
@@ -72,6 +74,24 @@ export default (dependencies: any) => {
         } catch (error) {
             console.log(`something went wrong during fetching current user data ${error}`);
             return res.status(503).json({ success: false, message: "something went wrong" })
+        }
+
+        // this function will call on two times, 
+        // if now the user called for to change room, we have to update the online status of user in that particular group
+        try {
+            // if now the user called for to change room,
+            // we will get current room Id in body
+            const currentRoomId = req.body?.currentRoomId;
+            if (currentRoomId) {
+                const token: string = req.cookies.userJwt;
+                const userId = await getUserId(token);
+                const currentUserId = String(userId);
+                const updated = await makeUserOfflineInRoom_usecase(dependencies).interactor( currentUserId, currentRoomId);
+                console.log(`user data updated as offline in a room`);
+                console.log(updated);           
+            }
+        } catch (error) {
+            console.log(`something went wrong during updating the user' online status in a particular chat ${error}`);
         }
 
         try {
