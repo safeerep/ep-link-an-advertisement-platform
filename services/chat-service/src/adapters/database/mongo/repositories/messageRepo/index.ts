@@ -1,6 +1,7 @@
-import { saveMessage, getMessagesFromASpecificRoom } from "./messageRepo"
+import { saveMessage, getMessagesFromASpecificRoom, countOfUnreadMessagesInEachChat } from "./messageRepo"
 
 export default {
     saveMessage,
-    getMessagesFromASpecificRoom
+    getMessagesFromASpecificRoom,
+    countOfUnreadMessagesInEachChat
 }

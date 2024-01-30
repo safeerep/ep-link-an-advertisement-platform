@@ -6,6 +6,9 @@ export default ( dependencies: any) => {
         usecases: {
             chatRoomUsecases: {
                 getAllChatsOfCurrentUser_usecase
+            },
+            messageUsecases: {
+                getUnreadMessageCounts_usecase
             }
         }
     } = dependencies;
@@ -18,8 +21,9 @@ export default ( dependencies: any) => {
             .then(async (userId: any) => {
                 const currentUserId: string = String(userId)
                 const chats = await getAllChatsOfCurrentUser_usecase(dependencies).interactor(currentUserId)
+                const unreadMessages = await getUnreadMessageCounts_usecase(dependencies).interactor(currentUserId, chats)
 
-                return res.json({ success: true, chats, message: "successfully fetched all chats of currentuser" })
+                return res.json({ success: true, chats, unreadMessages, message: "successfully fetched all chats of currentuser" })
             })
             .catch((err) => {
                 console.log(` an error happened during destructuring current user token to get id ${err}`);
