@@ -26,8 +26,8 @@ export const handleSocketEvents = ( socket: Socket) => {
     })
 
 
-    socket.on("typing", (roomId: string) => {
-        socket.in(roomId).emit("typing")
-        console.log(`typing happened`);
+    socket.on("typing", ({chatRoomId, senderId}: {chatRoomId: string, senderId: string}) => {
+        socket.in(chatRoomId).emit("typing", ({ chatRoomId, senderId}))
+        console.log('typing happened');
     })
 }
