@@ -30,6 +30,7 @@ const Chat = () => {
     const messages = useSelector((state: any) => state?.user?.data?.messages)
     const chats = useSelector((state: any) => state?.user?.data?.chats)
     const user: any = useSelector((state: any) => state?.user?.data?.userData)
+    const currentUserBlockedReceiver: any = useSelector((state: any) => state?.user?.data?.currentUserBlockedReceiver)
     console.log('-----------------------------------');
     console.log(chats);
     console.log(seller);
@@ -56,7 +57,7 @@ const Chat = () => {
     const sendMessage = () => {
         console.log('clicked for sendMessage');
 
-        if (!message) return;
+        if (!message || currentUserBlockedReceiver) return;
         console.log(`yes message have `, message);
         const messageDoc = {
             message: message,
@@ -89,14 +90,18 @@ const Chat = () => {
         }
     })
 
-    const handleMoreAction = ( action: string) => {
+    const handleMoreAction = (action: string) => {
         // we will get seller id from state;
         const sellerId = seller?._id;
         if (action === 'block') {
             dispatch(blockSeller(sellerId))
             setIsDropdownOpen(false)
         }
-        else if (action === 'un-block'){
+        else if (action === 'blockandreport') {
+            dispatch(blockSeller(sellerId))
+            setIsDropdownOpen(false)
+        }
+        else {
             dispatch(unBlockSeller(sellerId))
             setIsDropdownOpen(false)
         }
@@ -172,7 +177,7 @@ const Chat = () => {
                     <div className="w-full flex justify-between h-16 mb-1 border-b items-center border-black">
                         <div className="flex justify-start gap-2 items-center">
                             <div className="w-10 bg-green-600 h-10 rounded-full">
-                                <img className="object-cover" src="" alt="" />
+                                <img className="object-cover w-full h-full rounded-full" src={seller?.profilePhoto} alt="" />
                             </div>
                             <div className="flex flex-col">
                                 <span className="font-semibold">{seller ? seller.userName : 'User'}</span>
@@ -183,27 +188,31 @@ const Chat = () => {
                             <IoIosCall />
                             <>
                                 <button
-                                    onClick={() => setIsDropdownOpen(!isDropdownOpen)} // Corrected the onClick handler
-                                    >
+                                    onClick={() => setIsDropdownOpen(!isDropdownOpen)} 
+                                >
                                     <GrMore />
                                 </button>
                                 {isDropdownOpen && (
                                     <div className="absolute cursor-pointer top-32 right-10 p-1 z-10 rounded-md bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
-                                        <button
-                                            onClick={()=> handleMoreAction('block')}
-                                            className="block px-4 py-2 text-sm text-black">
-                                            Block user
-                                        </button>
-                                        <button
-                                            onClick={()=> handleMoreAction('un-block')}
-                                            className="block px-4 py-2 text-sm text-black">
-                                            unblock
-                                        </button>
-                                        <button
-                                            onClick={()=> handleMoreAction('blockandreport')}
-                                            className="block px-4 py-2 text-sm text-black">
-                                            Block & Report
-                                        </button>
+                                        {currentUserBlockedReceiver ?
+                                            <button
+                                                onClick={() => handleMoreAction('un-block')}
+                                                className="block px-4 py-2 text-sm text-black">
+                                                unblock
+                                            </button> :
+                                            <>
+                                                <button
+                                                    onClick={() => handleMoreAction('block')}
+                                                    className="block px-4 py-2 text-sm text-black">
+                                                    Block user
+                                                </button>
+                                                <button
+                                                    onClick={() => handleMoreAction('blockandreport')}
+                                                    className="block px-4 py-2 text-sm text-black">
+                                                    Block & Report
+                                                </button>
+                                            </>
+                                        }
                                     </div>
                                 )}
                             </>
@@ -237,7 +246,12 @@ const Chat = () => {
                         {
                             blockedMessageStatus &&
                             <div className={`bg-slate-200 border border-black  p-1 px-2 mb-1 w-fit rounded-md text-center mx-auto`}
-                                >currently you are not able to send message</div>
+                            >currently you are not able to send message</div>
+                        }
+                        {
+                            currentUserBlockedReceiver &&
+                            <div className={`bg-slate-200 border border-black  p-1 px-2 mb-1 w-fit rounded-md text-center mx-auto`}
+                            >unblock first to send messages</div>
                         }
 
                     </div>
@@ -261,7 +275,7 @@ const Chat = () => {
                         </button>
                     </div>
                 </div>}
-                <Toaster />
+            <Toaster />
         </div>
     )
 }
