@@ -487,7 +487,7 @@ export const unFollowUser = createAsyncThunk(`/user/unfollow-user`,
 export const chatWithSeller = createAsyncThunk('/user/chat-with-seller',
     async ({userId, router}: {userId: string, router: any}) => {
         try {
-            const response = await axios.get(`${CHAT_SERVICE_BASE_URL}/room/get-chat-room/with/${userId}`, {
+            const response = await axios.patch(`${CHAT_SERVICE_BASE_URL}/room/get-chat-room/with/${userId}`,{}, {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true
             })
@@ -509,9 +509,9 @@ export const chatWithSeller = createAsyncThunk('/user/chat-with-seller',
 )
 
 export const changeRoom = createAsyncThunk('/user/room-change',
-    async (userId: string) => {
+    async ({userId, currentRoomId}: { userId: string, currentRoomId: string}) => {
         try {
-            const response = await axios.get(`${CHAT_SERVICE_BASE_URL}/room/get-chat-room/with/${userId}`, {
+            const response = await axios.patch(`${CHAT_SERVICE_BASE_URL}/room/get-chat-room/with/${userId}`,{ currentRoomId }, {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true
             })
