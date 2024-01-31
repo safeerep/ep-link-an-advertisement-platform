@@ -124,9 +124,9 @@ const Chat = () => {
     }
 
     return (
-        <div className="fixed flex justify-around gap-2 p-4">
+        <div className="fixed flex justify-around gap-2 p-4 h-4/5 w-full">
             {/* inbox  */}
-            <div className="lg:w-1/3 md:w-1/2 w-full bg-blue-100 p-2 h-4/5 rounded-lg">
+            <div className="lg:w-1/3 md:w-1/2 w-full bg-blue-100 p-2 h-full rounded-lg">
                 <div className="w-full flex justify-center border-b-2 border-black">
                     INBOX
                 </div>
@@ -162,7 +162,7 @@ const Chat = () => {
                             </div>
                         )
                     })) :
-                    (<div className="flex flex-col justify-center items-center h-4/5">
+                    (<div className="flex flex-col justify-center items-center h-full">
                         <div>Your inbox is empty.</div>
                         <div>Connect with sellers to chat</div>
                     </div>)
@@ -171,7 +171,7 @@ const Chat = () => {
             {/* if no chat is being selected it will shows in the right side */}
             {
                 !roomId &&
-                <div className="lg:w-2/3 md:w-1/2 w-full bg-blue-100 p-4 h-4/5 rounded-lg flex flex-col justify-center items-center">
+                <div className="lg:w-2/3 md:w-1/2 w-full bg-blue-100 p-4 h-full rounded-lg flex flex-col justify-center items-center">
                     <span>Connect with sellers through ep-link</span>
                     <span>Get your needs fulfilled</span>
                 </div>}
@@ -179,7 +179,7 @@ const Chat = () => {
 
             {
                 roomId &&
-                <div className="lg:w-2/3 md:w-1/2 w-full bg-blue-100 p-4 pt-0 h-4/5 flex flex-col rounded-lg">
+                <div className="lg:w-2/3 md:w-1/2 w-full bg-blue-100 p-4 pt-0 h-full flex flex-col rounded-lg">
                     {/* user name and head */}
                     <div className="w-full flex justify-between h-16 mb-1 border-b items-center border-black">
                         <div className="flex justify-start gap-2 items-center">
