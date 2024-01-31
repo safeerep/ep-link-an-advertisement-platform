@@ -23,7 +23,9 @@ import {
     saveNewMessage,
     changeRoom,
     blockSeller,
-    unBlockSeller
+    unBlockSeller,
+    getFollowersList,
+    getFollowingList
     
 } from "@/store/actions/userActions/userActions";
 import { UserState } from "@/types/user";
@@ -333,6 +335,7 @@ const userSlice = createSlice({
                 state.loading = false;
                 state.error = action.error.message;
             })
+            // on blocking a seller
             .addCase(blockSeller.pending, (state: UserState) => {
                 state.loading = true;
             })
@@ -355,6 +358,32 @@ const userSlice = createSlice({
                 state.error = null;
             })
             .addCase(unBlockSeller.rejected, (state: UserState, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            })
+            // on fetching followers list;
+            .addCase( getFollowersList.pending, (state: UserState) => {
+                state.loading = true;
+            })
+            .addCase(getFollowersList.fulfilled, (state: UserState, action) => {
+                state.loading = false;
+                state.data = { ...state.data, ...action.payload };
+                state.error = null;
+            })
+            .addCase(getFollowersList.rejected, (state: UserState, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            })
+            // on fetching following list ;
+            .addCase( getFollowingList.pending, (state: UserState) => {
+                state.loading = true;
+            })
+            .addCase(getFollowingList.fulfilled, (state: UserState, action) => {
+                state.loading = false;
+                state.data = { ...state.data, ...action.payload };
+                state.error = null;
+            })
+            .addCase(getFollowingList.rejected, (state: UserState, action) => {
                 state.loading = false;
                 state.error = action.error.message;
             })

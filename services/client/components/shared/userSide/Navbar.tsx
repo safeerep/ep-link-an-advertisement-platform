@@ -37,7 +37,8 @@ const Navbar = () => {
     return <Skeleton variant="rectangular" className='w-full' sx={{ bgcolor: '#e3f2fd' }} height={60} />
   }
   return (
-     !userLoading && (<div className='w-full h-16 shadow bg-blue-100 flex justify-between'>
+    !userLoading &&
+    (<div className='fixed w-full h-16 shadow bg-blue-100 flex justify-between'>
       <div
         style={{
           backgroundSize: 'cover',
@@ -57,9 +58,9 @@ const Navbar = () => {
         <BsSearch className='absolute top-6 left-2' />
       </div>
       <div className='flex items-center pe-10'>
-        <BsChatDots 
-        className='cursor-pointer'
-        onClick={() => router.push('/chat')} />
+        <BsChatDots
+          className='cursor-pointer'
+          onClick={() => router.push('/chat')} />
         {(user && user?.userData?.userName !== undefined) ? (
           <>
             <div className="relative inline-block text-left mx-4">
