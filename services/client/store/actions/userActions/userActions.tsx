@@ -259,6 +259,51 @@ export const getSellerProfile = createAsyncThunk('/user/get-seller-profile',
     }
 )
 
+
+export const getFollowersList= createAsyncThunk('/user/get-followers-list', 
+    async (userId: string ) => {
+        try {
+            const response = await axios.get(`${USERS_SERVICE_BASE_URL}/user/get-followers-list/${userId}`, {
+                headers: { "Content-Type": "application/json"},
+                withCredentials: true
+            })
+            if (response?.data?.success) {
+                console.log(response.data);
+                return response.data;
+            } else {
+                toast.error(response?.data?.message)
+                throw new Error('something went wrong')
+            }
+        } catch (error: any) {
+            toast.error(error?.response?.data?.message)
+            console.log(`an error happened during fetching the followers list ${error}`);
+            return error.response.data;
+        }
+    }
+)
+
+export const getFollowingList = createAsyncThunk('/user/get-following-list', 
+    async (userId: string ) => {
+        try {
+            const response = await axios.get(`${USERS_SERVICE_BASE_URL}/user/get-following-list/${userId}`, {
+                headers: { "Content-Type": "application/json"},
+                withCredentials: true
+            })
+            if (response?.data?.success) {
+                console.log(response.data);
+                return response.data;
+            } else {
+                toast.error(response?.data?.message)
+                throw new Error('something went wrong')
+            }
+        } catch (error: any) {
+            toast.error(error?.response?.data?.message)
+            console.log(`an error happened during fetching the following list ${error}`);
+            return error.response.data;
+        }
+    }
+)
+
 export const getAllCategories = createAsyncThunk(`/user/categories`,
     async () => {
         try {

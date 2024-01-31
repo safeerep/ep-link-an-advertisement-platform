@@ -136,23 +136,23 @@ const ProductView = () => {
                                     'loading' :
                                     sellerStatus && sellerStatus == "following" && (
                                         <>
-                                            <button className='bg-slate-950 px-4  p-1 rounded-md'
+                                            <button className='bg-white px-4  p-1 rounded-md'
                                                 onClick={handleUnfollow}
                                             >
                                                 <span
-                                                    className='px-4 text-teal-50' >UNFOLLOW</span>
+                                                    className='px-4 text-slate-950' >UNFOLLOW</span>
                                             </button>
                                             <button 
-                                                className='bg-slate-950 px-4 p-1 rounded-md'
+                                                className='bg-blue-50 border px-4 p-1 rounded-md'
                                                 onClick={() => router.push(`/view-user?id=${seller?._id}`)}
                                             >
                                                 <span
-                                                    className='px-4 text-teal-50' >VIEW SELLER PROFILE</span>
+                                                    className='px-4 text-slate-950' >VIEW SELLER PROFILE</span>
                                             </button>
                                             <button
                                                 onClick={handleClickForChat}
-                                                className='bg-white border rounded-md p-1 text-white'>
-                                                <span className='px-4 text-black' >Message</span>
+                                                className='bg-blue-50 border rounded-md p-1'>
+                                                <span className='px-4 text-slate-950' >Message</span>
                                             </button>
                                         </>
                                     )}
@@ -161,24 +161,24 @@ const ProductView = () => {
                                         <button
                                             onClick={handleFollow}
                                             className='bg-slate-950 px-4 p-1 rounded-md'>
-                                            <span className='px-4 text-teal-50' >FOLLOW</span>
+                                            <span className='px-4 text-blue-50' >FOLLOW</span>
                                         </button>
                                         <button
                                             onClick={() => router.push(`/view-user?id=${seller?._id}`)}
-                                            className='bg-slate-950 px-4 p-1 rounded-md'>
-                                            <span className='px-4 text-teal-50' >VIEW SELLER PROFILE</span>
+                                            className='bg-blue-50 px-4 p-1 rounded-md'>
+                                            <span className='px-4 text-slate-950' >VIEW SELLER PROFILE</span>
                                         </button>
                                         <button
                                             onClick={handleClickForChat}
-                                            className='bg-white p-1 text-white'>
-                                            <span className='px-4 text-black' >Message</span>
+                                            className='bg-blue-50 p-1 text-white'>
+                                            <span className='px-4 text-slate-950' >Message</span>
                                         </button></>
                                 )}
                                 {sellerStatus && sellerStatus == "same_user" && (
                                     <>
                                         <button
                                             onClick={() => router.push(`/edit-product?product=${productId}`)}
-                                            className='bg-slate-700 p-1 flex justify-between items-center text-white gap-x-2'>
+                                            className='bg-slate-700 p-1 flex justify-between items-center border rounded-md text-white gap-x-2'>
                                             Edit Product
                                             <AiOutlineEdit />
                                         </button>
