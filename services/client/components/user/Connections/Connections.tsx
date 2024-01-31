@@ -1,10 +1,11 @@
-import { getFollowersList, getFollowingList, followUser, unFollowUser } from "@/store/actions/userActions/userActions";
+import { authRequired, getFollowersList, getFollowingList, followUser, unFollowUser } from "@/store/actions/userActions/userActions";
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 
 const Connections: React.FC = () => {
     const dispatch: any = useDispatch();
+    const router = useRouter();
     const [section, setSection] = useState('followers')
     const searchParams = useSearchParams();
     const sellerId: string | any = searchParams.get("id");
@@ -13,15 +14,19 @@ const Connections: React.FC = () => {
     const following = useSelector((state: any) => state?.user?.data?.following)
 
     useEffect(() => {
+        dispatch(authRequired(router))
+    },[])
+
+    useEffect(() => {
         if (sellerId) {
             dispatch(getFollowersList(sellerId))
             dispatch(getFollowingList(sellerId))
         }
-        else {
+        else if (user?._id){
             dispatch(getFollowersList(user?._id))
             dispatch(getFollowingList(user?._id))
         }
-    }, [dispatch])
+    }, [ user?._id])
 
     const handleFollow = async (userId: string) => {
         console.log('clicked for follow');
