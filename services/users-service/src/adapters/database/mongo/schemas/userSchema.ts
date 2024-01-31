@@ -42,11 +42,13 @@ const UsersSchema: Schema = new Schema(
     followers: [
       {
         type: Schema.Types.ObjectId,
+        ref: "Users"
       },
     ],
     following: [
       {
         type: Schema.Types.ObjectId,
+        ref: "Users"
       },
     ],
     blockedPersons: [

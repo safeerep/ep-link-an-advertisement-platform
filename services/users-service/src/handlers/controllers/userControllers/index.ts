@@ -13,6 +13,9 @@ import unfollow from "./unfollow";
 import updateProfile from "./updateProfile";
 import getSellerProfile from "./getSellerProfile";
 import reportSeller from "./reportSeller";
+import getFollowersList from "./getFollowersList";
+import getFollowingList from "./getFollowingList";
+
 
 export default (dependencies: any) => {
     return {
@@ -30,6 +33,8 @@ export default (dependencies: any) => {
         unfollowController: unfollow(dependencies),
         updateProfileController: updateProfile(dependencies),
         getSellerProfileController: getSellerProfile(dependencies),
-        reportSellerController: reportSeller(dependencies)
+        reportSellerController: reportSeller(dependencies),
+        getFollowersListController: getFollowersList(dependencies),
+        getFollowingListController: getFollowingList(dependencies)
     }
 }

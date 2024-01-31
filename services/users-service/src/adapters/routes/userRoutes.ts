@@ -22,7 +22,9 @@ export default (dependencies: any) => {
     unfollowController,
     updateProfileController,
     getSellerProfileController,
-    reportSellerController
+    reportSellerController,
+    getFollowersListController,
+    getFollowingListController
   } = userControllers(dependencies);
 
   router.use(passport.initialize());
@@ -60,6 +62,10 @@ export default (dependencies: any) => {
   router.put("/update-profile",verifyUserAuth, upload.single('profilePhoto'), updateProfileController)
   // to retrieve seller details including seller's own products;
   router.get("/get-seller-profile/:sellerId",verifyUserAuth, getSellerProfileController)
+  // to get the followers of a specific user
+  router.get("/get-followers-list/:userId",verifyUserAuth, getFollowersListController)
+  // to get the following list of a specific user
+  router.get("/get-following-list/:userId",verifyUserAuth, getFollowingListController)
   // to report on a seller account;
   router.post("/report-seller", verifyUserAuth, reportSellerController)
 

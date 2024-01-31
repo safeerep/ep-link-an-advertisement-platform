@@ -10,6 +10,8 @@ import { followUser_usecase } from "./followUser";
 import { unFollowUser_usecase } from "./unFollowUser";
 import { updateProfile_usecase } from "./updateProfile";
 import { reportSeller_usecase } from "./reportSeller";
+import { getFollowingList_usecase } from "./getFollowingList";
+import { getFollowersList_usecase } from "./getFollowersList";
 
 export default {
     findExistingUser_usecase,
@@ -23,5 +25,7 @@ export default {
     followUser_usecase,
     unFollowUser_usecase,
     updateProfile_usecase,
-    reportSeller_usecase
+    reportSeller_usecase,
+    getFollowersList_usecase,
+    getFollowingList_usecase
 }
