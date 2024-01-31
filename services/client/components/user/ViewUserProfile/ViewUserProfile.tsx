@@ -52,7 +52,7 @@ const ViewUserProfile = () => {
                 />
                 <span>{seller?.userName}</span>
                 <button>
-                    <strong>FOLLOWERS : {seller?.followers?.length}</strong>     
+                    <strong>FOLLOWERS : {seller?.followers?.length}</strong>
                 </button>
                 <button>
                     <strong>FOLLOWING : {seller?.following?.length}</strong>
@@ -61,25 +61,28 @@ const ViewUserProfile = () => {
                     <strong>TOTAL PRODUCTS ADDED : </strong>{products?.length}
                 </span>
                 {
-                    showProducts? 
-                    (<button
-                    onClick={() => setShowProducts(!showProducts)}>
-                    <span className='text-center text-blue-600 font-bold'>show connections</span>
-                </button>):
-                (<button
-                    onClick={() => setShowProducts(!showProducts)}>
-                    <span className='text-center text-blue-600 font-bold'>show products</span>
-                </button>)
+                    showProducts ?
+                        (<button
+                            onClick={() => setShowProducts(!showProducts)}>
+                            <span className='text-center text-blue-600 font-bold'>show connections</span>
+                        </button>) :
+                        (<button
+                            onClick={() => setShowProducts(!showProducts)}>
+                            <span className='text-center text-blue-600 font-bold'>show products</span>
+                        </button>)
                 }
                 <div className="flex justify-around gap-1 my-2">
                     {
-                        user?.following?.includes(seller?._id) ?
+                        (user?._id !== seller?._id) &&
+                            (user?.following?.includes(seller?._id) ?
                             <button
                                 onClick={handleUnfollow}
-                                className='px-4 p-2 border-black border rounded-md' type="button">UNFOLLOW</button> :
+                                className='px-4 p-2 border-black border rounded-md' type="button">UNFOLLOW
+                            </button> :
                             <button
                                 onClick={handleFollow}
-                                className='px-4 p-2 bg-black border text-white rounded-md' type="button">FOLLOW</button>
+                                className='px-4 p-2 bg-black border text-white rounded-md' type="button">FOLLOW
+                            </button>)
                     }
                     <button
                         onClick={handleClickForChat}
