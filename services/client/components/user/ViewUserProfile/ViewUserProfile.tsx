@@ -16,7 +16,7 @@ const ViewUserProfile = () => {
     const router = useRouter();
     const searchParams = useSearchParams();
     const sellerId: string | any = searchParams.get("id");
-    const [showProducts, setShowProducts] = useState(false)
+    const [showProducts, setShowProducts] = useState(true)
     useEffect(() => {
         dispatch(authRequired(router))
         dispatch(getSellerProfile(sellerId))
@@ -51,18 +51,26 @@ const ViewUserProfile = () => {
                     style={{ width: '150px', height: '150px' }}
                 />
                 <span>{seller?.userName}</span>
-                <button
-                    onClick={() => setShowProducts(false)}>
-                    <strong>FOLLOWERS : {seller?.followers?.length}</strong>
-                    
+                <button>
+                    <strong>FOLLOWERS : {seller?.followers?.length}</strong>     
                 </button>
-                <button
-                    onClick={() => setShowProducts(false)}>
+                <button>
                     <strong>FOLLOWING : {seller?.following?.length}</strong>
                 </button>
                 <span>
                     <strong>TOTAL PRODUCTS ADDED : </strong>{products?.length}
-                    </span>
+                </span>
+                {
+                    showProducts? 
+                    (<button
+                    onClick={() => setShowProducts(!showProducts)}>
+                    <span className='text-center text-blue-600 font-bold'>show connections</span>
+                </button>):
+                (<button
+                    onClick={() => setShowProducts(!showProducts)}>
+                    <span className='text-center text-blue-600 font-bold'>show products</span>
+                </button>)
+                }
                 <div className="flex justify-around gap-1 my-2">
                     {
                         user?.following?.includes(seller?._id) ?

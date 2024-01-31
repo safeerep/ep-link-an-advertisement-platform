@@ -9,7 +9,7 @@ const ProfileSidebar = () => {
     const dispatch: any = useDispatch()
     const router = useRouter()
     const [updateProfileModalIsOpen, setUpdateProfileModalIsOpen] = useState(false);
-    const [ currentlyIn, setCurrentlyIn] = useState('profile')
+    const [currentlyIn, setCurrentlyIn] = useState('profile')
 
     const handleLogout = () => {
         setCurrentlyIn('logout')
@@ -19,10 +19,6 @@ const ProfileSidebar = () => {
     const handleUpdateProfile = () => {
         setCurrentlyIn('edit')
         setUpdateProfileModalIsOpen(!updateProfileModalIsOpen)
-    }
-
-    const showFollowers = ( ) => {
-        console.log(`called`);    
     }
 
     const user = useSelector((state: any) => state?.user?.data?.userData)
@@ -39,18 +35,21 @@ const ProfileSidebar = () => {
             </div>
             {/* starting */}
             <div className="flex mx-2 p-2 justify-around">
-                <div 
-                    onClick={() => showFollowers()}
+                <div
                     className='flex flex-col cursor-pointer'>
                     <span className='text-center font-bold'>Followers</span>
                     <span className='text-center font-bold'>{user?.followers?.length}</span>
                 </div>
-                <div 
-                onClick={() => showFollowers()}
-                className='flex flex-col cursor-pointer'>
+                <div
+                    className='flex flex-col cursor-pointer'>
                     <span className='text-center font-bold'>Following</span>
                     <span className='text-center font-bold'>{user?.following?.length}</span>
                 </div>
+            </div>
+            <div
+                onClick={() => router.push('/profile/connections')}
+                className='flex justify-center my-2 cursor-pointer'>
+                <span className='text-center text-blue-600 font-bold'>show connections</span>
             </div>
             {/* ending  */}
             <Link
