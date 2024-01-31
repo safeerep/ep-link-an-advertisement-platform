@@ -43,13 +43,13 @@ const ProfileSidebar = () => {
                     onClick={() => showFollowers()}
                     className='flex flex-col cursor-pointer'>
                     <span className='text-center font-bold'>Followers</span>
-                    <span className='text-center font-bold'>{user?.followers?.length}77</span>
+                    <span className='text-center font-bold'>{user?.followers?.length}</span>
                 </div>
                 <div 
                 onClick={() => showFollowers()}
                 className='flex flex-col cursor-pointer'>
                     <span className='text-center font-bold'>Following</span>
-                    <span className='text-center font-bold'>{user?.following?.length}77</span>
+                    <span className='text-center font-bold'>{user?.following?.length}</span>
                 </div>
             </div>
             {/* ending  */}

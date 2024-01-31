@@ -16,7 +16,7 @@ const ViewUserProfile = () => {
     const router = useRouter();
     const searchParams = useSearchParams();
     const sellerId: string | any = searchParams.get("id");
-    const [showProducts, setShowProducts] = useState(true)
+    const [showProducts, setShowProducts] = useState(false)
     useEffect(() => {
         dispatch(authRequired(router))
         dispatch(getSellerProfile(sellerId))
@@ -68,10 +68,10 @@ const ViewUserProfile = () => {
                         user?.following?.includes(seller?._id) ?
                             <button
                                 onClick={handleUnfollow}
-                                className='px-2 border-black border rounded-md' type="button">UNFOLLOW</button> :
+                                className='px-4 p-2 border-black border rounded-md' type="button">UNFOLLOW</button> :
                             <button
                                 onClick={handleFollow}
-                                className='px-2 bg-blue-950 border rounded-md' type="button">FOLLOW</button>
+                                className='px-4 p-2 bg-black border text-white rounded-md' type="button">FOLLOW</button>
                     }
                     <button
                         onClick={handleClickForChat}

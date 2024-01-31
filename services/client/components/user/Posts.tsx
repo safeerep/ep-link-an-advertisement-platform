@@ -41,7 +41,7 @@ const Posts = ({ from }: { from: string }) => {
                                 <div className="flex justify-center items-center">
                                     <img
                                         onClick={() => router.push(`/product-view?product=${product?._id}`)}
-                                        className="h-32 w-full object-center relative"
+                                        className="h-32 w-full object-cover relative"
                                         src={product?.images[0] ? product?.images[0] : ''} alt="" 
                                     />
                                 </div>
