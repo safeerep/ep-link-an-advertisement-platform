@@ -10,7 +10,9 @@ import {
   followUser,
   unFollowUser,
   updateUserProfile,
-  reportSeller
+  reportSeller,
+  getFollowersList,
+  getFollowingList
 } from "./userRepo";
 
 export default {
@@ -25,5 +27,7 @@ export default {
   followUser,
   unFollowUser,
   updateUserProfile,
-  reportSeller
+  reportSeller,
+  getFollowersList,
+  getFollowingList
 };

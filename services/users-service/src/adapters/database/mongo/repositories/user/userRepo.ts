@@ -135,6 +135,33 @@ export const followUser = async (currentUserId: string, userId: string) => {
   }
 }
 
+// to get followers list
+export const getFollowersList = async ( userId: string) => {
+  try {
+    // here we are populating the followers of the specific user;
+    const userDocument = await userCollection.findById(userId).populate({path: "followers", select: "-password"});
+    console.log(`userdocument with followers`);
+    console.log(userDocument);
+    return userDocument? userDocument.followers: null;
+  } catch (error) {
+    console.log(`something went wrong during populating the followers of the user ${error}`);
+    return false;
+  }
+}
+
+// to get following list
+export const getFollowingList = async ( userId: string) => {
+  try {
+    // here we are populating the followers of the specific user;
+    const userDocument= await userCollection.findById(userId).populate({path: "following", select: "-password"});
+    console.log(`userdocument with following`);
+    console.log(userDocument);
+    return userDocument? userDocument.following : null;
+  } catch (error) {
+    console.log(`something went wrong during populating the following list of the user ${error}`);
+    return false;
+  }
+}
 
 // to unfollow the user
 export const unFollowUser = async (currentUserId: string, userId: string) => {
