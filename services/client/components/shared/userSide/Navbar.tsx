@@ -1,7 +1,6 @@
 "use client"
 import React, { useState } from 'react'
 import Link from 'next/link'
-import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useDispatch, useSelector } from 'react-redux'
 import { FiUser } from 'react-icons/fi'
@@ -23,22 +22,24 @@ const Navbar = () => {
   };
 
   const handleNavigate = (toRoute: string) => {
+    setDropdownOpen(false);
     router.push(`/${toRoute}`)
   }
 
   const handleLogout = () => {
+    setDropdownOpen(false);
     dispatch(logout(router))
   }
 
   const user: any = useSelector((state: any) => state.user.data)
   const userLoading: any = useSelector((state: any) => state.user.loading)
-  console.log(user?.userData?.userName);
+  
   if (userLoading) {
     return <Skeleton variant="rectangular" className='w-full' sx={{ bgcolor: '#e3f2fd' }} height={60} />
   }
   return (
     !userLoading &&
-    (<div className='fixed w-full h-16 shadow bg-blue-100 flex justify-between'>
+    (<div className='fixed w-full h-16 shadow bg-blue-100 flex justify-between z-10'>
       <div
         style={{
           backgroundSize: 'cover',

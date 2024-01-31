@@ -16,8 +16,8 @@ const Profile = () => {
     <>
       <div className="flex-grow">
         <h1 className='text-xl p-3'> Your Products </h1>
+        <Posts from={'profile'} />
       </div>
-      <Posts from={'profile'} />
     </>
   )
 }

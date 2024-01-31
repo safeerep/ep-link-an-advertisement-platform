@@ -1,5 +1,5 @@
 "use client"
-import React, { Fragment, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { checkAuth, getProducts } from '@/store/actions/userActions/userActions'
 import { useRouter } from 'next/navigation'
@@ -20,7 +20,9 @@ const Home = () => {
 
   return (
     <>
+    <div className='mt-[-8px]'>
       <Navbar />
+    </div>
       <div className='min-h-screen'>
         <Banner />
         <Posts from={'home'} />
