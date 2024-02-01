@@ -59,19 +59,19 @@ const ProductView = () => {
     return (
         <>
             <div className="p-4 pt-6 bg-slate-50">
-                <div className="w-full flex justify-center">
-                    <div className="w-full sm:w-full md:w-1/2 lg:w-3/4">
+                <div className="w-full flex flex-col lg:flex-row">
+                    <div className="lg:w-3/4 w-full">
                         <div className=" h-96 p-4 border border-black flex justify-center object-center" >
                             <img
                                 src={product?.images ? product?.images[mainImage] : ''} alt="" />
                         </div>
-                        <div className='flex justify-start px-2' >
+                        <div className='flex flex-wrap justify-start px-2' >
                             {
                                 product?.images && product?.images.map((image: any, index: number) => (
                                     <img
                                         // starting
                                         key={index}
-                                        className="m-2"
+                                        className="m-2 object-contain"
                                         src={image}
                                         onClick={() => {
                                             setMainImage(index)
@@ -84,7 +84,7 @@ const ProductView = () => {
                                 )}
                         </div>
                     </div>
-                    <div className='bg-slate-50 w-full sm:w-full md:w-1/2 lg:w-1/4'>
+                    <div className='bg-slate-50 lg:w-1/4 w-full'>
                         {product && Object?.keys(product?.inputFields).map(key => (
                             <div className='p-2' key={key}>
                                 <h3 className='text-xl'>{key}</h3>
