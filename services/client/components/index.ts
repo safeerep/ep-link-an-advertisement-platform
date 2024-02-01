@@ -15,6 +15,8 @@ import Profile from "./user/Profile/Profile";
 import Connections from "./user/Connections/Connections";
 import Favourites from "./user/Favourites/Favourites";
 import ViewUserProfile from "./user/ViewUserProfile/ViewUserProfile";
+// for developement stage only
+import VideoCall from "./user/VideoCall/VideoCall";
 
 import AdminSignIn from "./auth/AdminSignIn/AdminSignIn";
 import AdminForgotPassword from "./auth/AdminForgotPassword/AdminForgotPassword";
@@ -43,6 +45,7 @@ export {
     Connections,
     Favourites,
     ViewUserProfile,
+    VideoCall,
     
     AdminSignIn,
     AdminForgotPassword,

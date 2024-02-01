@@ -15,6 +15,7 @@ import {
 import { io } from 'socket.io-client'
 import { SOCKET_BASE_URL } from '@/constants'
 import { Toaster } from 'react-hot-toast'
+import VideoCall from '../VideoCall/VideoCall'
 
 const Chat = () => {
     const socket = io(`${SOCKET_BASE_URL}`)
@@ -24,6 +25,7 @@ const Chat = () => {
     const [isDropdownOpen, setIsDropdownOpen] = useState(false)
     const [showTyping, setShowTyping] = useState(false)
     const [blockedMessageStatus, setBlockedMessageStatus] = useState(false)
+    const [videoCallOngoing, setVideoCallOngoing] = useState(false)
     const [newMessages, setNewMessages] = useState<any>([])
     const inputRef = useRef<HTMLInputElement | null>(null)
     const roomId = useSelector((state: any) => state?.user?.data?.chatroom?._id)
@@ -41,7 +43,7 @@ const Chat = () => {
 
     const handleRoomChange = (userId: string) => {
         console.log('clicked for room change');
-        dispatch(changeRoom({userId, currentRoomId: roomId}))
+        dispatch(changeRoom({ userId, currentRoomId: roomId }))
     }
 
     useEffect(() => {
@@ -87,13 +89,13 @@ const Chat = () => {
         }
     })
 
-    socket.on("typing", ({ chatRoomId, senderId}:{chatRoomId: string,senderId: string}) => {
+    socket.on("typing", ({ chatRoomId, senderId }: { chatRoomId: string, senderId: string }) => {
         if (chatRoomId === roomId && senderId !== user?._id) {
             // show typing 
             setShowTyping(true)
             setTimeout(() => {
                 setShowTyping(false)
-            },3000)
+            }, 3000)
         }
     })
 
@@ -124,167 +126,169 @@ const Chat = () => {
     }
 
     return (
-        <div className="fixed flex justify-around gap-2 p-4 h-4/5 w-full">
-            {/* inbox  */}
-            <div className="lg:w-1/3 md:w-1/2 w-full bg-blue-100 p-2 h-full rounded-lg">
-                <div className="w-full flex justify-center border-b-2 border-black">
-                    INBOX
-                </div>
-                {chats?.length > 0 ?
-                    (chats.map((chatroom: any, index: number) => {
-                        // every chatroom contains two users
-                        // first we have to show the user which is not currently using
-                        const behindUser = chatroom?.users?.find((userDoc: any) => {
-                            console.log('okdaa');
-                            console.log(userDoc?.userId);
-                            console.log(user?._id);
-                            console.log('okdaa');
-                            if (userDoc?.userId?.userId !== user?._id) {
-                                return userDoc?.userId;
-                            }
-                        })
-                        return (
-                            <div
-                                key={behindUser?._id}
-                                className="w-full flex justify-between h-16 border-b items-center border-black"
-                                onClick={() => handleRoomChange(behindUser?.userId?.userId)}
-                            >
-                                <div className="flex justify-start gap-2 items-center">
-                                    <div className="w-10 bg-gray-600 h-10 rounded-full">
-                                        <img className="object-cover w-full h-full rounded-full" src={behindUser?.userId?.profilePhoto} alt="" />
-                                    </div>
-                                    <div className="flex flex-col">
-                                        <span className="font-semibold">{behindUser?.userId?.userName}</span>
-                                        <span>{chatroom?.lastMessage}</span>
-                                    </div>
-                                </div>
-                                <span className="bg-purple-300 px-2 rounded-full">{unreadMessages && unreadMessages[index]?.totalUnread > 0 && unreadMessages[index]?.totalUnread}</span>
-                            </div>
-                        )
-                    })) :
-                    (<div className="flex flex-col justify-center items-center h-full">
-                        <div>Your inbox is empty.</div>
-                        <div>Connect with sellers to chat</div>
-                    </div>)
-                }
-            </div>
-            {/* if no chat is being selected it will shows in the right side */}
-            {
-                !roomId &&
-                <div className="lg:w-2/3 md:w-1/2 w-full bg-blue-100 p-4 h-full rounded-lg flex flex-col justify-center items-center">
-                    <span>Connect with sellers through ep-link</span>
-                    <span>Get your needs fulfilled</span>
-                </div>}
-            {/* empty right side ends here */}
-
-            {
-                roomId &&
-                <div className="lg:w-2/3 md:w-1/2 w-full bg-blue-100 p-4 pt-0 h-full flex flex-col rounded-lg">
-                    {/* user name and head */}
-                    <div className="w-full flex justify-between h-16 mb-1 border-b items-center border-black">
-                        <div className="flex justify-start gap-2 items-center">
-                            <div className="w-10 bg-green-600 h-10 rounded-full">
-                                <img className="object-cover w-full h-full rounded-full" src={seller?.profilePhoto} alt="" />
-                            </div>
-                            <div className="flex flex-col">
-                                <span className="font-semibold">{seller ? seller.userName : 'User'}</span>
-                                {showTyping && <span className='text-green-500'>Typing...</span>}
-                            </div>
-                        </div>
-                        <div className="flex justify-center gap-6">
-                            <BsCameraVideoFill />
-                            <IoIosCall />
-                            <>
-                                <button
-                                    onClick={() => setIsDropdownOpen(!isDropdownOpen)} 
+        !videoCallOngoing ?
+            <div className="fixed flex justify-around gap-2 p-4 h-4/5 w-full">
+                {/* inbox  */}
+                <div className="lg:w-1/3 md:w-1/2 w-full bg-blue-100 p-2 h-full rounded-lg">
+                    <div className="w-full flex justify-center border-b-2 border-black">
+                        INBOX
+                    </div>
+                    {chats?.length > 0 ?
+                        (chats.map((chatroom: any, index: number) => {
+                            // every chatroom contains two users
+                            // first we have to show the user which is not currently using
+                            const behindUser = chatroom?.users?.find((userDoc: any) => {
+                                console.log('okdaa');
+                                console.log(userDoc?.userId);
+                                console.log(user?._id);
+                                console.log('okdaa');
+                                if (userDoc?.userId?.userId !== user?._id) {
+                                    return userDoc?.userId;
+                                }
+                            })
+                            return (
+                                <div
+                                    key={behindUser?._id}
+                                    className="w-full flex justify-between h-16 border-b items-center border-black"
+                                    onClick={() => handleRoomChange(behindUser?.userId?.userId)}
                                 >
-                                    <GrMore />
-                                </button>
-                                {isDropdownOpen && (
-                                    <div className="absolute cursor-pointer top-32 right-10 p-1 z-10 rounded-md bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
-                                        {currentUserBlockedReceiver ?
-                                            <button
-                                                onClick={() => handleMoreAction('un-block')}
-                                                className="block px-4 py-2 text-sm text-black">
-                                                unblock
-                                            </button> :
-                                            <>
-                                                <button
-                                                    onClick={() => handleMoreAction('block')}
-                                                    className="block px-4 py-2 text-sm text-black">
-                                                    Block user
-                                                </button>
-                                                <button
-                                                    onClick={() => handleMoreAction('blockandreport')}
-                                                    className="block px-4 py-2 text-sm text-black">
-                                                    Block & Report
-                                                </button>
-                                            </>
-                                        }
+                                    <div className="flex justify-start gap-2 items-center">
+                                        <div className="w-10 bg-gray-600 h-10 rounded-full">
+                                            <img className="object-cover w-full h-full rounded-full" src={behindUser?.userId?.profilePhoto} alt="" />
+                                        </div>
+                                        <div className="flex flex-col">
+                                            <span className="font-semibold">{behindUser?.userId?.userName}</span>
+                                            <span>{chatroom?.lastMessage}</span>
+                                        </div>
                                     </div>
-                                )}
-                            </>
+                                    <span className="bg-purple-300 px-2 rounded-full">{unreadMessages && unreadMessages[index]?.totalUnread > 0 && unreadMessages[index]?.totalUnread}</span>
+                                </div>
+                            )
+                        })) :
+                        (<div className="flex flex-col justify-center items-center h-full">
+                            <div>Your inbox is empty.</div>
+                            <div>Connect with sellers to chat</div>
+                        </div>)
+                    }
+                </div>
+                {/* if no chat is being selected it will shows in the right side */}
+                {
+                    !roomId &&
+                    <div className="lg:w-2/3 md:w-1/2 w-full bg-blue-100 p-4 h-full rounded-lg flex flex-col justify-center items-center">
+                        <span>Connect with sellers through ep-link</span>
+                        <span>Get your needs fulfilled</span>
+                    </div>}
+                {/* empty right side ends here */}
+
+                {
+                    roomId &&
+                    <div className="lg:w-2/3 md:w-1/2 w-full bg-blue-100 p-4 pt-0 h-full flex flex-col rounded-lg">
+                        {/* user name and head */}
+                        <div className="w-full flex justify-between h-16 mb-1 border-b items-center border-black">
+                            <div className="flex justify-start gap-2 items-center">
+                                <div className="w-10 bg-green-600 h-10 rounded-full">
+                                    <img className="object-cover w-full h-full rounded-full" src={seller?.profilePhoto} alt="" />
+                                </div>
+                                <div className="flex flex-col">
+                                    <span className="font-semibold">{seller ? seller.userName : 'User'}</span>
+                                    {showTyping && <span className='text-green-500'>Typing...</span>}
+                                </div>
+                            </div>
+                            <div className="flex justify-center gap-6">
+                                <BsCameraVideoFill />
+                                <IoIosCall />
+                                <>
+                                    <button
+                                        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                                    >
+                                        <GrMore />
+                                    </button>
+                                    {isDropdownOpen && (
+                                        <div className="absolute cursor-pointer top-32 right-10 p-1 z-10 rounded-md bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+                                            {currentUserBlockedReceiver ?
+                                                <button
+                                                    onClick={() => handleMoreAction('un-block')}
+                                                    className="block px-4 py-2 text-sm text-black">
+                                                    unblock
+                                                </button> :
+                                                <>
+                                                    <button
+                                                        onClick={() => handleMoreAction('block')}
+                                                        className="block px-4 py-2 text-sm text-black">
+                                                        Block user
+                                                    </button>
+                                                    <button
+                                                        onClick={() => handleMoreAction('blockandreport')}
+                                                        className="block px-4 py-2 text-sm text-black">
+                                                        Block & Report
+                                                    </button>
+                                                </>
+                                            }
+                                        </div>
+                                    )}
+                                </>
+                            </div>
                         </div>
-                    </div>
-                    {/* user name and head ends here*/}
+                        {/* user name and head ends here*/}
 
-                    {/* messages shows in this div */}
-                    <div className="flex-grow bg-blue-100 overflow-y-auto">
-                        {/* <div className='bg-white p-1 px-2 mb-1 w-fit rounded-md'>message</div> */}
-                        {
-                            messages?.length > 0 &&
-                            messages.map((messageDoc: any, index: number) => (
-                                <div key={index}
-                                    className={`bg-white p-1 px-2 mb-1 w-fit rounded-md 
+                        {/* messages shows in this div */}
+                        <div className="flex-grow bg-blue-100 overflow-y-auto">
+                            {/* <div className='bg-white p-1 px-2 mb-1 w-fit rounded-md'>message</div> */}
+                            {
+                                messages?.length > 0 &&
+                                messages.map((messageDoc: any, index: number) => (
+                                    <div key={index}
+                                        className={`bg-white p-1 px-2 mb-1 w-fit rounded-md 
                                     ${messageDoc.senderId === user?._id ? 'ml-auto' : ''
-                                        }`}
-                                >{messageDoc?.message}</div>
-                            ))
-                        }
-                        {
-                            newMessages?.length > 0 &&
-                            newMessages.map((messageDoc: any, index: number) => (
-                                <div key={index}
-                                    className={`bg-white p-1 px-2 mb-1 w-fit rounded-md 
+                                            }`}
+                                    >{messageDoc?.message}</div>
+                                ))
+                            }
+                            {
+                                newMessages?.length > 0 &&
+                                newMessages.map((messageDoc: any, index: number) => (
+                                    <div key={index}
+                                        className={`bg-white p-1 px-2 mb-1 w-fit rounded-md 
                                 ${messageDoc.senderId === user?._id ? 'ml-auto' : ''
-                                        }`}
-                                >{messageDoc?.message}</div>
-                            ))
-                        }
-                        {
-                            blockedMessageStatus &&
-                            <div className={`bg-slate-200 border border-black  p-1 px-2 mb-1 w-fit rounded-md text-center mx-auto`}
-                            >currently you are not able to send message</div>
-                        }
-                        {
-                            currentUserBlockedReceiver &&
-                            <div className={`bg-slate-200 border border-black  p-1 px-2 mb-1 w-fit rounded-md text-center mx-auto`}
-                            >unblock first to send messages</div>
-                        }
+                                            }`}
+                                    >{messageDoc?.message}</div>
+                                ))
+                            }
+                            {
+                                blockedMessageStatus &&
+                                <div className={`bg-slate-200 border border-black  p-1 px-2 mb-1 w-fit rounded-md text-center mx-auto`}
+                                >currently you are not able to send message</div>
+                            }
+                            {
+                                currentUserBlockedReceiver &&
+                                <div className={`bg-slate-200 border border-black  p-1 px-2 mb-1 w-fit rounded-md text-center mx-auto`}
+                                >unblock first to send messages</div>
+                            }
 
-                    </div>
-                    {/* message showing div ended here */}
+                        </div>
+                        {/* message showing div ended here */}
 
-                    {/* footer for type message and send */}
-                    <div className="mb-0 flex items-center p-4">
-                        <input
-                            ref={inputRef}
-                            value={message}
-                            onChange={(e) => inputChanged(e)}
-                            type="text"
-                            placeholder="Type your message..."
-                            className="flex-grow bg-white border border-gray-300 p-2 rounded-md mr-2"
-                        />
-                        <button
-                            type='button'
-                            onClick={sendMessage}
-                            className="bg-slate-900 text-white px-4 py-2 rounded-md">
-                            Send
-                        </button>
-                    </div>
-                </div>}
-            <Toaster />
-        </div>
+                        {/* footer for type message and send */}
+                        <div className="mb-0 flex items-center p-4">
+                            <input
+                                ref={inputRef}
+                                value={message}
+                                onChange={(e) => inputChanged(e)}
+                                type="text"
+                                placeholder="Type your message..."
+                                className="flex-grow bg-white border border-gray-300 p-2 rounded-md mr-2"
+                            />
+                            <button
+                                type='button'
+                                onClick={sendMessage}
+                                className="bg-slate-900 text-white px-4 py-2 rounded-md">
+                                Send
+                            </button>
+                        </div>
+                    </div>}
+                <Toaster />
+            </div> :
+            <VideoCall />
     )
 }
 
