@@ -26,16 +26,20 @@ const Connections: React.FC = () => {
             dispatch(getFollowersList(user?._id))
             dispatch(getFollowingList(user?._id))
         }
-    }, [ user?._id])
+    }, [user?._id])
 
     const handleFollow = async (userId: string) => {
         console.log('clicked for follow');
-        dispatch(followUser(userId))
+        await dispatch(followUser(userId))
+        // if (sellerId) dispatch(getFollowingList(sellerId))
+        // else dispatch(getFollowingList(user?._id))
     }
 
     const handleUnfollow = async (userId: string) => {
         console.log('clicked for unfollow');
-        dispatch(unFollowUser(userId))
+        await dispatch(unFollowUser(userId))
+        // if (sellerId) dispatch(getFollowingList(sellerId))
+        // else dispatch(getFollowingList(user?._id))
     }
 
     return (
