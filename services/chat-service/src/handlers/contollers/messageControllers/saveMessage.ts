@@ -36,7 +36,7 @@ export default (dependencies: any) => {
                         .checkUserOnlineStatusInARoom_usecase(dependencies).interactor(chatRoomId, String(receiverId))
 
                     if (chatRoomDocument) {
-                        const receiver = chatRoomDocument.users?.find((user: any) => user.userId.toString() === receiverId);
+                        const receiver = chatRoomDocument.users?.find((user: any) => String(user.userId) === String(receiverId));
                         if (receiver?.onlineStatus) {
                             // its the condition that the receiver is currently online and active in this room;
                             req.body.unRead = false;
