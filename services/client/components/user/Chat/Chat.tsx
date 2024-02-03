@@ -4,6 +4,7 @@ import { BsCameraVideoFill } from 'react-icons/bs'
 import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
+import Peer, { SignalData } from 'simple-peer'
 import {
     authRequired,
     blockSeller,
@@ -14,11 +15,12 @@ import {
 } from '@/store/actions/userActions/userActions'
 import { io } from 'socket.io-client'
 import { SOCKET_BASE_URL } from '@/constants'
-import { Toaster } from 'react-hot-toast'
+import toast, { Toaster } from 'react-hot-toast'
 import VideoCall from '../VideoCall/VideoCall'
 
 const Chat = () => {
-    const socket = io(`${SOCKET_BASE_URL}`)
+    // const socket = io(`${SOCKET_BASE_URL}`)
+    const [socket, setSocket] = useState<any>(null)
     const dispatch: any = useDispatch();
     const router = useRouter()
     const [message, setMessage] = useState('')
@@ -26,6 +28,13 @@ const Chat = () => {
     const [showTyping, setShowTyping] = useState(false)
     const [blockedMessageStatus, setBlockedMessageStatus] = useState(false)
     const [videoCallOngoing, setVideoCallOngoing] = useState(false)
+    const [initiateCall, setInitiateCall] = useState(false)
+    const [callerName, setCallerName] = useState('')
+    const [receiverName, setReceiverName] = useState('')
+    const [callerId, setCallerId] = useState('')
+    const [receiverId, setReceiverId] = useState('')
+    const [signalData, setSignalData] = useState(null)
+    const [receivedSignalData, setReceivedSignalData] = useState<any>(null)
     const [newMessages, setNewMessages] = useState<any>([])
     const inputRef = useRef<HTMLInputElement | null>(null)
     const roomId = useSelector((state: any) => state?.user?.data?.chatroom?._id)
@@ -35,11 +44,13 @@ const Chat = () => {
     const user: any = useSelector((state: any) => state?.user?.data?.userData)
     const currentUserBlockedReceiver: any = useSelector((state: any) => state?.user?.data?.currentUserBlockedReceiver)
     const unreadMessages: any = useSelector((state: any) => state?.user?.data?.unreadMessages)
-    console.log('-----------------------------------');
-    console.log(chats);
-    console.log(seller);
+    const userId: string = user?._id;
 
-    console.log('-----------------------------------');
+    useEffect(() => {
+        const newSocket = io(`${SOCKET_BASE_URL}?userId=${user?._id}`)
+        setSocket(newSocket)
+    }, [userId])
+
 
     const handleRoomChange = (userId: string) => {
         console.log('clicked for room change');
@@ -55,7 +66,7 @@ const Chat = () => {
     }, [])
 
     useEffect(() => {
-        socket.emit("join-room", roomId, user?._id)
+        socket?.emit("join-room", roomId, user?._id)
         setNewMessages([])
     }, [roomId])
 
@@ -70,18 +81,18 @@ const Chat = () => {
             senderId: user?._id
         }
 
-        socket.emit("send-message", messageDoc)
+        socket?.emit("send-message", messageDoc)
         dispatch(saveNewMessage(messageDoc))
     }
 
-    socket.on("show-message", (data: any) => {
+    socket?.on("show-message", (data: any) => {
         console.log('----show message received in front end-----------');
         console.log(data);
         setNewMessages((newMessages: any) => [...newMessages, data]);
         setMessage('')
     })
 
-    socket.on("receiver-blocked", (data: any) => {
+    socket?.on("receiver-blocked", (data: any) => {
         console.log('----receiver-blocked received in front end-----------');
         console.log(data);
         if (data?.senderId === user?._id) {
@@ -89,7 +100,7 @@ const Chat = () => {
         }
     })
 
-    socket.on("typing", ({ chatRoomId, senderId }: { chatRoomId: string, senderId: string }) => {
+    socket?.on("typing", ({ chatRoomId, senderId }: { chatRoomId: string, senderId: string }) => {
         if (chatRoomId === roomId && senderId !== user?._id) {
             // show typing 
             setShowTyping(true)
@@ -122,9 +133,32 @@ const Chat = () => {
             chatRoomId: roomId,
             senderId: user?._id
         }
-        socket.emit("typing", data)
+        socket?.emit("typing", data)
     }
 
+    // this function calls onthe time when user presses video call button
+    // at that point of time the chat page will hide and video call page will shows
+    const handleVideoCall = () => {
+        if (videoCallOngoing) toast.error(`You can't have multiple calls at a time`)
+        else {
+            setInitiateCall(true)
+            setReceiverName(seller ? seller.userName : 'User')
+            setCallerId(userId)
+            setCallerName(user?.userName)
+            setReceiverId(seller?._id)
+            setVideoCallOngoing(!videoCallOngoing)
+        }
+    }
+
+    // its the time when user is active and user getting calls;
+    // at that point of time, video call page will shows;
+    socket?.on("calling-user", (data: any) => {
+        setCallerName(data?.from)
+        setCallerId(data.fromUserId)
+        setSignalData(data.signalData)
+        setVideoCallOngoing(true);
+    })
+    
     return (
         !videoCallOngoing ?
             <div className="fixed flex justify-around gap-2 p-4 h-4/5 w-full">
@@ -149,7 +183,7 @@ const Chat = () => {
                             return (
                                 <div
                                     key={behindUser?._id}
-                                    className="w-full flex justify-between h-16 border-b items-center border-black"
+                                    className="w-full flex justify-between h-16 border-b items-center border-black cursor-pointer"
                                     onClick={() => handleRoomChange(behindUser?.userId?.userId)}
                                 >
                                     <div className="flex justify-start gap-2 items-center">
@@ -195,8 +229,14 @@ const Chat = () => {
                                 </div>
                             </div>
                             <div className="flex justify-center gap-6">
-                                <BsCameraVideoFill />
-                                <IoIosCall />
+                                <button
+                                    onClick={() => { handleVideoCall() }}
+                                    type="button">
+                                    <BsCameraVideoFill />
+                                </button >
+                                <button type="button">
+                                    <IoIosCall />
+                                </button>
                                 <>
                                     <button
                                         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
@@ -288,7 +328,19 @@ const Chat = () => {
                     </div>}
                 <Toaster />
             </div> :
-            <VideoCall />
+            <VideoCall
+                fromUserId={callerId}
+                videoCallOngoing={videoCallOngoing}
+                endVideoCall={setVideoCallOngoing}
+                receiverName={receiverName}
+                setReceiverName={setReceiverName}
+                callerName={callerName}
+                setCallerName={setCallerName}
+                to={receiverId}
+                startCall={initiateCall}
+                signal={signalData}
+                chatPageSocket={socket}
+            />
     )
 }
 
