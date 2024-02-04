@@ -11,6 +11,9 @@ export default ( dependencies: any) => {
         try {
             // we will get policy duration and subscription amount in body
             // it will be a put request;
+            console.log(`yes here`);
+            console.log(req.body);
+            
             const updatePremiumPlan = await premiumPlanUsecases
             .updatePremiumPlan_usecase(dependencies).interactor(req.body)
 

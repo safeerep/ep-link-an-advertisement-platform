@@ -31,7 +31,7 @@ app.get('/', (req: Request, res: Response) => {
 app.use('/api/payment', routes(dependencies))
 
 app.listen( PORT, () => {
-    console.log(`chat service starte successfully at the port ${PORT}`);
+    console.log(`payment service started successfully at the port ${PORT}`);
 })
 
 export default app;

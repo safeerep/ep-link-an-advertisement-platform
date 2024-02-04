@@ -1,15 +1,14 @@
 import { Router } from "express";
 import paymentRoutes from "./paymentRoutes";
-import verifyUserAuth from "../../utils/middleWares/checkUserAuth";
+import premiumPolicyRoutes from "./premiumPolicyRoutes";
 
 export const routes = ( dependencies: any) => {
-    const routes = Router()
+    console.log(dependencies);
     
-    // we are checking is user is verified or not
-    // on before all the routes;
-    routes.use(verifyUserAuth)
+    const routes = Router()
 
     routes.use('/', paymentRoutes(dependencies))
+    routes.use('/premium', premiumPolicyRoutes(dependencies))
 
     return routes;
 }

@@ -1,7 +1,9 @@
 import {
-    updatePremiumPlan
+    updatePremiumPlan,
+    getAllPolicies
 } from './premiumPlanRepo'
 
 export default {
-    updatePremiumPlan
+    updatePremiumPlan,
+    getAllPolicies
 }

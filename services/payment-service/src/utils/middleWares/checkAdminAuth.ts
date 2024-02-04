@@ -2,7 +2,7 @@ import { NextFunction, Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
 
 export default ( req: Request, res: Response, next: NextFunction) => {
-    const token: string = req.cookies.userJwt;
+    const token: string = req.cookies.adminJwt;
     const secret: string = process.env.JWT_TOKEN_SECRET || ''
     if (!token) 
         return res.status(401).json({ success: false, message: "current user is not authenticated to do it"})

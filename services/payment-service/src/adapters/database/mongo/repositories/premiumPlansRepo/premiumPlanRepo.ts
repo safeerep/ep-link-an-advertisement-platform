@@ -22,3 +22,13 @@ export const updatePremiumPlan =
             return false;
         }
     }
+
+export const getAllPolicies =  async () => {
+    try {
+        const policies = await PremiumPlansCollection.find()
+        return policies;
+    } catch (error) {
+        console.log(`something went wrong in premium plans repo, during fetching all plans ${error}`);
+        return false;
+    }
+}

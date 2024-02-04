@@ -1,7 +1,15 @@
 import { premiumPlansRepo } from "../../adapters/database/mongo/repositories"
 import { premiumPlanUsecases } from "../../usecases"
 
-export default {
-    premiumPlansRepo,
+const usecases = {
     premiumPlanUsecases
+}
+
+const repositories = {
+    premiumPlansRepo
+}
+
+export default {
+    usecases,
+    repositories
 }

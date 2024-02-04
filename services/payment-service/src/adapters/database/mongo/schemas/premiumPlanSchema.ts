@@ -6,7 +6,7 @@ const PremiumPlansSchema: Schema = new Schema({
     policyDuration: {
         type: String,
         required: true,
-        enum: ['annual', ' monthly'],
+        enum: ['annual', 'monthly'],
         unique: true
     },
     subscriptionAmount: {
