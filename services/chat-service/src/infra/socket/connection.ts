@@ -10,11 +10,13 @@ const connectSocketIO = async ( server: Server) => {
     })
 
     io.on("connection", (socket: Socket) => {
-        console.log(`socket io connected`);
+        const userId: string = String(socket?.handshake?.query?.userId);
+        socket.join(userId)
+        console.log('socket io connected');
         handleSocketEvents(socket)
 
         socket.on("disconnect", () => {
-            console.log(`socket disconnected`);
+            console.log('socket disconnected');
         })
     })
 }
