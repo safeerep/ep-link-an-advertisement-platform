@@ -9,6 +9,11 @@ const {
 
 export const handleSocketEvents = ( socket: Socket) => {
 
+    socket.on("join-user-room", (userId: string) => {
+        socket.join(userId)
+        console.log('user joined in user room');
+    })
+
     socket.on("join-room", ( roomId: string, userId: string) => {
         socket.join(roomId)
         console.log('user joined in a room');

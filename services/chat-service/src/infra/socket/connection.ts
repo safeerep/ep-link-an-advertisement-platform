@@ -10,8 +10,6 @@ const connectSocketIO = async ( server: Server) => {
     })
 
     io.on("connection", (socket: Socket) => {
-        const userId: string = String(socket?.handshake?.query?.userId);
-        socket.join(userId)
         console.log('socket io connected');
         handleSocketEvents(socket)
 
