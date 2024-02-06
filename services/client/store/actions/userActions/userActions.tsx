@@ -744,7 +744,7 @@ export const unBlockSeller = createAsyncThunk('/user/un-block-seller',
     }
 )
 
-export const getPremiumPolicies = createAsyncThunk(`/user/get-premium-poicies`,
+export const getPremiumPolicies = createAsyncThunk('/user/get-premium-poicies',
     async () => {
         try {
             const response = await axios.get(`${PAYMENT_SERVICE_BASE_URL}/premium/get-all-plans`, {
@@ -784,40 +784,42 @@ export const updateUserProfileToPremium = createAsyncThunk('/user/update-to-prem
     }
 )
 
-export const createAnOrderForRazorpay = createAsyncThunk('/user/create-an-order', 
-    async ({subscriptionAmount}:{subscriptionAmount: number}) => {
+export const createAnOrderForRazorpay = createAsyncThunk('/user/create-an-order',
+
+    async (subscriptionAmount: number) => {
+        console.log(subscriptionAmount);
         try {
-            const response = await axios.post(`${PAYMENT_SERVICE_BASE_URL}/create-razorpay-order`,{ subscriptionAmount}, {
+            const response = await axios.post(`${PAYMENT_SERVICE_BASE_URL}/create-razorpay-order`, { subscriptionAmount }, {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true
             })
             if (response?.data?.success) {
+                console.log(response.data.order);
+
                 return response.data.order;
             }
             else return false;
         } catch (error) {
-            console.log(`something went wrong during creating an offer for to proceed with razorpay`);
+            console.log(`something went wrong during creating an offer for to proceed with razorpay ${error}`);
             return false;
         }
     }
 )
 
-export const verifyRazorpayPayment = createAsyncThunk('/user/verify-razorpay-payment', 
-    async ( razorpayResponse: any) => {
+export const verifyRazorpayPayment =
+    async (razorpayResponse: any) => {
         try {
-            const response = await axios.post(`${PAYMENT_SERVICE_BASE_URL}/verify-razorpay-payment`,razorpayResponse, {
+            const response = await axios.post(`${PAYMENT_SERVICE_BASE_URL}/verify-razorpay-payment`, razorpayResponse, {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true
             })
             if (response?.data?.success) {
-                console.log(`payment is successfull`);
                 return true;
             }
             else return false;
         } catch (error: any) {
-            console.log(`something went wrong during creating an offer for to proceed with razorpay`);
+            console.log(`something went wrong during verifying payment ${error}`);
             toast.error(error?.response?.data?.message)
             return false;
         }
     }
-)

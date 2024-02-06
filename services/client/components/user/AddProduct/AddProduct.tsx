@@ -36,12 +36,17 @@ const AddProduct = () => {
     const user = useSelector((state: any) => state?.user?.data?.userData)
     const userId: string = String(user?._id);
     useEffect(() => {
-        if (!user?.premiumMember) {
-            const productCount: number = dispatch(checkCurrentUserAddedProducts())
-            if (productCount) {
-                setAdvertisementModalOpen(true)
+        const checkCount = async () => {
+
+            if (!user?.premiumMember) {
+                const response: any = await dispatch(checkCurrentUserAddedProducts())
+                
+                if (response?.payload > 3) {
+                    setAdvertisementModalOpen(true)
+                }
             }
         }
+        checkCount();
     }, [userId])
 
     const categories = useSelector((state: any) => state?.user?.data?.categories)

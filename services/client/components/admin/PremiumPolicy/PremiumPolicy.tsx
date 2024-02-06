@@ -42,7 +42,7 @@ const PremiumPolicy = () => {
                         <GiChessQueen className='ms-4 text-2xl text-yellow-600' />
                         <span className='text-2xl'>{policies && policies[0]?.policyDuration} Subscription Plan </span>
                     </div>
-                    <span className='text-xl'>Subscription Amount: {policies && policies[0]?.policyDuration} </span>
+                    <span className='text-xl'>Subscription Amount: {policies && policies[0]?.subscriptionAmount} </span>
                     <div
                         onClick={() => { 
                             setIsModalOpen(!isModalOpen)
@@ -57,7 +57,7 @@ const PremiumPolicy = () => {
                         <GiChessQueen className='ms-4 text-2xl text-yellow-600' />
                         <span className='text-2xl'>{policies && policies[1]?.policyDuration} Subscription Plan </span>
                     </div>
-                    <span className='text-xl'>Subscription Amount: {policies && policies[1]?.policyDuration} </span>
+                    <span className='text-xl'>Subscription Amount: {policies && policies[1]?.subscriptionAmount} </span>
                     <div
                         onClick={() => {
                             setIsModalOpen(!isModalOpen)
