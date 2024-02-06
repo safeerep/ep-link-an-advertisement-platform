@@ -2,24 +2,28 @@ import {
   addProduct,
   getProducts,
   getCurrentUserProducts,
-  changeProductDetails,
+  changeProductStatus,
   getProductDetails,
   changeProductsStatusByCategory,
   getAvailableProducts,
   makeProductAsAvailable,
   makeProductAsSoldOut,
   updateProduct,
+  reportProduct,
+  getReportedProducts
 } from "./productRepo";
 
 export default {
     addProduct,
     getCurrentUserProducts,
-    changeProductDetails,
+    changeProductStatus,
     getProducts,
     getAvailableProducts,
     makeProductAsSoldOut,
     updateProduct,
     getProductDetails,
     changeProductsStatusByCategory,
-    makeProductAsAvailable
+    makeProductAsAvailable,
+    reportProduct,
+    getReportedProducts
 }

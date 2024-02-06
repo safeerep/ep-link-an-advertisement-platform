@@ -6,6 +6,10 @@ import { getAvailableProducts_usecase } from "./getAvailableProducts"
 import { updateProduct_usecase } from "./updateProduct"
 import { makeProductAsAvailable_usecase } from "./makeProductAvailable"
 import { makeProductAsSoldout_usecase } from "./makeProductSoldout"
+import { banProduct_usecase } from "./banProduct"
+import { reportProduct_usecase } from "./reportProduct"
+import { getReportedProducts_usecase } from "./getReportedProducts"
+
 
 export default {
     addProduct_usecase,
@@ -15,5 +19,8 @@ export default {
     getAvailableProducts_usecase,
     updateProduct_usecase,
     makeProductAsAvailable_usecase,
-    makeProductAsSoldout_usecase
+    makeProductAsSoldout_usecase,
+    banProduct_usecase,
+    reportProduct_usecase,
+    getReportedProducts_usecase
 }
