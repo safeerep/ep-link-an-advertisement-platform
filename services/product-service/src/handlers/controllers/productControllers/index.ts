@@ -7,7 +7,10 @@ import updateProduct from "./updateProduct"
 import makeProductAvailable from "./makeProductAvailable"
 import makeProductSoldout from "./makeProductSoldout"
 import getSpecificSellerProducts from "./getSpecificSellerProducts"
-
+import banOneProduct from "./banOneProduct"
+import getCountOfProductsAddedByUser from "./getCountOfProductsAddedByUser"
+import reportProduct from "./reportProduct"
+import getReportedProducts from "./getReportedProducts"
 
 export default ( dependencies: any) => {
     return {
@@ -19,6 +22,10 @@ export default ( dependencies: any) => {
         updateProductController: updateProduct(dependencies),
         makeProductAvailableController: makeProductAvailable(dependencies),
         makeProductSoldoutController: makeProductSoldout(dependencies),
-        getSpecificSellerProductsController: getSpecificSellerProducts(dependencies)
+        getSpecificSellerProductsController: getSpecificSellerProducts(dependencies),
+        banOneProductController: banOneProduct(dependencies),
+        getCountOfProductsAddedByUserController: getCountOfProductsAddedByUser(dependencies),
+        reportProductController: reportProduct(dependencies),
+        getReportedProductsController: getReportedProducts(dependencies)
     }
 }
