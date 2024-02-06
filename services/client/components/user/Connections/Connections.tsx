@@ -12,34 +12,31 @@ const Connections: React.FC = () => {
     const user = useSelector((state: any) => state?.user?.data?.userData)
     const followers = useSelector((state: any) => state?.user?.data?.followers)
     const following = useSelector((state: any) => state?.user?.data?.following)
+    const userId: string = user?._id;
 
     useEffect(() => {
         dispatch(authRequired(router))
-    },[])
+    }, [])
 
     useEffect(() => {
         if (sellerId) {
             dispatch(getFollowersList(sellerId))
             dispatch(getFollowingList(sellerId))
         }
-        else if (user?._id){
-            dispatch(getFollowersList(user?._id))
-            dispatch(getFollowingList(user?._id))
+        else if (user?._id) {
+            dispatch(getFollowersList(userId))
+            dispatch(getFollowingList(userId))
         }
-    }, [user?._id])
+    }, [userId])
 
     const handleFollow = async (userId: string) => {
         console.log('clicked for follow');
         await dispatch(followUser(userId))
-        // if (sellerId) dispatch(getFollowingList(sellerId))
-        // else dispatch(getFollowingList(user?._id))
     }
 
     const handleUnfollow = async (userId: string) => {
         console.log('clicked for unfollow');
         await dispatch(unFollowUser(userId))
-        // if (sellerId) dispatch(getFollowingList(sellerId))
-        // else dispatch(getFollowingList(user?._id))
     }
 
     return (
@@ -73,7 +70,9 @@ const Connections: React.FC = () => {
                                                 key={singleUser?._id}
                                                 className="w-full flex justify-between h-16 border-b items-center border-black"
                                             >
-                                                <div className="flex justify-start gap-2 items-center">
+                                                <div
+                                                    onClick={() => router.push(`/view-user?id=${singleUser?._id}`)}
+                                                    className="flex justify-start gap-2 items-center">
                                                     <div className="w-10 bg-gray-600 h-10 rounded-full">
                                                         <img className="object-cover w-full h-full rounded-full" src={singleUser?.profilePhoto} alt="" />
                                                     </div>

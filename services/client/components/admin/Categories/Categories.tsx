@@ -6,7 +6,7 @@ import { useDispatch, useSelector } from 'react-redux'
 import { FiUnlock, FiLock } from 'react-icons/fi';
 import { AiOutlineEdit } from 'react-icons/ai'
 import { FaSlidersH } from 'react-icons/fa';
-import ConfimationModal from '@/components/Modals/ConfimationModal';
+import ConfimationModal from '@/components/Modals/ConfirmationModal';
 import Link from 'next/link';
 
 const Categories = () => {

@@ -25,6 +25,7 @@ import AdminHome from "./admin/Home/Home";
 import Categories from "./admin/Categories/Categories";
 import CategoryForm from "./admin/CategoryForm/CategoryForm";
 import Products from "./admin/Products/Products";
+import PremiumPolicy from "./admin/PremiumPolicy/PremiumPolicy";
 import AdminSidebar from "./shared/adminSide/AdminSidebar";
 import AdminNavbar from "./shared/adminSide/AdminNavbar";
 
@@ -56,6 +57,7 @@ export {
     Categories,
     CategoryForm,
     Products,
+    PremiumPolicy,
 }
 
 

@@ -4,12 +4,12 @@ import { BsCameraVideoFill } from 'react-icons/bs'
 import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import Peer, { SignalData } from 'simple-peer'
 import {
     authRequired,
     blockSeller,
     changeRoom,
     getCurrentUserChatRooms,
+    reportSeller,
     saveNewMessage,
     unBlockSeller
 } from '@/store/actions/userActions/userActions'
@@ -17,16 +17,16 @@ import { io } from 'socket.io-client'
 import { SOCKET_BASE_URL } from '@/constants'
 import toast, { Toaster } from 'react-hot-toast'
 import VideoCall from '../VideoCall/VideoCall'
+import ConfimationModalWithDialogue from '@/components/Modals/ConfirmationWithDialogue'
 
 const Chat = () => {
-    // const socket = io(${SOCKET_BASE_URL})
-    const [socket, setSocket] = useState<any>(null)
+    const socket = io(`${SOCKET_BASE_URL}`)
     const dispatch: any = useDispatch();
     const router = useRouter()
     const [message, setMessage] = useState('')
     const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+    const [modalOpen, setModalOpen] = useState(false)
     const [showTyping, setShowTyping] = useState(false)
-    const [blockedMessageStatus, setBlockedMessageStatus] = useState(false)
     const [videoCallOngoing, setVideoCallOngoing] = useState(false)
     const [initiateCall, setInitiateCall] = useState(false)
     const [callerName, setCallerName] = useState('')
@@ -34,7 +34,6 @@ const Chat = () => {
     const [callerId, setCallerId] = useState('')
     const [receiverId, setReceiverId] = useState('')
     const [signalData, setSignalData] = useState(null)
-    const [receivedSignalData, setReceivedSignalData] = useState<any>(null)
     const [newMessages, setNewMessages] = useState<any>([])
     const inputRef = useRef<HTMLInputElement | null>(null)
     const roomId = useSelector((state: any) => state?.user?.data?.chatroom?._id)
@@ -47,10 +46,8 @@ const Chat = () => {
     const userId: string = user?._id;
 
     useEffect(() => {
-        const newSocket = io(`${SOCKET_BASE_URL}?userId=${user?._id}`)
-        setSocket(newSocket)
+        socket.emit("join-user-room", userId)
     }, [userId])
-
 
     const handleRoomChange = (userId: string) => {
         console.log('clicked for room change');
@@ -66,13 +63,12 @@ const Chat = () => {
     }, [])
 
     useEffect(() => {
-        socket?.emit("join-room", roomId, user?._id)
+        socket.emit("join-room", roomId, user?._id)
         setNewMessages([])
+        setMessage('')
     }, [roomId])
 
     const sendMessage = () => {
-        console.log('clicked for sendMessage');
-
         if (!message || currentUserBlockedReceiver) return;
         console.log(`yes message have `, message);
         const messageDoc = {
@@ -80,28 +76,28 @@ const Chat = () => {
             chatRoomId: roomId,
             senderId: user?._id
         }
-
-        socket?.emit("send-message", messageDoc)
+        socket.emit("send-message", messageDoc)
         dispatch(saveNewMessage(messageDoc))
     }
 
-    socket?.on("show-message", (data: any) => {
+    socket.on("show-message", (data: any) => {
         console.log('----show message received in front end-----------');
-        console.log(data);
+        data.showToReceiver = true;
         setNewMessages((newMessages: any) => [...newMessages, data]);
         setMessage('')
+        dispatch(saveNewMessage(data))
     })
 
-    socket?.on("receiver-blocked", (data: any) => {
+    socket.on("receiver-blocked", (data: any) => {
         console.log('----receiver-blocked received in front end-----------');
         console.log(data);
-        if (data?.senderId === user?._id) {
-            setBlockedMessageStatus(true)
-        }
+        data.showToReceiver = false;
+        setNewMessages((newMessages: any) => [...newMessages, data]);
+        dispatch(saveNewMessage(data))
     })
 
-    socket?.on("typing", ({ chatRoomId, senderId }: { chatRoomId: string, senderId: string }) => {
-        if (chatRoomId === roomId && senderId !== user?._id) {
+    socket.on("typing", ({ chatRoomId, senderId }: { chatRoomId: string, senderId: string }) => {
+        if (chatRoomId === roomId && senderId !== user?._id && !currentUserBlockedReceiver) {
             // show typing 
             setShowTyping(true)
             setTimeout(() => {
@@ -110,14 +106,17 @@ const Chat = () => {
         }
     })
 
+    const reportOneUser = (reason: string) => {
+        const sellerId: string = seller?._id;
+        dispatch(reportSeller({ sellerId, reason: reason }))
+        dispatch(blockSeller(sellerId))
+        setIsDropdownOpen(false)
+    }
+
     const handleMoreAction = (action: string) => {
         // we will get seller id from state;
         const sellerId = seller?._id;
         if (action === 'block') {
-            dispatch(blockSeller(sellerId))
-            setIsDropdownOpen(false)
-        }
-        else if (action === 'blockandreport') {
             dispatch(blockSeller(sellerId))
             setIsDropdownOpen(false)
         }
@@ -133,7 +132,9 @@ const Chat = () => {
             chatRoomId: roomId,
             senderId: user?._id
         }
-        socket?.emit("typing", data)
+        if (!currentUserBlockedReceiver) {
+            socket.emit("typing", data)
+        }
     }
 
     // this function calls onthe time when user presses video call button
@@ -158,7 +159,7 @@ const Chat = () => {
         setSignalData(data.signalData)
         setVideoCallOngoing(true);
     })
-    
+
     return (
         !videoCallOngoing ?
             <div className="fixed flex justify-around gap-2 p-4 h-4/5 w-full">
@@ -258,7 +259,7 @@ const Chat = () => {
                                                         Block user
                                                     </button>
                                                     <button
-                                                        onClick={() => handleMoreAction('blockandreport')}
+                                                        onClick={() => setModalOpen(true)}
                                                         className="block px-4 py-2 text-sm text-black">
                                                         Block & Report
                                                     </button>
@@ -277,6 +278,7 @@ const Chat = () => {
                             {
                                 messages?.length > 0 &&
                                 messages.map((messageDoc: any, index: number) => (
+                                    messageDoc.showToReceiver &&
                                     <div key={index}
                                         className={`bg-white p-1 px-2 mb-1 w-fit rounded-md 
                                     ${messageDoc.senderId === user?._id ? 'ml-auto' : ''
@@ -287,17 +289,13 @@ const Chat = () => {
                             {
                                 newMessages?.length > 0 &&
                                 newMessages.map((messageDoc: any, index: number) => (
+                                    messageDoc?.showToReceiver &&
                                     <div key={index}
                                         className={`bg-white p-1 px-2 mb-1 w-fit rounded-md 
                                 ${messageDoc.senderId === user?._id ? 'ml-auto' : ''
                                             }`}
                                     >{messageDoc?.message}</div>
                                 ))
-                            }
-                            {
-                                blockedMessageStatus &&
-                                <div className={`bg-slate-200 border border-black  p-1 px-2 mb-1 w-fit rounded-md text-center mx-auto`}
-                                >currently you are not able to send message</div>
                             }
                             {
                                 currentUserBlockedReceiver &&
@@ -327,6 +325,12 @@ const Chat = () => {
                         </div>
                     </div>}
                 <Toaster />
+                <ConfimationModalWithDialogue
+                    afterConfirmation={reportOneUser}
+                    isModalOpen={modalOpen}
+                    notesHead='Write a reason for report'
+                    setModalOpen={setModalOpen}
+                />
             </div> :
             <VideoCall
                 fromUserId={callerId}

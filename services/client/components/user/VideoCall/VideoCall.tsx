@@ -162,16 +162,7 @@ const VideoCall = (
     const rejectIncomingCall = async () => {
         console.log('called to cut call');
         if (stream) {
-            // const videoTrack = stream?.getVideoTracks()[0];
-            // const audioTrack = stream?.getAudioTracks()[0];
-            // Stop all tracks in the MediaStream
-            // if (videoTrack) {
-            //     videoTrack.enabled = !videoTrack.enabled;
-            // }
-            // if (audioTrack) {
-            //     audioTrack.enabled = !audioTrack.enabled;
-            // }
-            await stream?.getTracks()?.forEach(async (track) => track.stop())
+            stream?.getTracks()?.forEach(async (track) => track.stop())
         }
         endVideoCall(false)
         setCallEnded(true)
@@ -203,11 +194,11 @@ const VideoCall = (
         <div className='w-full h-screen relative'>
             {/* receiver visuals will shoes here in full screen */}
             <div className='w-full h-full relative bg-black'>
-                {receiverVideo && <video autoPlay muted className={'bg-black h-full w-full'} ref={receiverVideo}></video>}
+                <video playsInline autoPlay muted className={'bg-black h-full w-full'} ref={receiverVideo}></video>
             </div>
             {/* current user screen, initially takes 1/2 height and 1/3 width only */}
             <div className={'absolute top-0 right-0 w-1/2 h-1/2'}>
-                <video autoPlay muted className={`w-full h-full`} ref={currentUserVideo}></video>
+                <video playsInline autoPlay muted className={`w-full h-full`} ref={currentUserVideo}></video>
             </div>
             {/* to showname */}
             <div className='absolute top-20 w-full flex justify-center text-center text-white font-bold'>

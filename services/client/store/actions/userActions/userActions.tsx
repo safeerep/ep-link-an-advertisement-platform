@@ -1,7 +1,7 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import axios from "axios";
 import { signUpCredentialsWithOtp, signInCredentials } from "@/types/user";
-import { USERS_SERVICE_BASE_URL, PRODUCT_SERVICE_BASE_URL, CHAT_SERVICE_BASE_URL } from '../../../constants/index'
+import { USERS_SERVICE_BASE_URL, PRODUCT_SERVICE_BASE_URL, CHAT_SERVICE_BASE_URL, PAYMENT_SERVICE_BASE_URL } from '../../../constants/index'
 import toast from "react-hot-toast";
 
 
@@ -198,12 +198,12 @@ export const RequestToResetPassword = createAsyncThunk('/user/reset-password',
 )
 
 export const updateProfile = createAsyncThunk(`/user/update-profile`,
-    async ({ values, setModalState }: { values: {userName: string | any, phone: number | any, image: any}, setModalState: any }) => {
+    async ({ values, setModalState }: { values: { userName: string | any, phone: number | any, image: any }, setModalState: any }) => {
         const { userName, phone, image } = values;
         try {
             console.log('from action');
-            console.log(userName, phone, image );
-            
+            console.log(userName, phone, image);
+
             const userData = new FormData()
             if (image) {
                 userData.append('profilePhoto', image)
@@ -237,11 +237,11 @@ export const updateProfile = createAsyncThunk(`/user/update-profile`,
     }
 )
 
-export const getSellerProfile = createAsyncThunk('/user/get-seller-profile', 
+export const getSellerProfile = createAsyncThunk('/user/get-seller-profile',
     async (sellerId: string) => {
         try {
             const response = await axios.get(`${USERS_SERVICE_BASE_URL}/user/get-seller-profile/${sellerId}`, {
-                headers: { "Content-Type": "application/json"},
+                headers: { "Content-Type": "application/json" },
                 withCredentials: true
             })
             if (response?.data?.success) {
@@ -260,11 +260,11 @@ export const getSellerProfile = createAsyncThunk('/user/get-seller-profile',
 )
 
 
-export const getFollowersList= createAsyncThunk('/user/get-followers-list', 
-    async (userId: string ) => {
+export const getFollowersList = createAsyncThunk('/user/get-followers-list',
+    async (userId: string) => {
         try {
             const response = await axios.get(`${USERS_SERVICE_BASE_URL}/user/get-followers-list/${userId}`, {
-                headers: { "Content-Type": "application/json"},
+                headers: { "Content-Type": "application/json" },
                 withCredentials: true
             })
             if (response?.data?.success) {
@@ -282,11 +282,11 @@ export const getFollowersList= createAsyncThunk('/user/get-followers-list',
     }
 )
 
-export const getFollowingList = createAsyncThunk('/user/get-following-list', 
-    async (userId: string ) => {
+export const getFollowingList = createAsyncThunk('/user/get-following-list',
+    async (userId: string) => {
         try {
             const response = await axios.get(`${USERS_SERVICE_BASE_URL}/user/get-following-list/${userId}`, {
-                headers: { "Content-Type": "application/json"},
+                headers: { "Content-Type": "application/json" },
                 withCredentials: true
             })
             if (response?.data?.success) {
@@ -325,6 +325,25 @@ export const getAllCategories = createAsyncThunk(`/user/categories`,
     }
 )
 
+export const checkCurrentUserAddedProducts = createAsyncThunk('/user/check-the-product-count',
+    async () => {
+        try {
+            const response = await axios.get(`${PRODUCT_SERVICE_BASE_URL}/check-current-user-product-count`, {
+                headers: { "Content-Type": "application/json" },
+                withCredentials: true
+            })
+            if (response?.data?.addedProductCount > 3) {
+                return response?.data?.addedProductCount;
+            }
+            else {
+                return false;
+            }
+        } catch (error: any) {
+            console.log(`something went wrong during checking the count of current user added products ${error}`);
+            return false;
+        }
+    }
+)
 
 export const addProduct = createAsyncThunk(`/user/add-product`, async ({ productDetails, router }: { productDetails: any, router: any }) => {
     try {
@@ -430,7 +449,7 @@ export const getProducts = createAsyncThunk(`/user/get-products`,
                 return response.data;
             }
         } catch (error: any) {
-            console.log(`an error happened during fetching all categories ${error}`);
+            console.log(`an error happened during fetching all products ${error}`);
             return error?.response?.data;
         }
     }
@@ -529,10 +548,31 @@ export const unFollowUser = createAsyncThunk(`/user/unfollow-user`,
     }
 )
 
-export const chatWithSeller = createAsyncThunk('/user/chat-with-seller',
-    async ({userId, router}: {userId: string, router: any}) => {
+export const reportSeller = createAsyncThunk(`/user/report-user`,
+    async ({ sellerId, reason }: { sellerId: string, reason: string }) => {
         try {
-            const response = await axios.patch(`${CHAT_SERVICE_BASE_URL}/room/get-chat-room/with/${userId}`,{}, {
+            const response = await axios.post(`${USERS_SERVICE_BASE_URL}/user/report-seller`, { sellerId, reason }, {
+                headers: { "Content-Type": "application/json" },
+                withCredentials: true
+            })
+            if (response?.data) {
+                console.log(response.data);
+                if (response?.data?.success) {
+                    toast.success(response.data?.message)
+                }
+                return response.data;
+            }
+        } catch (error: any) {
+            console.log(`an error happened during trying to report a seller ${error}`);
+            return error?.response?.data;
+        }
+    }
+)
+
+export const chatWithSeller = createAsyncThunk('/user/chat-with-seller',
+    async ({ userId, router }: { userId: string, router: any }) => {
+        try {
+            const response = await axios.patch(`${CHAT_SERVICE_BASE_URL}/room/get-chat-room/with/${userId}`, {}, {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true
             })
@@ -554,9 +594,9 @@ export const chatWithSeller = createAsyncThunk('/user/chat-with-seller',
 )
 
 export const changeRoom = createAsyncThunk('/user/room-change',
-    async ({userId, currentRoomId}: { userId: string, currentRoomId: string}) => {
+    async ({ userId, currentRoomId }: { userId: string, currentRoomId: string }) => {
         try {
-            const response = await axios.patch(`${CHAT_SERVICE_BASE_URL}/room/get-chat-room/with/${userId}`,{ currentRoomId }, {
+            const response = await axios.patch(`${CHAT_SERVICE_BASE_URL}/room/get-chat-room/with/${userId}`, { currentRoomId }, {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true
             })
@@ -599,7 +639,7 @@ export const getCurrentUserChatRooms = createAsyncThunk('/user/chat-rooms',
 export const saveNewMessage = createAsyncThunk('/user/new-message',
     async (messageDetails: any) => {
         console.log('called to save new message');
-        
+
         try {
             const response = await axios.post(`${CHAT_SERVICE_BASE_URL}/save-message`, messageDetails, {
                 headers: { "Content-Type": "application/json" },
@@ -662,8 +702,8 @@ export const makeProductSoldOut = createAsyncThunk('/user/make-product-soldout',
     }
 )
 
-export const blockSeller = createAsyncThunk('/user/block-seller', 
-    async ( sellerId: string) => {
+export const blockSeller = createAsyncThunk('/user/block-seller',
+    async (sellerId: string) => {
         try {
             const response = await axios.patch(`${CHAT_SERVICE_BASE_URL}/user/user/block/${sellerId}`, {}, {
                 headers: { "Content-Type": "application/json" },
@@ -673,7 +713,7 @@ export const blockSeller = createAsyncThunk('/user/block-seller',
                 console.log(response?.data);
                 if (response?.data?.success) toast.success(response?.data?.message)
                 else toast.error(response?.data?.message)
-            return response.data;
+                return response.data;
             }
         } catch (error: any) {
             console.log(`something went wrong during blocking seller`);
@@ -683,8 +723,8 @@ export const blockSeller = createAsyncThunk('/user/block-seller',
     }
 )
 
-export const unBlockSeller = createAsyncThunk('/user/un-block-seller', 
-    async ( sellerId: string) => {
+export const unBlockSeller = createAsyncThunk('/user/un-block-seller',
+    async (sellerId: string) => {
         try {
             const response = await axios.patch(`${CHAT_SERVICE_BASE_URL}/user/user/un-block/${sellerId}`, {}, {
                 headers: { "Content-Type": "application/json" },
@@ -694,12 +734,90 @@ export const unBlockSeller = createAsyncThunk('/user/un-block-seller',
                 console.log(response?.data);
                 if (response?.data?.success) toast.success(response?.data?.message)
                 else toast.error(response?.data?.message)
-            return response.data;
+                return response.data;
             }
         } catch (error: any) {
             console.log(`something went wrong during unblocking seller`);
             toast.error(error?.response?.data?.message)
             return error?.response?.data;
+        }
+    }
+)
+
+export const getPremiumPolicies = createAsyncThunk(`/user/get-premium-poicies`,
+    async () => {
+        try {
+            const response = await axios.get(`${PAYMENT_SERVICE_BASE_URL}/premium/get-all-plans`, {
+                headers: { "Content-Type": "application/json" },
+                withCredentials: true
+            })
+            if (response?.data) {
+                if (response?.data?.success) {
+                    return response.data;
+                }
+                return response.data;
+            }
+        } catch (error: any) {
+            console.log(`an error happened during fetching all premium plans ${error}`);
+            return error?.response?.data;
+        }
+    }
+)
+
+export const updateUserProfileToPremium = createAsyncThunk('/user/update-to-premium',
+    async () => {
+        try {
+            const response = await axios.patch(`${USERS_SERVICE_BASE_URL}/user/update-to-premium`, {}, {
+                headers: { "Content-Type": "application/json" },
+                withCredentials: true
+            })
+
+            if (response?.data?.success) {
+                toast.success('subscription is successfull')
+            }
+            else toast.error(response?.data?.message)
+        } catch (error: any) {
+            console.log(`something went wrong during updating user profile to premium ${error}`);
+            toast.error(error?.response?.data?.message)
+            return false;
+        }
+    }
+)
+
+export const createAnOrderForRazorpay = createAsyncThunk('/user/create-an-order', 
+    async ({subscriptionAmount}:{subscriptionAmount: number}) => {
+        try {
+            const response = await axios.post(`${PAYMENT_SERVICE_BASE_URL}/create-razorpay-order`,{ subscriptionAmount}, {
+                headers: { "Content-Type": "application/json" },
+                withCredentials: true
+            })
+            if (response?.data?.success) {
+                return response.data.order;
+            }
+            else return false;
+        } catch (error) {
+            console.log(`something went wrong during creating an offer for to proceed with razorpay`);
+            return false;
+        }
+    }
+)
+
+export const verifyRazorpayPayment = createAsyncThunk('/user/verify-razorpay-payment', 
+    async ( razorpayResponse: any) => {
+        try {
+            const response = await axios.post(`${PAYMENT_SERVICE_BASE_URL}/verify-razorpay-payment`,razorpayResponse, {
+                headers: { "Content-Type": "application/json" },
+                withCredentials: true
+            })
+            if (response?.data?.success) {
+                console.log(`payment is successfull`);
+                return true;
+            }
+            else return false;
+        } catch (error: any) {
+            console.log(`something went wrong during creating an offer for to proceed with razorpay`);
+            toast.error(error?.response?.data?.message)
+            return false;
         }
     }
 )
