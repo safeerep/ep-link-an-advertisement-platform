@@ -2,14 +2,14 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import {
     checkAuth,
     login,
-    register, 
-    authRequired, 
+    register,
+    authRequired,
     logout,
-    RequestToResetPassword, 
-    getAllCategories, 
-    addProduct, 
+    RequestToResetPassword,
+    getAllCategories,
+    addProduct,
     getProducts,
-    getCurrentUserProducts, 
+    getCurrentUserProducts,
     getSpecificProduct,
     followUser,
     unFollowUser,
@@ -26,7 +26,7 @@ import {
     unBlockSeller,
     getFollowersList,
     getFollowingList
-    
+
 } from "@/store/actions/userActions/userActions";
 import { UserState } from "@/types/user";
 
@@ -180,15 +180,15 @@ const userSlice = createSlice({
                 state.error = action.error.message;
             })
             // on updating a product as available from sold out
-            .addCase( makeProductSoldOut.pending, (state: UserState) => {
+            .addCase(makeProductSoldOut.pending, (state: UserState) => {
                 state.loading = true;
             })
-            .addCase( makeProductSoldOut.fulfilled, (state: UserState, action) => {
+            .addCase(makeProductSoldOut.fulfilled, (state: UserState, action) => {
                 state.loading = false;
                 state.data = { ...state.data, ...action.payload };
                 state.error = null;
             })
-            .addCase( makeProductSoldOut.rejected, (state: UserState, action) => {
+            .addCase(makeProductSoldOut.rejected, (state: UserState, action) => {
                 state.loading = false;
                 state.error = action.error.message;
             })
@@ -238,19 +238,24 @@ const userSlice = createSlice({
             .addCase(followUser.fulfilled, (state: UserState, action) => {
                 state.loading = false;
                 state.data = { ...state.data, ...action.payload };
+                const { followedUserId } = action.payload;
+                state.data.userData.following = [...state?.data?.userData?.following, followedUserId];
                 state.error = null;
             })
             .addCase(followUser.rejected, (state: UserState, action) => {
                 state.loading = false;
                 state.error = action.error.message;
             })
-            // on the time when a user is trying to follow one another user
+            // on the time when a user is trying to unfollow one another user
             .addCase(unFollowUser.pending, (state: UserState) => {
                 state.loading = true;
             })
             .addCase(unFollowUser.fulfilled, (state: UserState, action) => {
                 state.loading = false;
                 state.data = { ...state.data, ...action.payload };
+                const { unFollowedUserId } = action.payload;
+                state.data.userData.following = 
+                state.data.userData.following.filter((userId: any) => userId !== unFollowedUserId);
                 state.error = null;
             })
             .addCase(unFollowUser.rejected, (state: UserState, action) => {
@@ -362,7 +367,7 @@ const userSlice = createSlice({
                 state.error = action.error.message;
             })
             // on fetching followers list;
-            .addCase( getFollowersList.pending, (state: UserState) => {
+            .addCase(getFollowersList.pending, (state: UserState) => {
                 state.loading = true;
             })
             .addCase(getFollowersList.fulfilled, (state: UserState, action) => {
@@ -375,7 +380,7 @@ const userSlice = createSlice({
                 state.error = action.error.message;
             })
             // on fetching following list ;
-            .addCase( getFollowingList.pending, (state: UserState) => {
+            .addCase(getFollowingList.pending, (state: UserState) => {
                 state.loading = true;
             })
             .addCase(getFollowingList.fulfilled, (state: UserState, action) => {

@@ -46,6 +46,7 @@ const ProfileSidebar = () => {
                     <span className='text-center font-bold'>{user?.following?.length}</span>
                 </div>
             </div>
+
             <div
                 onClick={() => router.push('/profile/connections')}
                 className='flex justify-center my-2 cursor-pointer'>

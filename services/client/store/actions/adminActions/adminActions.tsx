@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit"
 import axios from "axios"
-import { USERS_SERVICE_BASE_URL, PRODUCT_SERVICE_BASE_URL } from "@/constants"
+import { USERS_SERVICE_BASE_URL, PRODUCT_SERVICE_BASE_URL, PAYMENT_SERVICE_BASE_URL } from "@/constants"
 import { signInCredentials } from "@/types/admin"
 import { Toaster, toast } from "react-hot-toast"
 
@@ -173,16 +173,16 @@ export const RequestToResetPassword = createAsyncThunk('/admin/reset-password',
     }
 )
 
-export const getAllCategories = createAsyncThunk(`/admin/categories`, 
+export const getAllCategories = createAsyncThunk(`/admin/categories`,
     async () => {
         try {
-            const response = await axios.get(`${PRODUCT_SERVICE_BASE_URL}/category/get-all-categories`,{
+            const response = await axios.get(`${PRODUCT_SERVICE_BASE_URL}/category/get-all-categories`, {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true
             })
             if (response?.data) {
                 console.log(response.data);
-                
+
                 if (response?.data?.success) {
                     return response.data;
                 }
@@ -219,7 +219,7 @@ export const addCategory = createAsyncThunk('/admin/add-category', async ({ rout
 })
 
 export const changeCategoryStatus = createAsyncThunk('/admin/change-category-status',
-    async ({ categoryId, status, setModalState }: { categoryId: string | undefined, status: boolean|null, setModalState: any}) => {
+    async ({ categoryId, status, setModalState }: { categoryId: string | undefined, status: boolean | null, setModalState: any }) => {
         try {
             const response = await axios.patch(`${PRODUCT_SERVICE_BASE_URL}/category/change-category-status`,
                 { categoryId, status }, {
@@ -232,19 +232,19 @@ export const changeCategoryStatus = createAsyncThunk('/admin/change-category-sta
                     setModalState(false)
                     return response.data;
                 }
-                else toast.error(response.data.message?response.data.message:"something went wrong")
+                else toast.error(response.data.message ? response.data.message : "something went wrong")
             }
-        } catch ( error: any) {
-            toast.error(error?.response?.data?.message?error?.response?.data?.message:"something went wrong")
+        } catch (error: any) {
+            toast.error(error?.response?.data?.message ? error?.response?.data?.message : "something went wrong")
             return error.response.data
         }
     }
 )
 
-export const getCategoryDetails = createAsyncThunk('/admin/get-current-category', 
-    async ( categoryId: string) => {
+export const getCategoryDetails = createAsyncThunk('/admin/get-current-category',
+    async (categoryId: string) => {
         try {
-            const response = await axios.get(`${PRODUCT_SERVICE_BASE_URL}/category/get-details/${categoryId}`,{
+            const response = await axios.get(`${PRODUCT_SERVICE_BASE_URL}/category/get-details/${categoryId}`, {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true
             })
@@ -252,14 +252,14 @@ export const getCategoryDetails = createAsyncThunk('/admin/get-current-category'
                 console.log(response?.data);
                 return response.data;
             }
-        } catch ( error: any) {
+        } catch (error: any) {
             console.log(`something went wrong during fetching current category details ${error}`);
             return error?.response?.data?.message;
         }
     }
 )
 
-export const updateCategoryDetails = createAsyncThunk('/admin/change-category-details', async ({ router, categoryId ,categoryDetails }: { router: any, categoryId: string, categoryDetails: any }) => {
+export const updateCategoryDetails = createAsyncThunk('/admin/change-category-details', async ({ router, categoryId, categoryDetails }: { router: any, categoryId: string, categoryDetails: any }) => {
     try {
         const response = await axios.put(`${PRODUCT_SERVICE_BASE_URL}/category/update-category`,
             {
@@ -282,3 +282,86 @@ export const updateCategoryDetails = createAsyncThunk('/admin/change-category-de
         toast.error(error?.response?.data?.message)
     }
 })
+
+export const getProducts = createAsyncThunk(`/admin/get-products`,
+    async () => {
+        try {
+            const response = await axios.get(`${PRODUCT_SERVICE_BASE_URL}/admin/get-all-products`, {
+                headers: { "Content-Type": "application/json" },
+                withCredentials: true
+            })
+            if (response?.data) {
+                console.log(response.data);
+                if (response?.data?.success) {
+                    return response.data;
+                }
+                return response.data;
+            }
+        } catch (error: any) {
+            console.log(`an error happened during fetching all products ${error}`);
+            return error?.response?.data;
+        }
+    }
+)
+
+export const banAProduct = createAsyncThunk(`/admin/ban-one-product`,
+    async ({ productId, status }: { productId: string, status: boolean }) => {
+        try {
+            const response = await axios.patch(`${PRODUCT_SERVICE_BASE_URL}/ban-one-product`, { productId, status }, {
+                headers: { "Content-Type": "application/json" },
+                withCredentials: true
+            })
+            if (response?.data) {
+                console.log(response.data);
+                if (response?.data?.success) {
+                    return response.data;
+                }
+                return response.data;
+            }
+        } catch (error: any) {
+            console.log(`an error happened during banning a product ${error}`);
+            return error?.response?.data;
+        }
+    }
+)
+
+
+export const getPremiumPolicies = createAsyncThunk(`/admin/premium-poicies`,
+    async () => {
+        try {
+            const response = await axios.get(`${PAYMENT_SERVICE_BASE_URL}/premium/admin/get-all-plans`, {
+                headers: { "Content-Type": "application/json" },
+                withCredentials: true
+            })
+            if (response?.data) {
+                if (response?.data?.success) {
+                    return response.data;
+                }
+                return response.data;
+            }
+        } catch (error: any) {
+            console.log(`an error happened during fetching all premium plans ${error}`);
+            return error?.response?.data;
+        }
+    }
+)
+
+export const updatePremiumPolicy = createAsyncThunk(`/admin/update-premium-poicies`,
+    async ({ policyDuration, subscriptionAmount }: { policyDuration: string, subscriptionAmount: number }) => {
+        try {
+            const response = await axios.put(`${PAYMENT_SERVICE_BASE_URL}/premium/update`, { policyDuration, subscriptionAmount }, {
+                headers: { "Content-Type": "application/json" },
+                withCredentials: true
+            })
+            if (response?.data) {
+                if (response?.data?.success) {
+                    return response.data;
+                }
+                return response.data;
+            }
+        } catch (error: any) {
+            console.log(`an error happened during updating a premium plan ${error}`);
+            return error?.response?.data;
+        }
+    }
+)

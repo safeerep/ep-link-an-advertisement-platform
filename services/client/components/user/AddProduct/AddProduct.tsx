@@ -1,10 +1,16 @@
-import { addProduct, authRequired, getAllCategories } from '@/store/actions/userActions/userActions'
+import {
+    addProduct,
+    authRequired,
+    checkCurrentUserAddedProducts,
+    getAllCategories
+} from '@/store/actions/userActions/userActions'
 import React, { useState, ChangeEvent, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useRouter } from 'next/navigation'
 import { Formik, Form, Field, ErrorMessage } from 'formik'
 import { Toaster } from 'react-hot-toast'
 import addProductValidationSchema from '@/models/validationSchemas/user/addProductSchema'
+import PolicyAdvertisementModal from '@/components/Modals/PolicyAdvertisement'
 
 const AddProduct = () => {
     let imagesArray = new Array(8).fill(null)
@@ -18,6 +24,7 @@ const AddProduct = () => {
     const [priceError, setPriceError] = useState<any>(null);
     const [descriptionError, setDescriptionError] = useState<any>(null);
     const [imagesError, setImagesError] = useState<any>(null);
+    const [advertisementModalOpen, setAdvertisementModalOpen] = useState<boolean>(false);
 
     const dispatch: any = useDispatch()
     const router = useRouter();
@@ -25,6 +32,17 @@ const AddProduct = () => {
         dispatch(authRequired(router))
         dispatch(getAllCategories())
     }, [])
+
+    const user = useSelector((state: any) => state?.user?.data?.userData)
+    const userId: string = String(user?._id);
+    useEffect(() => {
+        if (!user?.premiumMember) {
+            const productCount: number = dispatch(checkCurrentUserAddedProducts())
+            if (productCount) {
+                setAdvertisementModalOpen(true)
+            }
+        }
+    }, [userId])
 
     const categories = useSelector((state: any) => state?.user?.data?.categories)
     console.log(categories);
@@ -39,22 +57,22 @@ const AddProduct = () => {
     const handleImageChange = (index: number, e: ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-          const imageUrl = URL.createObjectURL(file);
-    
-          setImageUrls((prevImageUrls) => {
-            const newImageUrls = [...prevImageUrls];
-            newImageUrls[index] = imageUrl;
-            return newImageUrls;
-          });
-    
-          setImageFiles((prevImageFiles) => {
-            const newImageFiles = [...prevImageFiles];
-            newImageFiles[index] = file;
-            return newImageFiles;
-          });
+            const imageUrl = URL.createObjectURL(file);
+
+            setImageUrls((prevImageUrls) => {
+                const newImageUrls = [...prevImageUrls];
+                newImageUrls[index] = imageUrl;
+                return newImageUrls;
+            });
+
+            setImageFiles((prevImageFiles) => {
+                const newImageFiles = [...prevImageFiles];
+                newImageFiles[index] = file;
+                return newImageFiles;
+            });
         }
-      };
-    
+    };
+
     const handleRadioChange = (fieldIndex: number, optionIndex: any) => {
         setSelectedOptions((prevState) => ({
             ...prevState,
@@ -82,7 +100,7 @@ const AddProduct = () => {
                 checkboxes,
                 ...inputFields
             } = values;
-            
+
             // creating an object to validate;
             const filteredImageUrls = imageUrls.filter(url => url !== null);
             const filteredImageFiles = imageFiles.filter((file) => file !== null);
@@ -113,16 +131,16 @@ const AddProduct = () => {
                     }
                 })
             }
-            
+
             const productDetails = {
                 ...productObj,
-                inputFields: {...inputFields},
-                checkBoxes: {...checkBoxes},
-                radioButtons: {...selectedOptionsInRadioButton}
+                inputFields: { ...inputFields },
+                checkBoxes: { ...checkBoxes },
+                radioButtons: { ...selectedOptionsInRadioButton }
             };
-            console.log(`yes its final`,productDetails);
-            dispatch(addProduct({productDetails, router}))
-            
+            console.log(`yes its final`, productDetails);
+            dispatch(addProduct({ productDetails, router }))
+
         } catch (err: any) {
             // Validation failed, handle the error
             if (err.inner && err.inner.length > 0) {
@@ -146,6 +164,10 @@ const AddProduct = () => {
 
     return (
         <>
+            <PolicyAdvertisementModal
+                isModalOpen={advertisementModalOpen}
+                setModalOpen={setAdvertisementModalOpen}
+            />
             <div className="w-full justify-between px-12 lg:px-28 bg-slate-50 mt-2 min-h-screen">
                 <Formik
                     initialValues={{

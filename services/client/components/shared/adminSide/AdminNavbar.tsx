@@ -21,7 +21,7 @@ const AdminNavbar = () => {
   const admin: any = useSelector((state: any) => state.admin.data)
   
   return (
-    <div className='w-full h-16 shadow bg-slate-100 flex justify-between'>
+    <div className='w-full h-16 shadow bg-blue-100 flex justify-between'>
       <div style={{
         backgroundSize: 'cover',
       }} className=' flex justify-center items-center'>
