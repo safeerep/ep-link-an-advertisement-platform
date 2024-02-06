@@ -1,7 +1,7 @@
 import { updateUserProfileToPremium, verifyRazorpayPayment } from "@/store/actions/userActions/userActions";
 import { AppDispatch } from "@/store/store";
 
-export const initializepayment = (order: any, dispatch: AppDispatch) => {
+export const initializepayment = (order: any, dispatch: AppDispatch, policyDuration: string) => {
     // const razorpayKeyId: string = process.env.RAZORPAY_KEY_ID || ''
     console.log(order.amount);
 
@@ -14,7 +14,7 @@ export const initializepayment = (order: any, dispatch: AppDispatch) => {
         description: "Test Transaction",
         image: imageName,
         order_id: order.id,
-        handler: (response: any) => verifyPayment({ ...response }, dispatch),
+        handler: (response: any) => verifyPayment({ ...response }, dispatch, policyDuration),
         prefill: {
             user: "user"
         },
@@ -36,11 +36,11 @@ export const initializepayment = (order: any, dispatch: AppDispatch) => {
     rzp1.open()
 }
 
-const verifyPayment = async (response: any, dispatch: any) => {
+const verifyPayment = async (response: any, dispatch: any, policyDuration: string) => {
     const paymentSuccessfull: boolean | any = await verifyRazorpayPayment(response)
 
     if (paymentSuccessfull) {
         console.log('yes payment successfull');
-        dispatch(updateUserProfileToPremium())
+        dispatch(updateUserProfileToPremium(policyDuration))
     }
 }

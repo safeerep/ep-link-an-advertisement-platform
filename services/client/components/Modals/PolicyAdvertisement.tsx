@@ -37,7 +37,7 @@ const PolicyAdvertisementModal = ({ isModalOpen, setModalOpen }:
         const subscriptionAmount: number = selectedPlan.subscriptionAmount;
         // creating an order for razorpay
         const response = await dispatch(createAnOrderForRazorpay(subscriptionAmount))
-        initializepayment(response.payload, dispatch)
+        initializepayment(response.payload, dispatch, selectedPlan.policyDuration)
     }
 
     return (

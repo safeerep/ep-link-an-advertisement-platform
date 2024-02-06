@@ -765,9 +765,10 @@ export const getPremiumPolicies = createAsyncThunk('/user/get-premium-poicies',
 )
 
 export const updateUserProfileToPremium = createAsyncThunk('/user/update-to-premium',
-    async () => {
+    async (policyDuration: string) => {
         try {
-            const response = await axios.patch(`${USERS_SERVICE_BASE_URL}/user/update-to-premium`, {}, {
+            const response = await axios.patch(`${USERS_SERVICE_BASE_URL}/user/update-to-premium`,
+             {subscriptionPolicy: policyDuration}, {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true
             })
