@@ -16,7 +16,7 @@
     "@reduxjs/toolkit": "^2.0.1",
     "@types/socket.io-client": "^3.0.0",
     "axios": "^1.6.2",
-    "dotenv": "^16.3.1",
+    "dotenv": "^16.4.1",
     "formik": "^2.4.5",
     "mailgen": "^2.0.28",
     "next": "14.0.4",
