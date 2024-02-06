@@ -7,7 +7,7 @@ export const initializepayment = (order: any, dispatch: AppDispatch) => {
 
     const imageName = "brand.png";
     var options = {
-        key: "rzp_test_4KYXC57Tjb8Rt5",
+        key: razorpayKeyId,
         amount: order.amount,
         currency: "INR",
         name: "EP LINK",
