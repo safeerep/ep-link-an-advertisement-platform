@@ -24,22 +24,29 @@ export default (dependencies: any) => {
     getSellerProfileController,
     reportSellerController,
     getFollowersListController,
-    getFollowingListController
+    getFollowingListController,
+    givePremiumMemberShipController
   } = userControllers(dependencies);
 
+  // these following two middlewares are used to have google auth;
   router.use(passport.initialize());
   router.use(passport.session());
-  router.get("/", (req: Request, res: Response) => {
-    res.send("its from routes");
-  });
+  // router.get("/", (req: Request, res: Response) => {
+  //   res.send("its from routes");
+  // });
 
+  // to send otp on new user signup
   router.post("/send-otp-for-signup", sendOtpForSignupController);
+  // to verify user data to create a new user;
   router.post("/signup", userSignupController);
+  // to provide signin functionality to already existing user;
   router.post("/signin", loginController);
+  // to sign in with google;
   router.get(
     "/signin-with-google",
     passport.authenticate("google", { scope: ["profile", "email"] })
   );
+  // to redirect on success/ failure of google auth;
   router.get(
     "/signin-with-google/redirect",
     passport.authenticate("google", {
@@ -47,7 +54,9 @@ export default (dependencies: any) => {
       failureRedirect: "/api/users/user/signin-failure",
     })
   );
+  // signin success with google a/c
   router.get("/signin-success", googleAuthSucceedController);
+  // signin failed with google a/c
   router.get("/signin-failure", googleAuthFailedController);
 
   router.get("/check-auth", checkAuthController);
@@ -55,19 +64,26 @@ export default (dependencies: any) => {
   router.post("/send-reset-password-email", sendResetPasswordMailController)
   router.post("/change-password", changePasswordController)
 
-  router.patch("/follow/:userId",verifyUserAuth, followController)
-  router.patch("/unfollow/:userId",verifyUserAuth, unfollowController)
+  // here we are setting user authentication as a middleware,
+  // so the routes below this line will be protected to access only from authenticated users;
+  router.use(verifyUserAuth)
 
+  // to follow one user
+  router.patch("/follow/:userId", followController)
+  // to unfollow one user
+  router.patch("/unfollow/:userId", unfollowController)
   // update user profile
-  router.put("/update-profile",verifyUserAuth, upload.single('profilePhoto'), updateProfileController)
+  router.put("/update-profile", upload.single('profilePhoto'), updateProfileController)
   // to retrieve seller details including seller's own products;
-  router.get("/get-seller-profile/:sellerId",verifyUserAuth, getSellerProfileController)
+  router.get("/get-seller-profile/:sellerId", getSellerProfileController)
   // to get the followers of a specific user
-  router.get("/get-followers-list/:userId",verifyUserAuth, getFollowersListController)
+  router.get("/get-followers-list/:userId", getFollowersListController)
   // to get the following list of a specific user
-  router.get("/get-following-list/:userId",verifyUserAuth, getFollowingListController)
+  router.get("/get-following-list/:userId", getFollowingListController)
   // to report on a seller account;
-  router.post("/report-seller", verifyUserAuth, reportSellerController)
+  router.post("/report-seller", reportSellerController)
+  // to update user profile to premium
+  router.patch("/update-to-premium", givePremiumMemberShipController)
 
   return router;
 };

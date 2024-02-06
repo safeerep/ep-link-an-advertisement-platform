@@ -1,7 +1,7 @@
-import { 
-  userCollection, 
-  IUserData, 
-  otpCollection, 
+import {
+  userCollection,
+  IUserData,
+  otpCollection,
   reportedUserCollection
 } from "../../index";
 import { ReportType } from "../../../../../entities/reportedUserEntities";
@@ -136,13 +136,13 @@ export const followUser = async (currentUserId: string, userId: string) => {
 }
 
 // to get followers list
-export const getFollowersList = async ( userId: string) => {
+export const getFollowersList = async (userId: string) => {
   try {
     // here we are populating the followers of the specific user;
-    const userDocument = await userCollection.findById(userId).populate({path: "followers", select: "-password"});
+    const userDocument = await userCollection.findById(userId).populate({ path: "followers", select: "-password" });
     console.log(`userdocument with followers`);
     console.log(userDocument);
-    return userDocument? userDocument.followers: null;
+    return userDocument ? userDocument.followers : null;
   } catch (error) {
     console.log(`something went wrong during populating the followers of the user ${error}`);
     return false;
@@ -150,13 +150,13 @@ export const getFollowersList = async ( userId: string) => {
 }
 
 // to get following list
-export const getFollowingList = async ( userId: string) => {
+export const getFollowingList = async (userId: string) => {
   try {
     // here we are populating the followers of the specific user;
-    const userDocument= await userCollection.findById(userId).populate({path: "following", select: "-password"});
+    const userDocument = await userCollection.findById(userId).populate({ path: "following", select: "-password" });
     console.log(`userdocument with following`);
     console.log(userDocument);
-    return userDocument? userDocument.following : null;
+    return userDocument ? userDocument.following : null;
   } catch (error) {
     console.log(`something went wrong during populating the following list of the user ${error}`);
     return false;
@@ -198,10 +198,28 @@ export const updateUserProfile = async (userId: string, userDetails: any): Promi
   }
 }
 
-export const reportSeller = async ( sellerId: string, report: ReportType) => {
+export const updateUserToPremium = async (userId: string, subscriptionPolicy: string): Promise<IUserData | boolean> => {
+  try {
+    const updatedUser = await userCollection.findByIdAndUpdate(userId,
+      {
+        premiumMember: true,
+        subscription: {
+          policy: subscriptionPolicy,
+          takenOn: new Date()
+        },
+      }, { new: true })
+    if (updatedUser) return updatedUser as IUserData;
+    else return false;
+  } catch (error) {
+    console.log(`an error happened during updating user profile to premium ${error}`);
+    return false;
+  }
+}
+
+export const reportSeller = async (sellerId: string, report: ReportType) => {
   try {
     // first we will look that, this seller is reported by anyone before
-    const userBeingReported = await reportedUserCollection.findOne({ userId: sellerId})
+    const userBeingReported = await reportedUserCollection.findOne({ userId: sellerId })
     if (userBeingReported) {
       userBeingReported.reports.push(report)
       userBeingReported.save()

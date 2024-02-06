@@ -33,7 +33,7 @@ export default ( dependencies: any) => {
             .then((currentUserId: string ) => {
                 console.log(currentUserId);
                 const updated = followUser_usecase(dependencies).interactor(String(currentUserId), userId)
-                if (updated) return res.json({ success: true, status: 'following', message: "successfully processed follow"})
+                if (updated) return res.json({ success: true, followedUserId: userId, status: 'following', message: "successfully processed follow"})
                 else throw new Error('some unexpected errors happened')
             })
             .catch((err) => {
