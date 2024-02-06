@@ -31,7 +31,7 @@ export default ( dependencies: any) => {
             .then((currentUserId) => {
                 if (currentUserId) {
                     const updated = unFollowUser_usecase(dependencies).interactor(currentUserId, userId)
-                    if (updated) return res.json({ success: true, status: 'not-following' , message: "successfully processed unfollow"})
+                    if (updated) return res.json({ success: true, unFollowedUserId: userId, status: 'not-following' , message: "successfully processed unfollow"})
                     else throw new Error('some unexpected errors happened')
                 }
             })

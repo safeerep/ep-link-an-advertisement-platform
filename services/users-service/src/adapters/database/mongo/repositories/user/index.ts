@@ -12,7 +12,8 @@ import {
   updateUserProfile,
   reportSeller,
   getFollowersList,
-  getFollowingList
+  getFollowingList,
+  updateUserToPremium
 } from "./userRepo";
 
 export default {
@@ -29,5 +30,6 @@ export default {
   updateUserProfile,
   reportSeller,
   getFollowersList,
-  getFollowingList
+  getFollowingList,
+  updateUserToPremium
 };

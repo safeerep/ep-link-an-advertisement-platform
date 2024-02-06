@@ -15,6 +15,7 @@ import getSellerProfile from "./getSellerProfile";
 import reportSeller from "./reportSeller";
 import getFollowersList from "./getFollowersList";
 import getFollowingList from "./getFollowingList";
+import givePremiumMemberShip from "./givePremiumMemberShip";
 
 
 export default (dependencies: any) => {
@@ -35,6 +36,7 @@ export default (dependencies: any) => {
         getSellerProfileController: getSellerProfile(dependencies),
         reportSellerController: reportSeller(dependencies),
         getFollowersListController: getFollowersList(dependencies),
-        getFollowingListController: getFollowingList(dependencies)
+        getFollowingListController: getFollowingList(dependencies),
+        givePremiumMemberShipController: givePremiumMemberShip(dependencies)
     }
 }

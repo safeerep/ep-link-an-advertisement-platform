@@ -12,6 +12,7 @@ import { updateProfile_usecase } from "./updateProfile";
 import { reportSeller_usecase } from "./reportSeller";
 import { getFollowingList_usecase } from "./getFollowingList";
 import { getFollowersList_usecase } from "./getFollowersList";
+import { givePremiumMemberShip_usecase } from "./premiumMembership";
 
 export default {
     findExistingUser_usecase,
@@ -27,5 +28,6 @@ export default {
     updateProfile_usecase,
     reportSeller_usecase,
     getFollowersList_usecase,
-    getFollowingList_usecase
+    getFollowingList_usecase,
+    givePremiumMemberShip_usecase
 }
