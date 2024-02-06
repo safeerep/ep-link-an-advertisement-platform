@@ -34,10 +34,10 @@ const PolicyAdvertisementModal = ({ isModalOpen, setModalOpen }:
 
     const continueWithPlan = async () => {
         const selectedPlan = policies?.find((policy: any) => policy?.policyDuration === selectedOption)
-        // const subscriptionAmount: number = selectedPlan.subscriptionAmount;
+        const subscriptionAmount: number = selectedPlan.subscriptionAmount;
         // creating an order for razorpay
-        const order = await dispatch(createAnOrderForRazorpay({ subscriptionAmount: selectedPlan?.subscriptionAmount }))
-        initializepayment(order)
+        const response = await dispatch(createAnOrderForRazorpay(subscriptionAmount))
+        initializepayment(response.payload, dispatch)
     }
 
     return (
@@ -67,7 +67,7 @@ const PolicyAdvertisementModal = ({ isModalOpen, setModalOpen }:
                                         <GiChessQueen className='ms-4 text-xl text-yellow-600' />
                                         <span className='text-lg'>{policies && policies[0]?.policyDuration} Subscription Plan </span>
                                     </div>
-                                    <span className='text-lg'>Subscription Amount: {policies && policies[0]?.policyDuration} </span>
+                                    <span className='text-lg'>Subscription Amount: {policies && policies[0]?.subscriptionAmount} </span>
 
                                 </div>
                                 <div className="relative flex flex-col items-center rounded-md">
@@ -75,7 +75,7 @@ const PolicyAdvertisementModal = ({ isModalOpen, setModalOpen }:
                                         <GiChessQueen className='ms-4 text-xl text-yellow-600' />
                                         <span className='text-lg'>{policies && policies[1]?.policyDuration} Subscription Plan </span>
                                     </div>
-                                    <span className='text-lg'>Subscription Amount: {policies && policies[1]?.policyDuration} </span>
+                                    <span className='text-lg'>Subscription Amount: {policies && policies[1]?.subscriptionAmount} </span>
                                 </div>
                             </div>
                             <div className="relative px-12 flex flex-col w-full my-4">

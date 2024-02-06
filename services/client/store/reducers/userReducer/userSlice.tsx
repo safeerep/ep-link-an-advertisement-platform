@@ -25,7 +25,10 @@ import {
     blockSeller,
     unBlockSeller,
     getFollowersList,
-    getFollowingList
+    getFollowingList,
+    getPremiumPolicies,
+    reportSeller,
+    updateUserProfileToPremium,
 
 } from "@/store/actions/userActions/userActions";
 import { UserState } from "@/types/user";
@@ -389,6 +392,19 @@ const userSlice = createSlice({
                 state.error = null;
             })
             .addCase(getFollowingList.rejected, (state: UserState, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            })
+            // on fetching premium policies ;
+            .addCase(getPremiumPolicies.pending, (state: UserState) => {
+                state.loading = true;
+            })
+            .addCase(getPremiumPolicies.fulfilled, (state: UserState, action) => {
+                state.loading = false;
+                state.data = { ...state.data, ...action.payload };
+                state.error = null;
+            })
+            .addCase(getPremiumPolicies.rejected, (state: UserState, action) => {
                 state.loading = false;
                 state.error = action.error.message;
             })
