@@ -174,10 +174,6 @@ const Chat = () => {
     const handleAttachmentChanges = (event: any, fileType: string) => {
         const files = event.target.files;
         const filesArray = (Array.from(files));
-        console.log('files');
-        console.log(filesArray);
-        console.log('files');
-
         switch (fileType) {
             case 'video':
                 setCurrentlySelectedAttachments(filesArray)
@@ -209,16 +205,14 @@ const Chat = () => {
     }
 
     const sendMediaFiles = async () => {
-        console.log(`called to send media`);
-        console.log(currentlySelectedAttachmentType);
-        console.log(currentlySelectedAttachments);
         const docToSend = {
-            "files": currentlySelectedAttachments,
+            files: currentlySelectedAttachments,
             typeOfMessage: currentlySelectedAttachmentType,
             chatRoomId: roomId,
             senderId: user?._id
         }
         const files = await sendMediaFilesAsMessage(docToSend);
+        setShowAttachments(false)
 
         files?.forEach((file: string) => {
             const messageDoc = {
@@ -358,13 +352,13 @@ const Chat = () => {
                                             'ml-auto' : ''}`}
                                     >
                                         {messageDoc.typeOfMessage === 'text' && (
-                                            <div>{messageDoc?.message}</div>
+                                            <div className='max-w-2/3'>{messageDoc?.message}</div>
                                         )}
                                         {messageDoc.typeOfMessage === 'image' && (
-                                            <img src={messageDoc?.message} alt="Image" />
+                                            <img className='max-w-2/3' src={messageDoc?.message} alt="Image" />
                                         )}
                                         {messageDoc.typeOfMessage === 'video' && (
-                                            <video controls width="300">
+                                            <video controls width="300" className='max-w-2/3'>
                                                 <source src={messageDoc?.message} type="video/mp4" />
                                                 Your browser does not support the video tag.
                                             </video>
@@ -488,7 +482,7 @@ const Chat = () => {
                             {/* ending for file attach button */}
                             <button
                                 type='button'
-                                onClick={sendMessage}
+                                onClick={() => sendMessage()}
                                 className="bg-slate-900 text-white px-4 py-2 rounded-md">
                                 Send
                             </button>

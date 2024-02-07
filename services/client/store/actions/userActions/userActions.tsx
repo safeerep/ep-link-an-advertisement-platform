@@ -825,10 +825,19 @@ export const verifyRazorpayPayment =
         }
     }
 
-export const sendMediaFilesAsMessage = async (files: any) => {
+export const sendMediaFilesAsMessage = async (filesToSend: any) => {
     try {
-        const response = await axios.post(`${CHAT_SERVICE_BASE_URL}/save-media-files`, files, {
-            headers: { "Content-Type": "application/json" },
+        const formData = new FormData();
+
+        // appending fields
+        formData.append('senderId', filesToSend.senderId);
+        formData.append('typeOfMessage', filesToSend.typeOfMessage);
+        formData.append('chatRoomId', filesToSend.chatRoomId);
+        filesToSend.files.forEach((file: any) => {
+            formData.append('files', file);
+        });
+        const response = await axios.post(`${CHAT_SERVICE_BASE_URL}/save-media-files`, formData, {
+            headers: { "Content-Type": "multipart/form-data" },
             withCredentials: true
         })
         if (response?.data?.success) {
