@@ -34,7 +34,7 @@ export default (dependencies: any) => {
         try {
             if (req?.user) {
                 const userCredentials = req.user;
-                let newUser = await register_usecase(dependencies).execute(
+                let newUser = await register_usecase(dependencies).interactor(
                     userCredentials
                 );
                 if (newUser) {

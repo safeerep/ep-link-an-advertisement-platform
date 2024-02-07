@@ -56,16 +56,6 @@ const UsersSchema: Schema = new Schema(
         type: Schema.Types.ObjectId,
       },
     ],
-    reportsOnAccount: [
-      {
-        reason: {
-          type: String,
-        },
-        reportedBy: {
-          type: Schema.Types.ObjectId,
-        },
-      },
-    ],
     subscription: {
       policy: {
         type: String,

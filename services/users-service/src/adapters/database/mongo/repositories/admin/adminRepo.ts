@@ -1,7 +1,6 @@
-import { adminCollection } from "../../";
-import { userCollection } from "../../";
+import { adminCollection, userCollection, reportedUserCollection, IUserData } from "../../";
 import { IAdmin } from "../../../../../entities/adminEntities";
-import { IUserData } from "../../";
+import { IReportedUser } from "../../../../../entities/reportedUserEntities";
 
 export const findAdminWithEmail = async (email: string):Promise <IAdmin | boolean> => {
   try {
@@ -64,3 +63,16 @@ export const updatePassword = async (
     return false;
   }
 };
+
+export const getReportedUsers = async ():Promise<IReportedUser[] | boolean> => {
+  try {
+    const reportedUsers = await reportedUserCollection.find()
+    if (reportedUsers) {
+      return reportedUsers as IReportedUser[];
+    }
+    else return false;
+  } catch (error) {
+    console.log(`something went wrong during fetching reported users ${error}`);
+    return false;
+  }
+}

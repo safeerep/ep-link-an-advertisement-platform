@@ -12,7 +12,8 @@ export default (dependencies: any) => {
     getUsersController,
     changeUserStatusController,
     adminResetPasswordController,
-    changePasswordController
+    changePasswordController,
+    getReportedUsersController
   } = adminControllers(dependencies);
 
   
@@ -27,6 +28,7 @@ export default (dependencies: any) => {
   router.use(verifyAdminAuth)
   
   router.get("/get-all-users", getUsersController)
+  router.get("/get-reported-users", getReportedUsersController)
   router.patch("/change-user-status", changeUserStatusController)
 
   return router;
