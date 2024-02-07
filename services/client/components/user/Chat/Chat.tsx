@@ -84,7 +84,7 @@ const Chat = () => {
         setNewMessages([])
         setMessage('')
         scrollToBottom()
-    }, [roomId])
+    }, [roomId, dispatch])
 
     const sendMessage = () => {
         if (!message || currentUserBlockedReceiver) return;
