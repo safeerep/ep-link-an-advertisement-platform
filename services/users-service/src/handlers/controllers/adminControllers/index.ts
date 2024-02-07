@@ -5,6 +5,7 @@ import getUsers from "./getUsers";
 import changeUserStatus from "./changeUserStatus";
 import adminResetPassword from "./adminResetPassword";
 import changePassword from "./changePassword";
+import getReportedUsers from "./getReportedUsers";
 
 
 export default ( dependencies: any) => {
@@ -16,5 +17,6 @@ export default ( dependencies: any) => {
         changeUserStatusController: changeUserStatus(dependencies),
         adminResetPasswordController: adminResetPassword(dependencies),
         changePasswordController: changePassword(dependencies),
+        getReportedUsersController: getReportedUsers(dependencies)
     }
 }

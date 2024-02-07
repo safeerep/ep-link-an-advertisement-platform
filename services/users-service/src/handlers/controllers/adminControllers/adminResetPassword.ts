@@ -29,7 +29,7 @@ export default ( dependencies: any) => {
             // admin is existing so we have to send an email with a token to change password;
             // for that, create token first with the email
             const token = await generateResetPasswordToken(email);
-            const link = 'admin/change-password';
+            const link = 'admin-change-password';
             sendEmail(email, token, link).then(() => {
                 return res.json({ success: true, message: 'Check your inbox and update password' })
             }). catch((err) => {
