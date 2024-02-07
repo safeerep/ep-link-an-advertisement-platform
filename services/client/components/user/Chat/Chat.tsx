@@ -1,6 +1,9 @@
 import { GrMore } from 'react-icons/gr'
 import { IoIosCall } from 'react-icons/io'
-import { BsCameraVideoFill } from 'react-icons/bs'
+import { BsCameraVideoFill, BsCameraVideo, BsImageAlt } from 'react-icons/bs'
+import { AiOutlinePlus } from 'react-icons/ai'
+import { GrDocument } from 'react-icons/gr'
+import { MdAudiotrack } from 'react-icons/md'
 import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
@@ -25,6 +28,7 @@ const Chat = () => {
     const router = useRouter()
     const [message, setMessage] = useState('')
     const [isDropdownOpen, setIsDropdownOpen] = useState(false)
+    const [isFileAttachDropdownOpen, setIsFileAttachDropdownOpen] = useState(false)
     const [modalOpen, setModalOpen] = useState(false)
     const [showTyping, setShowTyping] = useState(false)
     const [videoCallOngoing, setVideoCallOngoing] = useState(false)
@@ -245,7 +249,7 @@ const Chat = () => {
                                         <GrMore />
                                     </button>
                                     {isDropdownOpen && (
-                                        <div className="absolute cursor-pointer top-32 right-10 p-1 z-10 rounded-md bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+                                        <div className="absolute cursor-pointer top-16 right-10 p-1 z-10 rounded-md bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
                                             {currentUserBlockedReceiver ?
                                                 <button
                                                     onClick={() => handleMoreAction('un-block')}
@@ -316,6 +320,67 @@ const Chat = () => {
                                 placeholder="Type your message..."
                                 className="flex-grow bg-white border border-gray-300 p-2 rounded-md mr-2"
                             />
+                            {/* starting */}
+                            <button
+                                type='button'
+                                onClick={() => setIsFileAttachDropdownOpen(!isFileAttachDropdownOpen)}
+                                className="bg-slate-700 text-white mx-1 px-4 py-2 rounded-md relative">
+                                < AiOutlinePlus className='text-2xl' />
+                            </button>
+                            {isFileAttachDropdownOpen && (
+                                <div className="absolute flex cursor-pointer bottom-24 right-10 p-1 z-10 rounded-md bg-white ring-1 ring-black ring-opacity-5 focus:outline-none gap-12">
+                                <div className="relative inline-block">
+                                  <input
+                                    type="file"
+                                    id="videoInput"
+                                    accept="video/*"
+                                    multiple
+                                    hidden
+                                  />
+                                  <label htmlFor="videoInput" className="cursor-pointer">
+                                    <BsCameraVideo className="w-6 h-6" />
+                                  </label>
+                                </div>
+                                <div className="relative inline-block">
+                                  <input
+                                    type="file"
+                                    id="imageInput"
+                                    accept="image/*"
+                                    multiple
+                                    hidden
+                                  />
+                                  <label htmlFor="imageInput" className="cursor-pointer">
+                                    <BsImageAlt className="w-6 h-6" />
+                                  </label>
+                                </div>
+                                <div className="relative inline-block">
+                                  <input
+                                    type="file"
+                                    id="documentInput"
+                                    accept=".pdf, .doc, .docx"
+                                    multiple
+                                    hidden
+                                  />
+                                  <label htmlFor="documentInput" className="cursor-pointer">
+                                    <GrDocument className="w-6 h-6" />
+                                  </label>
+                                </div>
+                                <div className="relative inline-block">
+                                  <input
+                                    type="file"
+                                    id="audioInput"
+                                    accept="audio/*"
+                                    multiple
+                                    hidden
+                                  />
+                                  <label htmlFor="audioInput" className="cursor-pointer">
+                                    <MdAudiotrack className="w-6 h-6" />
+                                  </label>
+                                </div>
+                              </div>
+                            )}
+
+                            {/* ending for file attach button */}
                             <button
                                 type='button'
                                 onClick={sendMessage}
