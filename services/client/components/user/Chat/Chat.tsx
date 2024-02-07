@@ -28,6 +28,7 @@ const Chat = () => {
     const socket = io(`${SOCKET_BASE_URL}`)
     const dispatch: any = useDispatch();
     const router = useRouter()
+    const scrollContainerRef = useRef<HTMLDivElement | null>(null);
     const [message, setMessage] = useState('')
     const [isDropdownOpen, setIsDropdownOpen] = useState(false)
     const [isFileAttachDropdownOpen, setIsFileAttachDropdownOpen] = useState(false)
@@ -72,10 +73,17 @@ const Chat = () => {
         }
     }, [])
 
+    const scrollToBottom = () => {
+        if (scrollContainerRef?.current) {
+          scrollContainerRef.current.scrollTop = scrollContainerRef.current.scrollHeight;
+        }
+    };
+
     useEffect(() => {
         socket.emit("join-room", roomId, user?._id)
         setNewMessages([])
         setMessage('')
+        scrollToBottom()
     }, [roomId])
 
     const sendMessage = () => {
@@ -96,7 +104,6 @@ const Chat = () => {
         data.showToReceiver = true;
         setNewMessages((newMessages: any) => [...newMessages, data]);
         setMessage('')
-        dispatch(saveNewMessage(data))
     })
 
     socket.on("receiver-blocked", (data: any) => {
@@ -104,7 +111,6 @@ const Chat = () => {
         console.log(data);
         data.showToReceiver = false;
         setNewMessages((newMessages: any) => [...newMessages, data]);
-        dispatch(saveNewMessage(data))
     })
 
     socket.on("typing", ({ chatRoomId, senderId }: { chatRoomId: string, senderId: string }) => {
@@ -339,7 +345,7 @@ const Chat = () => {
                         {/* user name and head ends here*/}
 
                         {/* messages shows in this div */}
-                        <div className="flex-grow bg-blue-100 overflow-y-auto">
+                        <div className="flex-grow bg-blue-100 overflow-y-auto" ref={scrollContainerRef}>
                             {/* <div className='bg-white p-1 px-2 mb-1 w-fit rounded-md'>message</div> */}
                             {
                                 messages?.length > 0 &&
