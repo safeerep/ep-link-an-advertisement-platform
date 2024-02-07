@@ -62,9 +62,9 @@ export default (dependencies: any) => {
                     return res.json({ success: false, message: 'something went wrong during saving one message'})
                 }
             }
-            const { chatRoomId } = req.body;
+            const { chatRoomId, typeOfMessage } = req.body;
             const updatedLatestMessage = await chatRoomUsecases
-                .updateLatestMessage_usecase(dependencies).interactor( chatRoomId, messageFiles[messageFiles.length-1])
+                .updateLatestMessage_usecase(dependencies).interactor( chatRoomId, typeOfMessage)
             if (updatedLatestMessage) {
                 return res.json({ success: true, files: messageFiles, message: 'successfully saved new messages' })
             }
