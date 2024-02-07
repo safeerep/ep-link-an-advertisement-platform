@@ -363,6 +363,20 @@ const Chat = () => {
                                                 Your browser does not support the video tag.
                                             </video>
                                         )}
+                                        {messageDoc.typeOfMessage === 'audio' && (
+                                            <audio controls className='max-w-2/3'>
+                                                <source src={messageDoc?.message} type="audio/mp3" />
+                                                Your browser does not support the audio tag.
+                                            </audio>
+                                        )}
+                                        {messageDoc.typeOfMessage === 'document' && (
+                                            <div className="flex items-center max-w-2/3">
+                                                <img src="document-icon.png" alt="Document Icon" className="w-6 h-6 mr-2" />
+                                                <a href={messageDoc?.message} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+                                                    {messageDoc.documentName || "Download Document"}
+                                                </a>
+                                            </div>
+                                        )}
                                     </div>
                                 ))
                             }
@@ -377,16 +391,30 @@ const Chat = () => {
                                             'ml-auto' : ''}`}
                                     >
                                         {messageDoc.typeOfMessage === 'text' && (
-                                            <div>{messageDoc?.message}</div>
+                                            <div className='max-w-2/3'>{messageDoc?.message}</div>
                                         )}
                                         {messageDoc.typeOfMessage === 'image' && (
-                                            <img src={messageDoc?.message} alt="Image" />
+                                            <img className='max-w-2/3' src={messageDoc?.message} alt="Image" />
                                         )}
                                         {messageDoc.typeOfMessage === 'video' && (
-                                            <video controls width="300">
+                                            <video className='max-w-2/3' controls width="300">
                                                 <source src={messageDoc?.message} type="video/mp4" />
                                                 Your browser does not support the video tag.
                                             </video>
+                                        )}
+                                        {messageDoc.typeOfMessage === 'audio' && (
+                                            <audio controls className='max-w-2/3'>
+                                                <source src={messageDoc?.message} type="audio/mp3" />
+                                                Your browser does not support the audio tag.
+                                            </audio>
+                                        )}
+                                        {messageDoc.typeOfMessage === 'document' && (
+                                            <div className="flex items-center max-w-2/3">
+                                                <img src="document-icon.png" alt="Document Icon" className="w-6 h-6 mr-2" />
+                                                <a href={messageDoc?.message} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+                                                    {messageDoc.documentName || "Download Document"}
+                                                </a>
+                                            </div>
                                         )}
                                     </div>
                                 ))
