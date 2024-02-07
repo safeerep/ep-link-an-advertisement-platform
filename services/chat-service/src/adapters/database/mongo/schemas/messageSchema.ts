@@ -14,6 +14,10 @@ const MessagesSchema: Schema = new Schema({
         type: String,
         required: true
     },
+    typeOfMessage: {
+        type: String,
+        required: true
+    },
     unRead: {
         type: Boolean,
         default: true,

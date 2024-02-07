@@ -10,8 +10,8 @@ const userRoutes = ( dependencies: any) => {
         unBlockUserController
     } = userControllers(dependencies)
 
-    router.patch('/user/block/:sellerId', verifyUserAuth, blockUserController)
-    router.patch('/user/un-block/:sellerId', verifyUserAuth, unBlockUserController)
+    router.patch('/block/:sellerId', verifyUserAuth, blockUserController)
+    router.patch('/un-block/:sellerId', verifyUserAuth, unBlockUserController)
 
     return router;
 }

@@ -27,7 +27,7 @@ export const handleSocketEvents = ( socket: Socket) => {
             socket.in(data?.chatRoomId).emit("show-message", data)
         }
         else {
-            socket.in(data?.chatRoomId).emit("receiver-blocked", data)
+            socket.in(data?.senderId).emit("receiver-blocked", data)
         }
     })
     

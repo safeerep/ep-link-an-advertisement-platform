@@ -9,7 +9,7 @@ export default (dependencies: any) => {
         }
     } = dependencies;
 
-    const saveNewMessage = async (req: Request, res: Response) => {
+    const saveNewFileAsMessage = async (req: Request, res: Response) => {
         // we will get roomId, message, senderId as req.body;
         try {
             // we have to get current user id and receiver Id;
@@ -21,7 +21,6 @@ export default (dependencies: any) => {
 
             try {
                 const receiverId = users.filter((userId: string) => String(userId) !== senderId)
-
                 const chatRoomDocument = await chatRoomUsecases
                     .checkUserOnlineStatusInARoom_usecase(dependencies).interactor(chatRoomId, String(receiverId))
 
@@ -44,28 +43,40 @@ export default (dependencies: any) => {
         }
 
         try {
-            // here we will save new message
-            const newMessage = await messageUsecases
-                .saveNewMessage_usecase(dependencies).interactor(req.body)
-            if (newMessage) {
-                // now we have to update chatroom document with latest message;
-                const { chatRoomId, message } = req.body;
-                const updatedLatestMessage = await chatRoomUsecases
-                .updateLatestMessage_usecase(dependencies).interactor( chatRoomId, message)
-                if (updatedLatestMessage) {
-                    return res.json({ success: true, message: 'successfully saved new message' })
-                }
-                else {
-                    console.log('something went wrong during updating latest message');
-                    return res.status(503).json({ success: false, message: "something went wrong" })
+            // now we are taking all the files from request;
+            const messageFiles = Array.isArray(req?.files) ?
+                (req.files as Express.Multer.File[]).map((file: any) => {
+                    return file?.location;
+                })
+                : [];
+
+            // here we are going to save each file as seperate messages;
+            for (let fileLocation of messageFiles) {
+                const newMessage = await messageUsecases
+                    .saveNewMessage_usecase(dependencies).interactor({
+                        ...req.body,
+                        message: fileLocation
+                    })
+
+                if (!newMessage) {
+                    return res.json({ success: false, message: 'something went wrong during saving one message'})
                 }
             }
-            throw new Error('something went wrong')
+            const { chatRoomId } = req.body;
+            const updatedLatestMessage = await chatRoomUsecases
+                .updateLatestMessage_usecase(dependencies).interactor( chatRoomId, messageFiles[messageFiles.length-1])
+            if (updatedLatestMessage) {
+                return res.json({ success: true, files: messageFiles, message: 'successfully saved new messages' })
+            }
+            else {
+                console.log('something went wrong during updating latest message');
+                return res.json({ success: true, files: messageFiles ,message: "something went wrong during updating latest message" })
+            }
         } catch (error) {
-            console.log(`something went wrong during saving message`);
+            console.log(`something went wrong during taking all files from request ${error}`);
             return res.status(503).json({ success: false, message: "something went wrong" })
         }
     }
 
-    return saveNewMessage;
+    return saveNewFileAsMessage;
 }
