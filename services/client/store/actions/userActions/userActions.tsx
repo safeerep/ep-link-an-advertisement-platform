@@ -705,7 +705,7 @@ export const makeProductSoldOut = createAsyncThunk('/user/make-product-soldout',
 export const blockSeller = createAsyncThunk('/user/block-seller',
     async (sellerId: string) => {
         try {
-            const response = await axios.patch(`${CHAT_SERVICE_BASE_URL}/user/user/block/${sellerId}`, {}, {
+            const response = await axios.patch(`${CHAT_SERVICE_BASE_URL}/user/block/${sellerId}`, {}, {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true
             })
@@ -726,7 +726,7 @@ export const blockSeller = createAsyncThunk('/user/block-seller',
 export const unBlockSeller = createAsyncThunk('/user/un-block-seller',
     async (sellerId: string) => {
         try {
-            const response = await axios.patch(`${CHAT_SERVICE_BASE_URL}/user/user/un-block/${sellerId}`, {}, {
+            const response = await axios.patch(`${CHAT_SERVICE_BASE_URL}/user/un-block/${sellerId}`, {}, {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true
             })
@@ -768,7 +768,7 @@ export const updateUserProfileToPremium = createAsyncThunk('/user/update-to-prem
     async (policyDuration: string) => {
         try {
             const response = await axios.patch(`${USERS_SERVICE_BASE_URL}/user/update-to-premium`,
-             {subscriptionPolicy: policyDuration}, {
+                { subscriptionPolicy: policyDuration }, {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true
             })
@@ -824,3 +824,19 @@ export const verifyRazorpayPayment =
             return false;
         }
     }
+
+export const sendMediaFilesAsMessage = async (files: any) => {
+    try {
+        const response = await axios.post(`${CHAT_SERVICE_BASE_URL}/save-media-files`, files, {
+            headers: { "Content-Type": "application/json" },
+            withCredentials: true
+        })
+        if (response?.data?.success) {
+            return response?.data?.files;
+        }
+        else toast.error(response?.data?.message)
+    } catch (error) {
+        console.log(`something went wrong during sending files as messages ${error}`);
+        return false;
+    }
+}

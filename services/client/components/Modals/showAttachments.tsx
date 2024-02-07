@@ -2,9 +2,10 @@
 import React, { useState, useRef } from 'react'
 import { Toaster } from 'react-hot-toast';
 import { BsPlay } from 'react-icons/bs'
+import { MdAudiotrack } from 'react-icons/md'
 
-const ShowAttachments = ({ isModalOpen, setModalOpen, afterConfirmation }: { isModalOpen: boolean, setModalOpen: any, afterConfirmation: any }) => {
-  const [videoPlay, setVideoPlay] = useState(false)
+const ShowAttachments = ({ isModalOpen, setModalOpen, afterConfirmation, files, fileType }: { isModalOpen: boolean, setModalOpen: any, afterConfirmation: any, files?: any, fileType?: string }) => {
+  const [main, setMain] = useState(0)
   const [videoPlaying, setVideoPlaying] = useState(false)
   const mainVideoRef = useRef<HTMLVideoElement | null>(null);
   const handleVideoClick = () => {
@@ -36,51 +37,95 @@ const ShowAttachments = ({ isModalOpen, setModalOpen, afterConfirmation }: { isM
               </div>
               <div className="flex justify-center"></div>
               {/* body */}
-              {/* <div className="relative px-12 flex-auto">
-                <img src="brand.png" alt="" />
-                <div className="flex justify-center gap-1 overflow-x-auto">
-                  <img src="brand.png" alt="" />
-                  <img src="brand.png" alt="" />
-                  <img src="brand.png" alt="" />
-                  <img src="brand.png" alt="" />
-                </div>
-
-              </div> */}
-              {/* <div className="relative px-12 flex-auto gap-1">
-                <div
-                  onClick={handleVideoClick}
-                  className='relative'>
-                  <video
-                    className='p-4' ref={mainVideoRef} src="sample video.mp4"></video>
-                  {
-                    videoPlaying ?
-                      '' :
-                      <button
-                        className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-2 rounded-full"
-                      >
-                        < BsPlay />
-                      </button>
-                  }
-                </div>
-                <div className="flex justify-center gap-1 overflow-x-scroll">
-                  <video src="sample video.mp4"></video>
-                  <video src="sample video.mp4"></video>
-                  <video src="sample video.mp4"></video>
-                </div>
-
-              </div> */}
-
-              <object
-                // key={index}
-                data={'SAFEER MON EP.pdf'}
-                // type={`application/${document.type === 'pdf' ? 'pdf' : 'vnd.openxmlformats-officedocument.' + document.type}`}
-                type={`application/pdf`}
-                className={`p-4  'border-blue-500' : 'border-white'}`}
-                // className={`p-4 ${selectedDocument === index ? 'border-blue-500' : 'border-white'}`}
-                // onClick={() => handleDocumentClick(index)}
-              >
-                {/* {document.title} */}
-              </object>
+              {
+                fileType === 'image' && files && files.length > 0 && files[0].type.startsWith('image/') && (
+                  <div className="relative px-12 flex-auto">
+                    <img src={URL.createObjectURL(files[main])} alt="" />
+                    <div className="flex justify-center gap-1 overflow-x-auto">
+                      {files.length > 1 && files?.map((image: any, index: any) => (
+                        <img
+                          onClick={() => setMain(index)}
+                          className='w-20 h-20 m-2' key={index} src={URL.createObjectURL(image)} alt="" />
+                      ))}
+                    </div>
+                  </div>
+                )
+              }
+              {
+                fileType === 'video' && files && files.length > 0 && (
+                  <div className="relative px-12 flex-auto">
+                    <div
+                      className='relative'
+                    >
+                      <video
+                        className='p-4'
+                        ref={mainVideoRef}
+                        src={URL.createObjectURL(files[main])}
+                      ></video>
+                      {
+                        videoPlaying ?
+                          null :
+                          <button
+                            onClick={handleVideoClick}
+                            className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 bg-white p-2 rounded-full"
+                          >
+                            <BsPlay />
+                          </button>
+                      }
+                    </div>
+                    <div className="flex justify-center gap-1 overflow-x-scroll">
+                      {files.length > 1 && files?.map((video: any, index: any) => (
+                        <video
+                          onClick={() => setMain(index)}
+                          key={index} src={URL.createObjectURL(video)}></video>
+                      ))}
+                    </div>
+                  </div>
+                )
+              }
+              {
+                fileType === 'document' && files && files.length > 0 && (
+                  <div className="relative px-12 flex-auto">
+                    <object
+                      data={URL.createObjectURL(files[main])}
+                      type="application/pdf"
+                      className="p-4"
+                    >
+                      <p>Your browser doesn't support embedded PDFs. You can still download it.</p>
+                      <a href={URL.createObjectURL(files[main])} target="_blank" rel="noopener noreferrer">Download PDF</a>
+                    </object>
+                    <div className="flex justify-center gap-1 overflow-x-auto overflow-y-hidden">
+                      {files.length > 1 && files.map((document: any, index: any) => (
+                        <object
+                          key={index}
+                          onClick={() => setMain(index)}
+                          data={URL.createObjectURL(document)}
+                          type="application/pdf"
+                          className="p-4"
+                        >
+                          <p>Your browser doesn't support embedded PDFs. You can still download it.</p>
+                          <a href={URL.createObjectURL(document)} target="_blank" rel="noopener noreferrer">Download PDF</a>
+                        </object>
+                      ))}
+                    </div>
+                  </div>
+                )
+              }
+              {
+                fileType === 'audio' && files && files.length > 0 && (
+                  <div className="relative px-12 flex-auto">
+                    <div className="flex justify-center gap-1 overflow-x-auto overflow-y-hidden">
+                      {files.map((audio: any, index: any) => (
+                        <div
+                          className='h-20 w-20 bg-yellow-500 flex justify-center items-center text-center my-1'
+                          key={index} >
+                          <MdAudiotrack className='text-2xl text-center' />
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )
+              }
               {/*footer*/}
 
               <div className="flex items-center justify-end p-6 border-t border-solid border-blueGray-200 rounded-b">

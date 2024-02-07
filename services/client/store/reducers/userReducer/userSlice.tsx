@@ -331,18 +331,18 @@ const userSlice = createSlice({
                 state.error = action.error.message;
             })
             // on sending new message
-            .addCase(saveNewMessage.pending, (state: UserState) => {
-                state.loading = true;
-            })
-            .addCase(saveNewMessage.fulfilled, (state: UserState, action) => {
-                state.loading = false;
-                state.data = { ...state.data, ...action.payload };
-                state.error = null;
-            })
-            .addCase(saveNewMessage.rejected, (state: UserState, action) => {
-                state.loading = false;
-                state.error = action.error.message;
-            })
+            // .addCase(saveNewMessage.pending, (state: UserState) => {
+            //     state.loading = true;
+            // })
+            // .addCase(saveNewMessage.fulfilled, (state: UserState, action) => {
+            //     state.loading = false;
+            //     state.data = { ...state.data, ...action.payload };
+            //     state.error = null;
+            // })
+            // .addCase(saveNewMessage.rejected, (state: UserState, action) => {
+            //     state.loading = false;
+            //     state.error = action.error.message;
+            // })
             // on blocking a seller
             .addCase(blockSeller.pending, (state: UserState) => {
                 state.loading = true;

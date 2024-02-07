@@ -14,6 +14,7 @@ import {
     getCurrentUserChatRooms,
     reportSeller,
     saveNewMessage,
+    sendMediaFilesAsMessage,
     unBlockSeller
 } from '@/store/actions/userActions/userActions'
 import { io } from 'socket.io-client'
@@ -21,6 +22,7 @@ import { SOCKET_BASE_URL } from '@/constants'
 import toast, { Toaster } from 'react-hot-toast'
 import VideoCall from '../VideoCall/VideoCall'
 import ConfimationModalWithDialogue from '@/components/Modals/ConfirmationWithDialogue'
+import ShowAttachments from '@/components/Modals/showAttachments'
 
 const Chat = () => {
     const socket = io(`${SOCKET_BASE_URL}`)
@@ -49,6 +51,10 @@ const Chat = () => {
     const unreadMessages: any = useSelector((state: any) => state?.user?.data?.unreadMessages)
     const userId: string = user?._id;
 
+    const [showAttachments, setShowAttachments] = useState(false);
+    const [currentlySelectedAttachments, setCurrentlySelectedAttachments] = useState<any>(null);
+    const [currentlySelectedAttachmentType, setCurrentlySelectedAttachmentType] = useState<any>(null);
+
     useEffect(() => {
         socket.emit("join-user-room", userId)
     }, [userId])
@@ -76,6 +82,7 @@ const Chat = () => {
         if (!message || currentUserBlockedReceiver) return;
         console.log(`yes message have `, message);
         const messageDoc = {
+            typeOfMessage: 'text',
             message: message,
             chatRoomId: roomId,
             senderId: user?._id
@@ -163,6 +170,67 @@ const Chat = () => {
         setSignalData(data.signalData)
         setVideoCallOngoing(true);
     })
+
+    const handleAttachmentChanges = (event: any, fileType: string) => {
+        const files = event.target.files;
+        const filesArray = (Array.from(files));
+        console.log('files');
+        console.log(filesArray);
+        console.log('files');
+
+        switch (fileType) {
+            case 'video':
+                setCurrentlySelectedAttachments(filesArray)
+                setCurrentlySelectedAttachmentType('video')
+                setShowAttachments(true)
+                setIsFileAttachDropdownOpen(false)
+                break;
+            case 'image':
+                setCurrentlySelectedAttachments(filesArray)
+                setCurrentlySelectedAttachmentType('image')
+                setShowAttachments(true)
+                setIsFileAttachDropdownOpen(false)
+                break;
+            case 'document':
+                setCurrentlySelectedAttachments(filesArray)
+                setCurrentlySelectedAttachmentType('document')
+                setShowAttachments(true)
+                setIsFileAttachDropdownOpen(false)
+                break;
+            case 'audio':
+                setCurrentlySelectedAttachments(filesArray)
+                setCurrentlySelectedAttachmentType('audio')
+                setShowAttachments(true)
+                setIsFileAttachDropdownOpen(false)
+                break;
+            default:
+                break;
+        }
+    }
+
+    const sendMediaFiles = async () => {
+        console.log(`called to send media`);
+        console.log(currentlySelectedAttachmentType);
+        console.log(currentlySelectedAttachments);
+        const docToSend = {
+            "files": currentlySelectedAttachments,
+            typeOfMessage: currentlySelectedAttachmentType,
+            chatRoomId: roomId,
+            senderId: user?._id
+        }
+        const files = await sendMediaFilesAsMessage(docToSend);
+
+        files?.forEach((file: string) => {
+            const messageDoc = {
+                typeOfMessage: currentlySelectedAttachmentType,
+                message: file,
+                chatRoomId: roomId,
+                senderId: user?._id
+            }
+            socket.emit("send-message", messageDoc)
+        })
+
+    }
 
     return (
         !videoCallOngoing ?
@@ -282,23 +350,51 @@ const Chat = () => {
                             {
                                 messages?.length > 0 &&
                                 messages.map((messageDoc: any, index: number) => (
-                                    messageDoc.showToReceiver &&
+                                    ((messageDoc.showToReceiver &&
+                                        user?._id !== messageDoc.senderId) || user?._id === messageDoc.senderId
+                                    ) &&
                                     <div key={index}
-                                        className={`bg-white p-1 px-2 mb-1 w-fit rounded-md 
-                                    ${messageDoc.senderId === user?._id ? 'ml-auto' : ''
-                                            }`}
-                                    >{messageDoc?.message}</div>
+                                        className={`bg-white p-1 px-2 mb-1 w-fit rounded-md ${messageDoc.senderId === user?._id ?
+                                            'ml-auto' : ''}`}
+                                    >
+                                        {messageDoc.typeOfMessage === 'text' && (
+                                            <div>{messageDoc?.message}</div>
+                                        )}
+                                        {messageDoc.typeOfMessage === 'image' && (
+                                            <img src={messageDoc?.message} alt="Image" />
+                                        )}
+                                        {messageDoc.typeOfMessage === 'video' && (
+                                            <video controls width="300">
+                                                <source src={messageDoc?.message} type="video/mp4" />
+                                                Your browser does not support the video tag.
+                                            </video>
+                                        )}
+                                    </div>
                                 ))
                             }
                             {
                                 newMessages?.length > 0 &&
                                 newMessages.map((messageDoc: any, index: number) => (
-                                    messageDoc?.showToReceiver &&
+                                    ((messageDoc.showToReceiver &&
+                                        user?._id !== messageDoc.senderId) || user?._id === messageDoc.senderId
+                                    ) &&
                                     <div key={index}
-                                        className={`bg-white p-1 px-2 mb-1 w-fit rounded-md 
-                                ${messageDoc.senderId === user?._id ? 'ml-auto' : ''
-                                            }`}
-                                    >{messageDoc?.message}</div>
+                                        className={`bg-white p-1 px-2 mb-1 w-fit rounded-md ${messageDoc.senderId === user?._id ?
+                                            'ml-auto' : ''}`}
+                                    >
+                                        {messageDoc.typeOfMessage === 'text' && (
+                                            <div>{messageDoc?.message}</div>
+                                        )}
+                                        {messageDoc.typeOfMessage === 'image' && (
+                                            <img src={messageDoc?.message} alt="Image" />
+                                        )}
+                                        {messageDoc.typeOfMessage === 'video' && (
+                                            <video controls width="300">
+                                                <source src={messageDoc?.message} type="video/mp4" />
+                                                Your browser does not support the video tag.
+                                            </video>
+                                        )}
+                                    </div>
                                 ))
                             }
                             {
@@ -327,57 +423,66 @@ const Chat = () => {
                                 className="bg-slate-700 text-white mx-1 px-4 py-2 rounded-md relative">
                                 < AiOutlinePlus className='text-2xl' />
                             </button>
+                            {/* starting */}
                             {isFileAttachDropdownOpen && (
-                                <div className="absolute flex cursor-pointer bottom-24 right-10 p-1 z-10 rounded-md bg-white ring-1 ring-black ring-opacity-5 focus:outline-none gap-12">
-                                <div className="relative inline-block">
-                                  <input
-                                    type="file"
-                                    id="videoInput"
-                                    accept="video/*"
-                                    multiple
-                                    hidden
-                                  />
-                                  <label htmlFor="videoInput" className="cursor-pointer">
-                                    <BsCameraVideo className="w-6 h-6" />
-                                  </label>
+                                <div className="absolute flex cursor-pointer bottom-24 right-10 p-1 z-10 rounded-md bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+                                    <div className="relative inline-block p-4">
+                                        <input
+                                            type="file"
+                                            id="videoInput"
+                                            accept="video/*"
+                                            multiple
+                                            hidden
+                                            onChange={(e) => handleAttachmentChanges(e, 'video')}
+                                        />
+                                        <label htmlFor="videoInput" className="cursor-pointer flex flex-col items-center">
+                                            <BsCameraVideo className="w-6 h-6" />
+                                            video
+                                        </label>
+                                    </div>
+                                    <div className="relative inline-block p-4">
+                                        <input
+                                            type="file"
+                                            id="imageInput"
+                                            accept="image/*"
+                                            multiple
+                                            hidden
+                                            onChange={(e) => handleAttachmentChanges(e, 'image')}
+                                        />
+                                        <label htmlFor="imageInput" className="cursor-pointer flex flex-col items-center">
+                                            <BsImageAlt className="w-6 h-6" />
+                                            image
+                                        </label>
+                                    </div>
+                                    <div className="relative inline-block p-4">
+                                        <input
+                                            type="file"
+                                            id="documentInput"
+                                            accept=".pdf, .doc, .docx"
+                                            multiple
+                                            hidden
+                                            onChange={(e) => handleAttachmentChanges(e, 'document')}
+                                        />
+                                        <label htmlFor="documentInput" className="cursor-pointer flex flex-col items-center">
+                                            <GrDocument className="w-6 h-6" />
+                                            files
+                                        </label>
+                                    </div>
+                                    <div className="relative inline-block p-4">
+                                        <input
+                                            type="file"
+                                            id="audioInput"
+                                            accept="audio/*"
+                                            multiple
+                                            hidden
+                                            onChange={(e) => handleAttachmentChanges(e, 'audio')}
+                                        />
+                                        <label htmlFor="audioInput" className="cursor-pointer flex flex-col items-center">
+                                            <MdAudiotrack className="w-6 h-6" />
+                                            audio
+                                        </label>
+                                    </div>
                                 </div>
-                                <div className="relative inline-block">
-                                  <input
-                                    type="file"
-                                    id="imageInput"
-                                    accept="image/*"
-                                    multiple
-                                    hidden
-                                  />
-                                  <label htmlFor="imageInput" className="cursor-pointer">
-                                    <BsImageAlt className="w-6 h-6" />
-                                  </label>
-                                </div>
-                                <div className="relative inline-block">
-                                  <input
-                                    type="file"
-                                    id="documentInput"
-                                    accept=".pdf, .doc, .docx"
-                                    multiple
-                                    hidden
-                                  />
-                                  <label htmlFor="documentInput" className="cursor-pointer">
-                                    <GrDocument className="w-6 h-6" />
-                                  </label>
-                                </div>
-                                <div className="relative inline-block">
-                                  <input
-                                    type="file"
-                                    id="audioInput"
-                                    accept="audio/*"
-                                    multiple
-                                    hidden
-                                  />
-                                  <label htmlFor="audioInput" className="cursor-pointer">
-                                    <MdAudiotrack className="w-6 h-6" />
-                                  </label>
-                                </div>
-                              </div>
                             )}
 
                             {/* ending for file attach button */}
@@ -395,6 +500,13 @@ const Chat = () => {
                     isModalOpen={modalOpen}
                     notesHead='Write a reason for report'
                     setModalOpen={setModalOpen}
+                />
+                <ShowAttachments
+                    isModalOpen={showAttachments}
+                    setModalOpen={setShowAttachments}
+                    afterConfirmation={sendMediaFiles}
+                    files={currentlySelectedAttachments}
+                    fileType={currentlySelectedAttachmentType}
                 />
             </div> :
             <VideoCall
