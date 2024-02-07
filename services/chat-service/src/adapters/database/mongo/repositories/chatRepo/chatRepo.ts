@@ -45,7 +45,7 @@ export const getAllChatsOfCurrentUser = async (currentUserId: string): Promise<C
         }).populate({
             path: 'users.userId',  
             model: UserCollection
-        });
+        }).sort({ updatedAt: -1 });
 
         
 
@@ -142,6 +142,26 @@ export const checkUserStatusInRoom =
         return roomDocument as ChatRoomDocument;
     } catch (error) {
         console.log(`something went wrong during checking a user's status in room ${chatRoomId}`);
+        return false;
+    }
+}
+
+export const updateLatestMessage = async ( chatRoomId: string, latestMessage: string) => {
+    try {
+        const updatedChatRoom = await ChatRoomCollection.findByIdAndUpdate( chatRoomId, 
+            {
+                lastMessage: latestMessage
+            }, {
+                new: true,
+                upsert: true
+            }
+        )
+        if ( updatedChatRoom) {
+            return updatedChatRoom
+        }
+        else return false;
+    } catch (error) {
+        console.log(`something went wrong during updating latest message in the room`);
         return false;
     }
 }

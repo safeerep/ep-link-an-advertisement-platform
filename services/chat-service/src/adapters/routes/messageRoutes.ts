@@ -1,14 +1,18 @@
 import { Router } from "express";
 import verifyUserAuth from "../../utils/middlewares/verifyUserAuth";
 import messageControllers from "../../handlers/contollers/messageControllers";
+import upload from "../../utils/externalServices/aws-s3/fileUpload";
 
 const messageRoutes = ( dependencies: any) => {
     const router = Router();
     const {
-        saveMessageController
+        saveMessageController,
+        saveMediafilesController
     } = messageControllers(dependencies);
 
-    router.post('/save-message', verifyUserAuth, saveMessageController)
+    router.use(verifyUserAuth)
+    router.post('/save-message', saveMessageController)
+    router.post('/save-media-files', upload.array("files"), saveMediafilesController)
     return router;
 }
 

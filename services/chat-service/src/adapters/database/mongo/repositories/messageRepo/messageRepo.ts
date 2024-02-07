@@ -27,8 +27,6 @@ export const getMessagesFromASpecificRoom =
 }
 
 export const countOfUnreadMessagesInEachChat = async ( userId: string, chats: any) => {
-    console.log('yes here to take count');
-    
     try {
         const allRoomsWithUnreadMessagesCount = [];
         const takeCount = async ( chatRoomId: string) => {
