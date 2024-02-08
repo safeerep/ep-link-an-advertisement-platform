@@ -27,7 +27,7 @@ export default ( dependencies: any) => {
     // fetching products for admin
     router.get('/admin/get-all-products', verifyAdminAuth, getProductsController)
     // fetching reported products only for admin
-    router.get('/get-reported-products', getReportedProductsController)
+    router.get('/admin/get-reported-products', verifyAdminAuth, getReportedProductsController)
     // banning a specific product by admin
     router.patch('/ban-one-product', verifyAdminAuth, banOneProductController)
 

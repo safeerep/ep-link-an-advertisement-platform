@@ -186,7 +186,21 @@ export const reportProduct = async (productId: string, report: ReportType) => {
 // to get products ReportedProducts
 export const getReportedProducts = async () => {
     try {
-        const reportedProducts = await ReportedProductsCollection.find().populate("productId")
+        // const reportedProducts = await ReportedProductsCollection.find().populate("productId")
+        const reportedProducts = await ReportedProductsCollection.aggregate([
+            {
+                $unwind: "$reports"
+            },
+            {
+                $lookup: {
+                    from: "products",
+                    localField: "productId",
+                    foreignField: "_id",
+                    as: "reportedOn"
+                }
+            }
+        ])
+
         if (reportedProducts) return reportedProducts;
         return false;
     } catch (error) {
