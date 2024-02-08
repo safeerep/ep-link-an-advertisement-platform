@@ -100,6 +100,24 @@ export const getAllUsers = createAsyncThunk('/admin/get-all-users', async () => 
     }
 })
 
+export const getReportedUsers = createAsyncThunk('/admin/get-reported-users', async () => {
+    try {
+        const response: any = await axios.get(`${USERS_SERVICE_BASE_URL}/admin/get-reported-users`, {
+            headers: { "Content-Type": "application/json" },
+            withCredentials: true
+        })
+        if (response?.data) {
+            console.log(response.data);
+            if (response.data.success)
+                return response.data;
+        } else {
+            throw new Error(response?.data?.message)
+        }
+    } catch (error: any) {
+        console.log('something went wrong', error);
+    }
+})
+
 export const banAUser = createAsyncThunk('/admin/ban-user', async ({ currentUser, setModalOpen }: { currentUser: any, setModalOpen: any }) => {
     try {
         const response: any = await axios.patch(`${USERS_SERVICE_BASE_URL}/admin/change-user-status`, { ...currentUser }, {
