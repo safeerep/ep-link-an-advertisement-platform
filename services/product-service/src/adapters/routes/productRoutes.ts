@@ -19,6 +19,7 @@ export default ( dependencies: any) => {
         getCountOfProductsAddedByUserController,
         reportProductController,
         getReportedProductsController,
+        changeProductStatusController
     }
     = productControllers(dependencies)
 
@@ -30,6 +31,8 @@ export default ( dependencies: any) => {
     router.get('/admin/get-reported-products', verifyAdminAuth, getReportedProductsController)
     // banning a specific product by admin
     router.patch('/ban-one-product', verifyAdminAuth, banOneProductController)
+    // banning a specific product by admin
+    router.patch('/change-product-status', verifyAdminAuth, changeProductStatusController)
 
     // authentication required all the below routes;
     router.use(verifyUserAuth)
