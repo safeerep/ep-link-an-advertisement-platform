@@ -36,7 +36,7 @@ export default (dependencies: any) => {
                 return res.status(503).json({ success: false, message: 'something went wrong'})
             }
             else {
-                return res.status(503).json({ success: true, updatedUserProfile, message: `successfully subscribed ${subscriptionPolicy} subscription policy`})
+                return res.json({ success: true, updatedUserProfile, message: `successfully subscribed ${subscriptionPolicy} subscription policy`})
             }
         } catch (error) {
             console.log(`something went wrong during making user as premium member;`);
