@@ -1,9 +1,10 @@
-import { GrMore } from 'react-icons/gr'
+import { GrMore, GrEmoji, GrDocument } from 'react-icons/gr'
 import { IoIosCall } from 'react-icons/io'
 import { BsCameraVideoFill, BsCameraVideo, BsImageAlt } from 'react-icons/bs'
 import { AiOutlinePlus } from 'react-icons/ai'
-import { GrDocument } from 'react-icons/gr'
 import { MdAudiotrack } from 'react-icons/md'
+import data from '@emoji-mart/data'
+import Picker from '@emoji-mart/react'
 import { useRouter } from 'next/navigation'
 import { useEffect, useRef, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
@@ -30,6 +31,7 @@ const Chat = () => {
     const router = useRouter()
     const scrollContainerRef = useRef<HTMLDivElement | null>(null);
     const [message, setMessage] = useState('')
+    const [showEmojis, setShowEmojis] = useState(false)
     const [isDropdownOpen, setIsDropdownOpen] = useState(false)
     const [isFileAttachDropdownOpen, setIsFileAttachDropdownOpen] = useState(false)
     const [modalOpen, setModalOpen] = useState(false)
@@ -75,7 +77,7 @@ const Chat = () => {
 
     const scrollToBottom = () => {
         if (scrollContainerRef?.current) {
-          scrollContainerRef.current.scrollTop = scrollContainerRef.current.scrollHeight;
+            scrollContainerRef.current.scrollTop = scrollContainerRef.current.scrollHeight;
         }
     };
 
@@ -212,24 +214,30 @@ const Chat = () => {
     }
 
     const sendMediaFiles = async () => {
-        const docToSend = {
-            files: currentlySelectedAttachments,
-            typeOfMessage: currentlySelectedAttachmentType,
-            chatRoomId: roomId,
-            senderId: user?._id
+        if ( currentUserBlockedReceiver ) {
+            toast.error('unblock first to continue')
+            return;
         }
-        const files = await sendMediaFilesAsMessage(docToSend);
-        setShowAttachments(false)
-
-        files?.forEach((file: string) => {
-            const messageDoc = {
+        else {
+            const docToSend = {
+                files: currentlySelectedAttachments,
                 typeOfMessage: currentlySelectedAttachmentType,
-                message: file,
                 chatRoomId: roomId,
                 senderId: user?._id
             }
-            socket.emit("send-message", messageDoc)
-        })
+            const files = await sendMediaFilesAsMessage(docToSend);
+            setShowAttachments(false)
+    
+            files?.forEach((file: string) => {
+                const messageDoc = {
+                    typeOfMessage: currentlySelectedAttachmentType,
+                    message: file,
+                    chatRoomId: roomId,
+                    senderId: user?._id
+                }
+                socket.emit("send-message", messageDoc)
+            })
+        }
 
     }
 
@@ -443,8 +451,32 @@ const Chat = () => {
                                 onChange={(e) => inputChanged(e)}
                                 type="text"
                                 placeholder="Type your message..."
-                                className="flex-grow bg-white border border-gray-300 p-2 rounded-md mr-2"
+                                className="flex-grow bg-white border border-gray-300 p-2 rounded-md"
                             />
+                            {/* starting of emoji picker */}
+                            <button
+                                type='button'
+                                onClick={() => setShowEmojis(!showEmojis)}
+                                className="bg-slate-700 text-white mx-1 px-4 py-2 rounded-md relative">
+                                < GrEmoji className='text-2xl' />
+                            </button>
+                            {
+                                showEmojis &&
+                                <Picker
+                                    data={data}
+                                    onEmojiSelect={(e: any) => {
+                                        const sym = e.unified.split("_");
+                                        let codeArray: any = []
+                                        sym.forEach((el: any) => {
+                                            codeArray.push("0x" + el)
+                                        })
+                                        let emoji = String.fromCodePoint(...codeArray)
+                                        setMessage(message + emoji)
+                                    }}
+                                    className="absolute flex cursor-pointer bottom-24 right-10 p-1 z-10"
+                                />
+                            }
+                            {/* ending of emoji picker */}
                             {/* starting */}
                             <button
                                 type='button'
