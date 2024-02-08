@@ -789,7 +789,7 @@ export const getPremiumPolicies = createAsyncThunk('/user/get-premium-poicies',
 )
 
 export const updateUserProfileToPremium = createAsyncThunk('/user/update-to-premium',
-    async (policyDuration: string) => {
+    async ({policyDuration, router}:{policyDuration: string, router: any}) => {
         try {
             const response = await axios.patch(`${USERS_SERVICE_BASE_URL}/user/update-to-premium`,
                 { subscriptionPolicy: policyDuration }, {
@@ -798,7 +798,8 @@ export const updateUserProfileToPremium = createAsyncThunk('/user/update-to-prem
             })
 
             if (response?.data?.success) {
-                toast.success('subscription is successfull')
+                toast.success(response?.data?.message)
+                router.push('/add-product')
             }
             else toast.error(response?.data?.message)
         } catch (error: any) {
