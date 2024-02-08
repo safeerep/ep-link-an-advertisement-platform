@@ -1,5 +1,5 @@
 "use client"
-import { authRequired, changeProductStatus, getProducts } from '@/store/actions/adminActions/adminActions';
+import { authRequired, changeProductStatus, getProducts, getReportedProducts } from '@/store/actions/adminActions/adminActions';
 import { useRouter } from 'next/navigation';
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -19,10 +19,10 @@ const Products = () => {
 
   useEffect(() => {
     if (showReported) {
-      dispatch(getProducts())
+      dispatch(getReportedProducts())
     }
     else {
-
+      dispatch(getProducts())
     }
   },[showReported])
 
@@ -75,18 +75,16 @@ const Products = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {products?.filter((product: any) => (
-                    product && reportedProducts?.some((reportedProduct: any) => reportedProduct?.productId === product?._id)
-                  )).map((filteredProduct: any) => (
-                    <tr key={filteredProduct?._id}>
-                      <td className="border text-center">{filteredProduct?.productName}</td>
-                      <td className="border text-center">{filteredProduct?.categoryName}</td>
-                      <td className="border text-center">{filteredProduct?.status ? 'Active' : 'Blocked'}</td>
+                  {products?.map((product: any) => (
+                    <tr key={product?._id}>
+                      <td className="border text-center">{product?.productName}</td>
+                      <td className="border text-center">{product?.categoryName}</td>
+                      <td className="border text-center">{product?.status ? 'Active' : 'Blocked'}</td>
                       <td className="border flex justify-center items-center p-2">
-                        {filteredProduct?.status ?
+                        {product?.status ?
                           <button
                             onClick={() => {
-                              setCurrentProduct(filteredProduct);
+                              setCurrentProduct(product);
                               setModalOpen(true);
                             }}
                           >
@@ -95,7 +93,7 @@ const Products = () => {
                           </button> :
                           <button
                             onClick={() => {
-                              setCurrentProduct(filteredProduct);
+                              setCurrentProduct(product);
                               setModalOpen(true)
                             }}
                           >
@@ -120,9 +118,9 @@ const Products = () => {
                 <tbody>
                   {reportedProducts?.map((reportDoc: any) => (
 
-                    <tr key='l'>
+                    <tr key={reportDoc._id}>
                       <td className="border text-center">{reportDoc?.reportedOn ? reportDoc?.reportedOn[0]?.productName : ''}</td>
-                      <td className="border text-center">{reportDoc?.reportedBy ? reportDoc?.reportedBy[0]?.userName : ''}</td>
+                      <td className="border text-center">{reportDoc?.reports ? reportDoc?.reports?.reportedBy : ''}</td>
                       <td className="border text-center">{reportDoc?.reports ? reportDoc?.reports?.reason : ''}</td>
                       <td className="border flex justify-center items-center p-2">
                         {reportDoc?.status ?
