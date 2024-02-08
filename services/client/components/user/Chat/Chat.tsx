@@ -128,6 +128,7 @@ const Chat = () => {
         dispatch(reportSeller({ sellerId, reason: reason }))
         dispatch(blockSeller(sellerId))
         setIsDropdownOpen(false)
+        setModalOpen(false)
     }
 
     const handleMoreAction = (action: string) => {
