@@ -343,10 +343,10 @@ export const getReportedProducts = createAsyncThunk(`/admin/get-reported-product
     }
 )
 
-export const changeProductStatus = createAsyncThunk(`/admin/ban-one-product`,
+export const changeProductStatus = createAsyncThunk(`/admin/change-product-status`,
     async ({ productId, status }: { productId: string, status: boolean }) => {
         try {
-            const response = await axios.patch(`${PRODUCT_SERVICE_BASE_URL}/ban-one-product`, { productId, status }, {
+            const response = await axios.patch(`${PRODUCT_SERVICE_BASE_URL}/change-product-status`, { productId, status }, {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true
             })
@@ -360,7 +360,7 @@ export const changeProductStatus = createAsyncThunk(`/admin/ban-one-product`,
                 return response.data;
             }
         } catch (error: any) {
-            console.log(`an error happened during banning a product ${error}`);
+            console.log(`an error happened during changing the status of a product ${error}`);
             toast.success(error?.response.data?.message)
             return error?.response?.data;
         }
