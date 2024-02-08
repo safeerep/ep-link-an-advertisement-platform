@@ -11,6 +11,7 @@ import banOneProduct from "./banOneProduct"
 import getCountOfProductsAddedByUser from "./getCountOfProductsAddedByUser"
 import reportProduct from "./reportProduct"
 import getReportedProducts from "./getReportedProducts"
+import changeProductStatus from "./changeProductStatus"
 
 export default ( dependencies: any) => {
     return {
@@ -26,6 +27,7 @@ export default ( dependencies: any) => {
         banOneProductController: banOneProduct(dependencies),
         getCountOfProductsAddedByUserController: getCountOfProductsAddedByUser(dependencies),
         reportProductController: reportProduct(dependencies),
-        getReportedProductsController: getReportedProducts(dependencies)
+        getReportedProductsController: getReportedProducts(dependencies),
+        changeProductStatusController: changeProductStatus(dependencies)
     }
 }
