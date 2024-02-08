@@ -1,5 +1,5 @@
 "use client"
-import { authRequired, banAProduct, getProducts } from '@/store/actions/adminActions/adminActions';
+import { authRequired, changeProductStatus, getProducts } from '@/store/actions/adminActions/adminActions';
 import { useRouter } from 'next/navigation';
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
@@ -15,12 +15,22 @@ const Products = () => {
   useEffect(() => {
     dispatch(authRequired(router))
     dispatch(getProducts())
-  }, [])
+  }, [dispatch])
 
-  const banOneProduct = () => {
+  useEffect(() => {
+    if (showReported) {
+      dispatch(getProducts())
+    }
+    else {
+
+    }
+  },[showReported])
+
+  const changeStatus = () => {
     const productId: string = currentProduct?._id;
     const status: boolean = currentProduct?.status;
-    dispatch(banAProduct({ productId: productId, status: !status }))
+    dispatch(changeProductStatus({ productId: productId, status: !status }))
+    setModalOpen(false)
   }
 
   const products = useSelector((state: any) => state?.admin?.data?.products)
@@ -46,90 +56,104 @@ const Products = () => {
             </button> :
             <button
               onClick={filterToShowProducts}
-              className='bg-black text-white px-4 p-2 rounded-md'>
+              className='bg-yellow-600 text-white px-4 p-1 m-1 rounded-md'>
               Show Reported Products
             </button>
         }
       </div>
       <table className="table border w-full overflow-scroll mx-2 ps-2">
-        <thead>
-          <tr>
-            <th className="border text-center">Product Name</th>
-            <th className="border text-center">Category Name</th>
-            <th className="border text-center">Active Status</th>
-            <th className="border text-center">Action</th>
-          </tr>
-        </thead>
         {
-          showReported ?
-            <tbody>
-              {products?.filter((product: any) => (
-                product && reportedProducts?.some((reportedProduct: any) => reportedProduct?.productId === product?._id)
-              )).map((filteredProduct: any) => (
-                <tr key={filteredProduct?._id}>
-                  <td className="border text-center">{filteredProduct?.productName}</td>
-                  <td className="border text-center">{filteredProduct?.categoryName}</td>
-                  <td className="border text-center">{filteredProduct?.status ? 'Active' : 'Blocked'}</td>
-                  <td className="border flex justify-center items-center p-2">
-                    {filteredProduct?.status ?
-                      <button
-                        onClick={() => {
-                          setCurrentProduct(filteredProduct);
-                          setModalOpen(true);
-                        }}
-                      >
-                        <FiLock
-                        />
-                      </button> :
-                      <button
-                        onClick={() => {
-                          setCurrentProduct(filteredProduct);
-                          setModalOpen(true)
-                        }}
-                      >
-                        <FiUnlock />
-                      </button>
-                    }
-                  </td>
-                </tr>
-              ))}
-            </tbody> :
-            <tbody>
-              {products?.map((product: any) => (
-                (product &&
-                  <tr key='l'>
-                    <td className="border text-center">{product?.productName}</td>
-                    <td className="border text-center">{product?.categoryName}</td>
-                    <td className="border text-center">{product?.status ? 'Active' : 'Blocked'}</td>
-                    <td className="border flex justify-center items-center p-2">
-                      {product?.status ?
-                        <button
-                          onClick={() => {
-                            setCurrentProduct(product);
-                            setModalOpen(true);
-                          }}
-                        >
-                          <FiLock
-                          />
-                        </button> :
-                        <button
-                          onClick={() => {
-                            setCurrentProduct(product);
-                            setModalOpen(true)
-                          }}
-                        >
-                          <FiUnlock />
-                        </button>
-                      }
-                    </td>
+          !showReported ?
+            (
+              <>
+                <thead>
+                  <tr>
+                    <th className="border text-center">Product Name</th>
+                    <th className="border text-center">Category Name</th>
+                    <th className="border text-center">Active Status</th>
+                    <th className="border text-center">Action</th>
                   </tr>
-                )
-              ))}
-            </tbody>
+                </thead>
+                <tbody>
+                  {products?.filter((product: any) => (
+                    product && reportedProducts?.some((reportedProduct: any) => reportedProduct?.productId === product?._id)
+                  )).map((filteredProduct: any) => (
+                    <tr key={filteredProduct?._id}>
+                      <td className="border text-center">{filteredProduct?.productName}</td>
+                      <td className="border text-center">{filteredProduct?.categoryName}</td>
+                      <td className="border text-center">{filteredProduct?.status ? 'Active' : 'Blocked'}</td>
+                      <td className="border flex justify-center items-center p-2">
+                        {filteredProduct?.status ?
+                          <button
+                            onClick={() => {
+                              setCurrentProduct(filteredProduct);
+                              setModalOpen(true);
+                            }}
+                          >
+                            <FiLock
+                            />
+                          </button> :
+                          <button
+                            onClick={() => {
+                              setCurrentProduct(filteredProduct);
+                              setModalOpen(true)
+                            }}
+                          >
+                            <FiUnlock />
+                          </button>
+                        }
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </>
+            ) : (
+              <>
+                <thead>
+                  <tr>
+                    <th className="border text-center">Reported Product Name</th>
+                    <th className="border text-center">Reported By</th>
+                    <th className="border text-center">Reported Reason</th>
+                    <th className="border text-center">Action</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {reportedProducts?.map((reportDoc: any) => (
+
+                    <tr key='l'>
+                      <td className="border text-center">{reportDoc?.reportedOn ? reportDoc?.reportedOn[0]?.productName : ''}</td>
+                      <td className="border text-center">{reportDoc?.reportedBy ? reportDoc?.reportedBy[0]?.userName : ''}</td>
+                      <td className="border text-center">{reportDoc?.reports ? reportDoc?.reports?.reason : ''}</td>
+                      <td className="border flex justify-center items-center p-2">
+                        {reportDoc?.status ?
+                          <button
+                            onClick={() => {
+                              setCurrentProduct(reportDoc?.reportedOn[0]);
+                              setModalOpen(true);
+                            }}
+                          >
+                            <FiLock
+                            />
+                          </button> :
+                          <button
+                            onClick={() => {
+                              setCurrentProduct(reportDoc?.reportedOn[0]);
+                              setModalOpen(true)
+                            }}
+                          >
+                            <FiUnlock />
+                          </button>
+                        }
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </>
+            )
         }
       </table>
       <ConfimationModal
-        afterConfirmation={banOneProduct}
+        afterConfirmation={changeStatus}
         isModalOpen={modalOpen}
         setModalOpen={setModalOpen}
       />

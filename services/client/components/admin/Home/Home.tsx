@@ -50,7 +50,7 @@ const Home = () => {
           </button> :
           <button
             onClick={() => setShowAllUsers(!showAllUsers)}
-            className='bg-yellow-600 text-white px-4 p-1 m-1 rounded-md'>
+            className='bg-black text-white px-4 p-1 m-1 rounded-md'>
             Show All users
           </button>
         }

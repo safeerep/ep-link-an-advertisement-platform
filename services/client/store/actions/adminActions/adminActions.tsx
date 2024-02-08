@@ -322,7 +322,28 @@ export const getProducts = createAsyncThunk(`/admin/get-products`,
     }
 )
 
-export const banAProduct = createAsyncThunk(`/admin/ban-one-product`,
+export const getReportedProducts = createAsyncThunk(`/admin/get-reported-products`,
+    async () => {
+        try {
+            const response = await axios.get(`${PRODUCT_SERVICE_BASE_URL}/admin/get-reported-products`, {
+                headers: { "Content-Type": "application/json" },
+                withCredentials: true
+            })
+            if (response?.data) {
+                console.log(response.data);
+                if (response?.data?.success) {
+                    return response.data;
+                }
+                return response.data;
+            }
+        } catch (error: any) {
+            console.log(`an error happened during fetching all reported products ${error}`);
+            return error?.response?.data;
+        }
+    }
+)
+
+export const changeProductStatus = createAsyncThunk(`/admin/ban-one-product`,
     async ({ productId, status }: { productId: string, status: boolean }) => {
         try {
             const response = await axios.patch(`${PRODUCT_SERVICE_BASE_URL}/ban-one-product`, { productId, status }, {
