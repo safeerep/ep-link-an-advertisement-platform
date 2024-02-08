@@ -14,7 +14,7 @@ export default () => {
                 })
                 // here is the options to create an order;
                 const options = {
-                    amount: subscriptionAmount,
+                    amount: subscriptionAmount * 100,
                     currency: 'INR'
                 }
                 // creating a new order;
