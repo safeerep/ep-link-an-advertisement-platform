@@ -5,17 +5,22 @@ import {
     chatWithSeller, 
     followUser, 
     getSpecificProduct, 
+    reportProduct, 
     unFollowUser 
 } from '@/store/actions/userActions/userActions'
 import { useDispatch, useSelector } from 'react-redux'
 import { FiUserCheck } from 'react-icons/fi'
+import { FaRegFlag } from 'react-icons/fa'
 import { ImPower } from 'react-icons/im'
 import { AiOutlineEdit } from 'react-icons/ai'
+import ConfimationModalWithDialogue from '@/components/Modals/ConfirmationWithDialogue'
+import { Toaster } from 'react-hot-toast'
 
 const ProductView = () => {
     const dispatch: any = useDispatch()
     const router: any = useRouter()
     const [mainImage, setMainImage] = useState<number>(0)
+    const [modalOpen, setModalOpen] = useState<boolean>(false)
 
     const searchParams = useSearchParams();
     const productId: string | any = searchParams.get("product");
@@ -49,21 +54,29 @@ const ProductView = () => {
     }, [productId]);
 
     const product = useSelector((state: any) => state?.user?.data?.currentProduct)
-    const productLoading = useSelector((state: any) => state?.user?.loading?.currentProduct)
     const seller = useSelector((state: any) => state?.user?.data?.seller)
     const sellerLoading = useSelector((state: any) => state?.user?.loading?.seller)
     const sellerStatus = useSelector((state: any) => state?.user?.data?.status)
     console.log(sellerStatus, 'ok status now');
 
+    const reportOneProduct = (reason: string) => {
+        const productId: string = product?._id;
+        dispatch(reportProduct({ productId, reason: reason }))
+        setModalOpen(false)
+    }
 
     return (
         <>
             <div className="p-4 pt-6 bg-slate-50">
                 <div className="w-full flex flex-col lg:flex-row">
                     <div className="lg:w-3/4 w-full">
-                        <div className=" h-96 p-4 border border-black flex justify-center object-center" >
-                            <img
-                                src={product?.images ? product?.images[mainImage] : ''} alt="" />
+                        <div className="relative h-96 p-4 border border-black flex justify-center object-center" >
+                            <img src={product?.images ? product?.images[mainImage] : ''} alt="" />
+                            <div 
+                            onClick={() => setModalOpen(!modalOpen)}
+                            className="absolute top-0 right-0 m-4 cursor-pointer">
+                                < FaRegFlag/>
+                            </div>
                         </div>
                         <div className='flex flex-wrap justify-start px-2' >
                             {
@@ -196,6 +209,13 @@ const ProductView = () => {
                     </div>
                 </div>
             </div>
+            <Toaster />
+            <ConfimationModalWithDialogue
+                    afterConfirmation={reportOneProduct}
+                    isModalOpen={modalOpen}
+                    notesHead='Write a reason for reporting product'
+                    setModalOpen={setModalOpen}
+                />
         </>
     )
 }

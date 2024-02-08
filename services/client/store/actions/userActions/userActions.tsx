@@ -569,6 +569,30 @@ export const reportSeller = createAsyncThunk(`/user/report-user`,
     }
 )
 
+export const reportProduct = createAsyncThunk('/user/report-product',
+    async ({ productId, reason }: { productId: string, reason: string }) => {
+        try {
+            const response = await axios.post(`${PRODUCT_SERVICE_BASE_URL}/report-one-product`, { productId, reason }, {
+                headers: { "Content-Type": "application/json" },
+                withCredentials: true
+            })
+            if (response?.data) {
+                console.log(response.data);
+                if (response?.data?.success) {
+                    toast.success(response.data?.message)
+                    return response.data;
+                }
+                toast.error(response.data?.message)
+                return response.data;
+            }
+        } catch (error: any) {
+            console.log(`an error happened during trying to report a product ${error}`);
+            toast.error(error?.response?.data?.message)
+            return error?.response?.data;
+        }
+    }
+)
+
 export const chatWithSeller = createAsyncThunk('/user/chat-with-seller',
     async ({ userId, router }: { userId: string, router: any }) => {
         try {
