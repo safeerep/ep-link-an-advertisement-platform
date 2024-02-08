@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import getUserId from "../../../utils/externalServices/jwt/getUserId";
-import { ReportType } from "../../../entities/reportedUserEntities";
-import { Schema } from "mongoose";
+import mongoose from "mongoose";
 
 export default ( dependencies: any) => {
     const {
@@ -35,8 +34,8 @@ export default ( dependencies: any) => {
             .then( async (userId: any) => {
                 const currentUserId = String(userId)
                 // now we can pass the data to report seller
-                const reportObj: ReportType = {
-                    reportedBy: new Schema.Types.ObjectId(currentUserId),
+                const reportObj = {
+                    reportedBy: new mongoose.Types.ObjectId(currentUserId),
                     reason: reason
                 }
                 const reported = await reportSeller_usecase(dependencies).interactor( sellerId, reportObj)
@@ -46,7 +45,7 @@ export default ( dependencies: any) => {
                 return res.status(503).json({ success: false, message: "something went wrong"})
             })
             .catch((err: any) => {
-                console.log(`something went wrong during destructuring the token`);
+                console.log(`something went wrong during destructuring the token ${err}`);
                 return res.status(503).json({ success: false, message: "something went wrong"})
             })
         } catch (error) {

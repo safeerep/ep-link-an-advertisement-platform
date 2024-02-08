@@ -7,14 +7,14 @@ const ReportedUserSchema: Schema = new Schema({
         type: Schema.Types.ObjectId,
         required: true,
         unique: true,
-        ref: "users"
+        ref: "Users"
     },
     reports: [
         {
             reportedBy: {
                 type: Schema.Types.ObjectId,
                 required: true,
-                ref: "users"
+                ref: "Users"
             },
             reason: {
                 type: String,

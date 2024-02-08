@@ -66,8 +66,30 @@ export const updatePassword = async (
 
 export const getReportedUsers = async ():Promise<IReportedUser[] | boolean> => {
   try {
-    const reportedUsers = await reportedUserCollection.find()
+    const reportedUsers = await reportedUserCollection.aggregate([
+      {
+        $unwind: "$reports"
+      },
+      {
+        $lookup: {
+          from: "users", 
+          localField: "userId",
+          foreignField: "_id",
+          as: "reportedOn"
+        }
+      },
+      {
+        $lookup: {
+          from: "users", 
+          localField: "reports.reportedBy",
+          foreignField: "_id",
+          as: "reportedBy"
+        }
+      }
+    ])
+    
     if (reportedUsers) {
+      console.log(reportedUsers);
       return reportedUsers as IReportedUser[];
     }
     else return false;
