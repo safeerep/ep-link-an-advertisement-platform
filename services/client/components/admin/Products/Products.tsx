@@ -31,6 +31,12 @@ const Products = () => {
     const status: boolean = currentProduct?.status;
     dispatch(changeProductStatus({ productId: productId, status: !status }))
     setModalOpen(false)
+    if (showReported) {
+      dispatch(getReportedProducts())
+    }
+    else {
+      dispatch(getProducts())
+    }
   }
 
   const products = useSelector((state: any) => state?.admin?.data?.products)
