@@ -353,12 +353,15 @@ export const changeProductStatus = createAsyncThunk(`/admin/ban-one-product`,
             if (response?.data) {
                 console.log(response.data);
                 if (response?.data?.success) {
+                    toast.success(response.data?.message)
                     return response.data;
                 }
+                toast.success(response.data?.message)
                 return response.data;
             }
         } catch (error: any) {
             console.log(`an error happened during banning a product ${error}`);
+            toast.success(error?.response.data?.message)
             return error?.response?.data;
         }
     }
