@@ -106,6 +106,7 @@ const Chat = () => {
         data.showToReceiver = true;
         setNewMessages((newMessages: any) => [...newMessages, data]);
         setMessage('')
+        scrollToBottom()
     })
 
     socket.on("receiver-blocked", (data: any) => {
@@ -444,7 +445,7 @@ const Chat = () => {
                         {/* message showing div ended here */}
 
                         {/* footer for type message and send */}
-                        <div className="mb-0 flex items-center p-4">
+                        <div className="mb-0 w-full flex items-center p-4">
                             <input
                                 ref={inputRef}
                                 value={message}
@@ -462,19 +463,20 @@ const Chat = () => {
                             </button>
                             {
                                 showEmojis &&
-                                <Picker
-                                    data={data}
-                                    onEmojiSelect={(e: any) => {
-                                        const sym = e.unified.split("_");
-                                        let codeArray: any = []
-                                        sym.forEach((el: any) => {
-                                            codeArray.push("0x" + el)
-                                        })
-                                        let emoji = String.fromCodePoint(...codeArray)
-                                        setMessage(message + emoji)
-                                    }}
-                                    className="absolute flex cursor-pointer bottom-24 right-10 p-1 z-10"
-                                />
+                                <div className="absolute flex cursor-pointer bottom-24 right-10 p-1 z-10 rounded-md bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
+                                    <Picker
+                                        data={data}
+                                        onEmojiSelect={(e: any) => {
+                                            const sym = e.unified.split("_");
+                                            let codeArray: any = []
+                                            sym.forEach((el: any) => {
+                                                codeArray.push("0x" + el)
+                                            })
+                                            let emoji = String.fromCodePoint(...codeArray)
+                                            setMessage(message + emoji)
+                                        }}
+                                    />
+                                </div>
                             }
                             {/* ending of emoji picker */}
                             {/* starting */}
