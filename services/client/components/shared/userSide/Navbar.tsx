@@ -33,8 +33,8 @@ const Navbar = () => {
     dispatch(logout(router))
   }
 
-  const user: User = useSelector((state: RootState) => state.user.data.userData)
-  const userLoading: boolean = useSelector((state: RootState) => state.user.loading)
+  const user: User = useSelector((state: RootState) => state?.user?.data?.userData)
+  const userLoading: boolean = useSelector((state: RootState) => state?.user?.loading)
   
   if (userLoading) {
     return <Skeleton variant="rectangular" className='w-full' sx={{ bgcolor: '#e3f2fd' }} height={60} />
