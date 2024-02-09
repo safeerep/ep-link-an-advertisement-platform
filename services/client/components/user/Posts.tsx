@@ -21,10 +21,9 @@ const Posts = ({ from }: { from: string }) => {
         dispatch(getFavouriteProducts())
     }, [])
 
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false)
     const products = useSelector((state: RootState) => state?.user?.data?.products)
     const favourites = useSelector((state: RootState) => state?.user?.data?.favourites)
-    console.log(`pro`, products);
+    const [isDropdownOpen, setIsDropdownOpen] = useState<boolean[]>(Array(products.length).fill(false));
 
     const handleAddToFavourite = (productId: string) => {
         console.log(`called for add to favourite. product id is ${productId}`);
@@ -36,67 +35,60 @@ const Posts = ({ from }: { from: string }) => {
         dispatch(removeFromFavourites(productId))
     }
 
-    const handleSoldout = (productId: string) => {
-        setIsDropdownOpen(!isDropdownOpen)
+    const handleSoldout = (productId: string, index: number) => {
+        setIsDropdownOpen(Array(products.length).fill(false))
         console.log(`called for making this product status as sold out. product id is ${productId}`)
         dispatch(makeProductSoldOut(productId))
     }
 
-    const handleAvailable = (productId: string) => {
-        setIsDropdownOpen(!isDropdownOpen)
+    const handleAvailable = (productId: string, index: number) => {
+        setIsDropdownOpen(Array(products.length).fill(false))
         console.log(`called for making this product status as sold out. product id is ${productId}`)
         dispatch(makeProductAvailable(productId))
     }
 
+    const handleToggleDropdown = (index: number) => {
+        const updatedDropdownStates = Array(products.length).fill(false);
+        updatedDropdownStates[index] = !updatedDropdownStates[index];
+        setIsDropdownOpen(updatedDropdownStates);
+    };
 
     return (
         <>
             <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 w-full gap-4 my-2 px-12">
                 {products?.length > 0 &&
-                    products.map((product: Product) => {
+                    products.map((product: Product, index: number) => {
                         return (
-                            <div key={product?._id} className="m-2 group px-10 py-5 bg-white/10 rounded-lg flex flex-col items-center justify-center gap-2 relative after:absolute after:h-full after:bg-[#ceedf0] z-20 shadow-lg after:-z-20 after:w-full after:inset-0 after:rounded-lg transition-all duration-300 hover:transition-all hover:duration-300 after:transition-all after:duration-500 after:hover:transition-all after:hover:duration-500 overflow-hidden cursor-pointer after:-translate-y-full after:hover:translate-y-0 [&amp;_p]:delay-200 [&amp;_p]:transition-all">
-                                <div className="relative">
+                            <div key={product?._id} className=" m-2 group px-10 py-5 bg-white/10 rounded-lg flex flex-col items-center justify-center gap-2 relative after:absolute after:h-full after:bg-[#ceedf0] z-20 shadow-lg after:-z-20 after:w-full after:inset-0 after:rounded-lg transition-all duration-300 hover:transition-all hover:duration-300 after:transition-all after:duration-500 after:hover:transition-all after:hover:duration-500 overflow-hidden cursor-pointer after:-translate-y-full after:hover:translate-y-0 [&amp;_p]:delay-200 [&amp;_p]:transition-all">
+                                <div className="">
                                     <img
                                         onClick={() => router.push(`/product-view?product=${product?._id}`)}
                                         src={product?.images[0] ? product?.images[0] : ''}
                                         alt=""
-                                        className="w-44 aspect-square text-[#3eb7b9] group-hover:bg-gray-800 text-5xl p-2 transition-all duration-300 group-hover:transition-all group-hover:duration-300 group-hover:-translate-y-2 mx-auto"
+                                        className=" object-contain w-44 aspect-square text-[#3eb7b9] group-hover:bg-gray-800 text-5xl p-2 transition-all duration-300 group-hover:transition-all group-hover:duration-300 group-hover:-translate-y-2 mx-auto"
                                     />
-                                    {from &&
-                                        from !== 'profile' &&
+                                    {(from &&
+                                        from !== 'profile') &&
                                         favourites?.includes(product?._id) ?
                                         <button
                                             onClick={() => handleRemoveFromFavourite(product?._id)}
                                             className="absolute top-0 right-0 p-2">
                                             <HiHeart className='text-red-600' />
                                         </button> :
+                                        (from &&
+                                            from !== 'profile') && 
                                         <button
                                             onClick={() => handleAddToFavourite(product?._id)}
                                             className="absolute top-0 right-0 p-2">
                                             <HiOutlineHeart />
                                         </button>
                                     }
-                                </div>
-
-                                {/* Product Details */}
-                                <div>
-                                    <p className="cardtxt font-semibold text-gray-800 tracking-wider group-hover:text-black text-xl">
-                                        {product?.productName}
-                                    </p>
-                                    <p className="blueberry font-semibold text-gray-800 text-xs">
-                                        {product?.categoryName}
-                                    </p>
-                                    <div className="ordernow flex flex-row justify-between items-center w-full">
-                                        <p className="ordernow-text text-gray-800 font-semibold group-hover:text-black">
-                                            &#x20B9; {product?.price}
-                                        </p>
-                                        {from &&
+                                    {from &&
                                             from === 'profile' && (
                                                 <>
                                                     <button
-                                                        onClick={() => setIsDropdownOpen(!isDropdownOpen)}
-                                                        className="p-2">
+                                                        onClick={() => handleToggleDropdown(index)}
+                                                        className="absolute top-0 right-0 p-2">
                                                         <CgMoreO />
                                                     </button>
                                                     {isDropdownOpen && (
@@ -108,12 +100,12 @@ const Posts = ({ from }: { from: string }) => {
                                                             </button>
                                                             {product?.soldOut ?
                                                                 <button
-                                                                    onClick={() => handleAvailable(product?._id)}
+                                                                    onClick={() => handleAvailable(product?._id, index)}
                                                                     className="block px-4 py-2 text-sm text-red-600">
                                                                     Make it available
                                                                 </button> :
                                                                 <button
-                                                                    onClick={() => handleSoldout(product?._id)}
+                                                                    onClick={() => handleSoldout(product?._id, index)}
                                                                     className="block px-4 py-2 text-sm text-red-600">
                                                                     Sold out
                                                                 </button>}
@@ -121,6 +113,21 @@ const Posts = ({ from }: { from: string }) => {
                                                     )}
                                                 </>
                                             )}
+                                </div>
+
+                                {/* Product Details */}
+                                <div>
+                                    <p className="font-semibold text-lg text-gray-800 group-hover:text-black">
+                                        {product?.productName}
+                                    </p>
+                                    <p className="blueberry font-semibold text-gray-800 text-xs">
+                                        {product?.categoryName}
+                                    </p>
+                                    <div className="ordernow flex flex-row justify-between items-center w-full">
+                                        <p className="ordernow-text text-gray-800 font-semibold group-hover:text-black">
+                                            &#x20B9; {product?.price}
+                                        </p>
+                                        
                                     </div>
                                 </div>
                             </div>
