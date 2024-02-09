@@ -1,5 +1,5 @@
 "use client"
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
@@ -7,17 +7,22 @@ import { signupValidationSchema } from '@/models/validationSchemas'
 import { signUpCredentials, signUpCredentialsWithOtp } from '@/types/user'
 import { Formik, Field, Form, ErrorMessage } from 'formik'
 import { useDispatch, useSelector } from 'react-redux'
-import { register, sendOtp } from '@/store/actions/userActions/userActions'
+import { checkAuth, register, sendOtp } from '@/store/actions/userActions/userActions'
 import Modal from '../OtpModal/OtpModal'
 import { GOOGLE_AUTH_WINDOW_URL } from '@/constants'
+import { AppDispatch } from '@/store/store'
 
 const Signup = () => {
-    const dispatch: any = useDispatch()
+    const dispatch: AppDispatch = useDispatch()
     const router = useRouter()
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [credentials, setCredentials] = useState<signUpCredentials | null>(null)
     const [error, setError] = useState()
     const [modalError, setModalError] = useState()
+
+    useEffect(() => {
+        dispatch(checkAuth(router))
+    }, [])
 
     const handleSubmit = (userCredentials: signUpCredentials) => {
         dispatch(sendOtp({ userCredentials, setError, setCredentials, setIsModalOpen}))

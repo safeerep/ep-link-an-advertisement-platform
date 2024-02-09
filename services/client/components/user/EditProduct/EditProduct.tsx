@@ -15,6 +15,7 @@ import { Formik, Form, Field, ErrorMessage } from 'formik'
 import { Toaster } from 'react-hot-toast'
 import addProductValidationSchema from '@/models/validationSchemas/user/addProductSchema'
 import { Skeleton } from '@mui/material'
+import { AppDispatch, RootState } from '@/store/store'
 
 const EditProduct = () => {
     const [imageUrls, setImageUrls] = useState<Array<string | null>>(new Array(8).fill(null));
@@ -29,7 +30,7 @@ const EditProduct = () => {
     const [descriptionError, setDescriptionError] = useState<any>(null);
     const [imagesError, setImagesError] = useState<any>(null);
 
-    const dispatch: any = useDispatch()
+    const dispatch: AppDispatch = useDispatch()
     const router = useRouter();
     const searchParams = useSearchParams();
     const productId: string | any = searchParams.get("product");
@@ -40,8 +41,8 @@ const EditProduct = () => {
         dispatch(getSpecificProduct(productId));
     }, [])
 
-    const categories = useSelector((state: any) => state?.user?.data?.categories)
-    const currentProduct = useSelector((state: any) => state?.user?.data?.currentProduct)
+    const categories = useSelector((state: RootState) => state?.user?.data?.categories)
+    const currentProduct = useSelector((state: RootState) => state?.user?.data?.currentProduct)
     useEffect(() => {
         const currentlySelectedCategory = categories?.find((category: any) => {
             return category?.categoryName === currentProduct?.categoryName;

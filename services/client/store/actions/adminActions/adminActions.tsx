@@ -407,3 +407,23 @@ export const updatePremiumPolicy = createAsyncThunk(`/admin/update-premium-poici
         }
     }
 )
+
+export const getSubscribersList = createAsyncThunk(`/admin/subscribers-list`,
+    async () => {
+        try {
+            const response = await axios.get(`${USERS_SERVICE_BASE_URL}/admin/subscribers-list`, {
+                headers: { "Content-Type": "application/json" },
+                withCredentials: true
+            })
+            if (response?.data) {
+                if (response?.data?.success) {
+                    return response.data;
+                }
+                return response.data;
+            }
+        } catch (error: any) {
+            console.log(`an error happened during fetching subscribers list ${error}`);
+            return error?.response?.data;
+        }
+    }
+)

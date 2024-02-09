@@ -2,16 +2,18 @@ import { authRequired, getFollowersList, getFollowingList, followUser, unFollowU
 import { useEffect, useState } from "react"
 import { useDispatch, useSelector } from "react-redux"
 import { useRouter, useSearchParams } from "next/navigation";
+import { AppDispatch, RootState } from "@/store/store";
+import { User } from "@/types/user";
 
 const Connections: React.FC = () => {
-    const dispatch: any = useDispatch();
+    const dispatch: AppDispatch = useDispatch();
     const router = useRouter();
     const [section, setSection] = useState('followers')
     const searchParams = useSearchParams();
     const sellerId: string | any = searchParams.get("id");
-    const user = useSelector((state: any) => state?.user?.data?.userData)
-    const followers = useSelector((state: any) => state?.user?.data?.followers)
-    const following = useSelector((state: any) => state?.user?.data?.following)
+    const user = useSelector((state: RootState) => state?.user?.data?.userData)
+    const followers = useSelector((state: RootState) => state?.user?.data?.followers)
+    const following = useSelector((state: RootState) => state?.user?.data?.following)
     const userId: string = user?._id;
 
     useEffect(() => {
@@ -65,7 +67,7 @@ const Connections: React.FC = () => {
                                 <div className="lg:flex flex-col justify-center">
                                     {/* each person */}
                                     {
-                                        followers?.map((singleUser: any) => (
+                                        followers?.map((singleUser: User) => (
                                             <div
                                                 key={singleUser?._id}
                                                 className="w-full flex justify-between h-16 border-b items-center border-black"
@@ -110,7 +112,7 @@ const Connections: React.FC = () => {
                                 <div className="lg:flex flex-col justify-center">
                                     {/* each person */}
                                     {
-                                        following?.map((singleUser: any) => (
+                                        following?.map((singleUser: User) => (
                                             <div
                                                 key={singleUser?._id}
                                                 className="w-full flex justify-between h-16 border-b items-center border-black"

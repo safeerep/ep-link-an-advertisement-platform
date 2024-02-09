@@ -24,10 +24,12 @@ import toast, { Toaster } from 'react-hot-toast'
 import VideoCall from '../VideoCall/VideoCall'
 import ConfimationModalWithDialogue from '@/components/Modals/ConfirmationWithDialogue'
 import ShowAttachments from '@/components/Modals/showAttachments'
+import { AppDispatch, RootState } from '@/store/store'
+import { User } from '@/types/user'
 
 const Chat = () => {
     const socket = io(`${SOCKET_BASE_URL}`)
-    const dispatch: any = useDispatch();
+    const dispatch: AppDispatch = useDispatch();
     const router = useRouter()
     const scrollContainerRef = useRef<HTMLDivElement | null>(null);
     const [message, setMessage] = useState('')
@@ -45,18 +47,18 @@ const Chat = () => {
     const [signalData, setSignalData] = useState(null)
     const [newMessages, setNewMessages] = useState<any>([])
     const inputRef = useRef<HTMLInputElement | null>(null)
-    const roomId = useSelector((state: any) => state?.user?.data?.chatroom?._id)
-    const seller = useSelector((state: any) => state?.user?.data?.seller)
-    const messages = useSelector((state: any) => state?.user?.data?.messages)
-    const chats = useSelector((state: any) => state?.user?.data?.chats)
-    const user: any = useSelector((state: any) => state?.user?.data?.userData)
-    const currentUserBlockedReceiver: any = useSelector((state: any) => state?.user?.data?.currentUserBlockedReceiver)
-    const unreadMessages: any = useSelector((state: any) => state?.user?.data?.unreadMessages)
+    const roomId = useSelector((state: RootState) => state?.user?.data?.chatroom?._id)
+    const seller = useSelector((state: RootState) => state?.user?.data?.seller)
+    const messages = useSelector((state: RootState) => state?.user?.data?.messages)
+    const chats = useSelector((state: RootState) => state?.user?.data?.chats)
+    const user: User = useSelector((state: RootState) => state?.user?.data?.userData)
+    const currentUserBlockedReceiver: any = useSelector((state: RootState) => state?.user?.data?.currentUserBlockedReceiver)
+    const unreadMessages: any = useSelector((state: RootState) => state?.user?.data?.unreadMessages)
     const userId: string = user?._id;
 
     const [showAttachments, setShowAttachments] = useState(false);
     const [currentlySelectedAttachments, setCurrentlySelectedAttachments] = useState<any>(null);
-    const [currentlySelectedAttachmentType, setCurrentlySelectedAttachmentType] = useState<any>(null);
+    const [currentlySelectedAttachmentType, setCurrentlySelectedAttachmentType] = useState<string>('');
 
     useEffect(() => {
         socket.emit("join-user-room", userId)

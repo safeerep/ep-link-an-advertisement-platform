@@ -15,9 +15,10 @@ import { ImPower } from 'react-icons/im'
 import { AiOutlineEdit } from 'react-icons/ai'
 import ConfimationModalWithDialogue from '@/components/Modals/ConfirmationWithDialogue'
 import { Toaster } from 'react-hot-toast'
+import { AppDispatch, RootState } from '@/store/store'
 
 const ProductView = () => {
-    const dispatch: any = useDispatch()
+    const dispatch: AppDispatch = useDispatch()
     const router: any = useRouter()
     const [mainImage, setMainImage] = useState<number>(0)
     const [modalOpen, setModalOpen] = useState<boolean>(false)
@@ -53,10 +54,10 @@ const ProductView = () => {
         fetchData();
     }, [productId]);
 
-    const product = useSelector((state: any) => state?.user?.data?.currentProduct)
-    const seller = useSelector((state: any) => state?.user?.data?.seller)
-    const sellerLoading = useSelector((state: any) => state?.user?.loading?.seller)
-    const sellerStatus = useSelector((state: any) => state?.user?.data?.status)
+    const product = useSelector((state: RootState) => state?.user?.data?.currentProduct)
+    const seller = useSelector((state: RootState) => state?.user?.data?.seller)
+    const sellerLoading = useSelector((state: RootState) => state?.user?.loading)
+    const sellerStatus = useSelector((state: RootState) => state?.user?.data?.status)
     console.log(sellerStatus, 'ok status now');
 
     const reportOneProduct = (reason: string) => {

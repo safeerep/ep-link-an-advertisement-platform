@@ -5,12 +5,14 @@ import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { FiUnlock, FiLock } from 'react-icons/fi';
 import ConfimationModal from '@/components/Modals/ConfirmationModal';
+import { AppDispatch, RootState } from '@/store/store';
+import { Product } from '@/types/product';
 
 const Products = () => {
-  const dispatch: any = useDispatch();
+  const dispatch: AppDispatch = useDispatch();
   const router = useRouter()
   const [modalOpen, setModalOpen] = useState(false)
-  const [currentProduct, setCurrentProduct] = useState<any>(null)
+  const [currentProduct, setCurrentProduct] = useState<Product | null>(null)
   const [showReported, setShowReported] = useState<boolean>(false)
   useEffect(() => {
     dispatch(authRequired(router))
@@ -27,8 +29,8 @@ const Products = () => {
   },[showReported])
 
   const changeStatus = () => {
-    const productId: string = currentProduct?._id;
-    const status: boolean = currentProduct?.status;
+    const productId: string | any = currentProduct?._id;
+    const status: boolean | any = currentProduct?.status;
     dispatch(changeProductStatus({ productId: productId, status: !status }))
     setModalOpen(false)
     if (showReported) {
@@ -39,8 +41,8 @@ const Products = () => {
     }
   }
 
-  const products = useSelector((state: any) => state?.admin?.data?.products)
-  const reportedProducts = useSelector((state: any) => state?.admin?.data?.reportedProducts)
+  const products = useSelector((state: RootState) => state?.admin?.data?.products)
+  const reportedProducts = useSelector((state: RootState) => state?.admin?.data?.reportedProducts)
 
   const filterToShowProducts = () => {
     setShowReported(!showReported)
@@ -81,7 +83,7 @@ const Products = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {products?.map((product: any) => (
+                  {products?.map((product: Product) => (
                     <tr key={product?._id}>
                       <td className="border text-center">{product?.productName}</td>
                       <td className="border text-center">{product?.categoryName}</td>

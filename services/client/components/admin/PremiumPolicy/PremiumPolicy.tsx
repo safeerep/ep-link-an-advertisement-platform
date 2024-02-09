@@ -5,19 +5,20 @@ import { AiOutlineEdit } from 'react-icons/ai'
 import { useDispatch, useSelector } from 'react-redux'
 import ConfimationModalWithDialogue from '@/components/Modals/ConfirmationWithDialogue'
 import toast from 'react-hot-toast'
+import { AppDispatch, RootState } from '@/store/store'
 
 const PremiumPolicy = () => {
-    const dispatch: any = useDispatch()
-    const [currentPolicyDuration, setCurrentPolicyDuration] = useState<any>(null)
-    const [isModalOpen, setIsModalOpen] = useState<any>(null)
+    const dispatch: AppDispatch = useDispatch()
+    const [currentPolicyDuration, setCurrentPolicyDuration] = useState<string>('')
+    const [isModalOpen, setIsModalOpen] = useState<boolean>(false)
 
     useEffect(() => {
         dispatch(getPremiumPolicies())
     }, [])
 
-    const policies = useSelector((state: any) => state?.admin?.data?.policies)
+    const policies = useSelector((state: RootState) => state?.admin?.data?.policies)
 
-    const updatePolicy = (subscriptionAmount: any) => {
+    const updatePolicy = (subscriptionAmount: string) => {
         const updatedPrice = Number(subscriptionAmount);
         if (isNaN(updatedPrice) || updatedPrice < 1) {
             toast.error('update with an amount greater than zero')

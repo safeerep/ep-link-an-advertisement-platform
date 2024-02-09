@@ -10,9 +10,10 @@ import {
     chatWithSeller
 } from '@/store/actions/userActions/userActions'
 import Connections from '../Connections/Connections'
+import { AppDispatch, RootState } from '@/store/store'
 
 const ViewUserProfile = () => {
-    const dispatch: any = useDispatch()
+    const dispatch: AppDispatch = useDispatch()
     const router = useRouter();
     const searchParams = useSearchParams();
     const sellerId: string | any = searchParams.get("id");
@@ -22,9 +23,9 @@ const ViewUserProfile = () => {
         dispatch(getSellerProfile(sellerId))
     }, [])
 
-    const user = useSelector((state: any) => state?.user?.data?.userData)
-    const seller = useSelector((state: any) => state?.user?.data?.seller)
-    const products = useSelector((state: any) => state?.user?.data?.products)
+    const user = useSelector((state: RootState) => state?.user?.data?.userData)
+    const seller = useSelector((state: RootState) => state?.user?.data?.seller)
+    const products = useSelector((state: RootState) => state?.user?.data?.products)
 
     const handleFollow = async () => {
         console.log('clicked for follow');

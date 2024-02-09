@@ -7,6 +7,7 @@ import { useDispatch, useSelector } from 'react-redux';
 import { GiChessQueen } from 'react-icons/gi'
 import Script from 'next/script';
 import { initializepayment } from '@/utils/razorpay';
+import { AppDispatch, RootState } from '@/store/store';
 
 declare global {
     interface Window {
@@ -17,7 +18,7 @@ declare global {
 const PolicyAdvertisementModal = ({ isModalOpen, setModalOpen }:
     { isModalOpen: boolean, setModalOpen: any }) => {
 
-    const dispatch: any = useDispatch()
+    const dispatch: AppDispatch = useDispatch()
     const router = useRouter()
 
     const [selectedOption, setSelectedOption] = useState<string>('annual');
@@ -30,7 +31,7 @@ const PolicyAdvertisementModal = ({ isModalOpen, setModalOpen }:
         dispatch(getPremiumPolicies())
     }, [])
 
-    const policies = useSelector((state: any) => state?.user?.data?.policies)
+    const policies = useSelector((state: RootState) => state?.user?.data?.policies)
 
     const continueWithPlan = async () => {
         const selectedPlan = policies?.find((policy: any) => policy?.policyDuration === selectedOption)
@@ -60,7 +61,7 @@ const PolicyAdvertisementModal = ({ isModalOpen, setModalOpen }:
                             </div>
                             <div className="flex justify-center"></div>
                             {/* body */}
-                            <span className='text-md font-bold w-full px-8'>Select any og the following plan to continue adding products to adveritse</span>
+                            <span className='text-md font-bold w-full px-8'>Select any of the following plan to continue adding products to adveritse</span>
                             <div className="flex flex-col">
                                 <div className="relative flex flex-col items-center rounded-md">
                                     <div className='w-full flex justify-start p-4 gap-2 items-center'>

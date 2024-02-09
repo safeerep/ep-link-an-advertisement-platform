@@ -6,9 +6,10 @@ import { useDispatch, useSelector } from 'react-redux'
 import { checkBoxData, radioButtonData } from '@/types/admin';
 import categoryFieldValidationSchema from '@/models/validationSchemas/admin/categoryFieldValidation';
 import { Toaster } from 'react-hot-toast';
+import { AppDispatch, RootState } from '@/store/store';
 
 const CategoryForm = () => {
-    const dispatch: any = useDispatch();
+    const dispatch: AppDispatch = useDispatch();
     const router = useRouter()
 
     const searchParams = useSearchParams();
@@ -36,7 +37,7 @@ const CategoryForm = () => {
     const [radioButtonFields, setRadioButtonFields] = useState<radioButtonData[]>([]);
     const [errors, setErrors] = useState(errorInitialState);
     
-    const currentCategoryDetails = useSelector((state: any) => state?.admin?.data?.categoryDetails)
+    const currentCategoryDetails = useSelector((state: RootState) => state?.admin?.data?.categoryDetails)
     useEffect(() => {
         setCategoryName(currentCategoryDetails?.categoryName || '');
         setInputFields(currentCategoryDetails?.inputFields || []);
@@ -62,7 +63,7 @@ const CategoryForm = () => {
         setRadioButtonFields([...radioButtonFields, { label: '', options: [] }])
     }
 
-    const handleInputFieldChange = (index: number, value: any) => {
+    const handleInputFieldChange = (index: number, value: string) => {
         const updatedInputFields: any = [...inputFields];
         updatedInputFields[index] = value;
         setInputFields(updatedInputFields);

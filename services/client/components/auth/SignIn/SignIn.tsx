@@ -9,9 +9,10 @@ import { signInValidationSchema } from '@/models/validationSchemas'
 import { login, checkAuth } from '@/store/actions/userActions/userActions'
 import { signInCredentials } from '@/types/user'
 import { GOOGLE_AUTH_WINDOW_URL } from '@/constants'
+import { AppDispatch } from '@/store/store'
 
 const SignIn = () => {
-    const dispatch: any = useDispatch();
+    const dispatch: AppDispatch = useDispatch();
     const [error, setError] = useState()
     const router = useRouter();
 

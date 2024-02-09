@@ -4,14 +4,15 @@ import { useRouter } from 'next/navigation';
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { FiUnlock, FiLock } from 'react-icons/fi';
-import { FaSlidersH } from 'react-icons/fa';
 import ConfimationModal from '@/components/Modals/ConfirmationModal';
+import { AppDispatch, RootState } from '@/store/store';
+import { ReportedUser, User } from '@/types/user';
 
 const Home = () => {
-  const dispatch: any = useDispatch();
+  const dispatch: AppDispatch = useDispatch();
   const router = useRouter()
   const [modalOpen, setModalOpen] = useState(false);
-  const [currentUser, setCurrentUser] = useState()
+  const [currentUser, setCurrentUser] = useState<User | null>(null)
   const [showAllUsers, setShowAllUsers] = useState(true);
 
 
@@ -33,8 +34,8 @@ const Home = () => {
     dispatch(banAUser({ currentUser, setModalOpen }))
   }
 
-  const users = useSelector((state: any) => state?.admin?.data?.users)
-  const reportedUsers = useSelector((state: any) => state?.admin?.data?.reportedUsers)
+  const users = useSelector((state: RootState) => state?.admin?.data?.users)
+  const reportedUsers = useSelector((state: RootState) => state?.admin?.data?.reportedUsers)
   console.log(users)
 
   return (
@@ -69,8 +70,8 @@ const Home = () => {
                 </tr>
               </thead>
               <tbody>
-                {users?.map((user: any) => (
-                  <tr key={user._id}>
+                {users?.map((user: User) => (
+                  <tr key={user?._id}>
                     <td className="border text-center">{user?.userName ? user?.userName : ''}</td>
                     <td className="border text-center">{user?.email}</td>
                     <td className="border text-center">{user?.phone ? user?.phone : ''}</td>

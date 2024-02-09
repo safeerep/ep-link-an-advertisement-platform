@@ -42,7 +42,7 @@ const ShowAttachments = ({ isModalOpen, setModalOpen, afterConfirmation, files, 
                   <div className="relative px-12 flex-auto">
                     <img src={URL.createObjectURL(files[main])} alt="" />
                     <div className="flex justify-center gap-1 overflow-x-auto">
-                      {files.length > 1 && files?.map((image: any, index: any) => (
+                      {files.length > 1 && files?.map((image: any, index: number) => (
                         <img
                           onClick={() => setMain(index)}
                           className='w-20 h-20 m-2' key={index} src={URL.createObjectURL(image)} alt="" />
@@ -74,7 +74,7 @@ const ShowAttachments = ({ isModalOpen, setModalOpen, afterConfirmation, files, 
                       }
                     </div>
                     <div className="flex justify-center gap-1 overflow-x-scroll">
-                      {files.length > 1 && files?.map((video: any, index: any) => (
+                      {files.length > 1 && files?.map((video: any, index: number) => (
                         <video
                           onClick={() => setMain(index)}
                           key={index} src={URL.createObjectURL(video)}></video>
@@ -95,7 +95,7 @@ const ShowAttachments = ({ isModalOpen, setModalOpen, afterConfirmation, files, 
                       <a href={URL.createObjectURL(files[main])} target="_blank" rel="noopener noreferrer">Download PDF</a>
                     </object>
                     <div className="flex justify-center gap-1 overflow-x-auto overflow-y-hidden">
-                      {files.length > 1 && files.map((document: any, index: any) => (
+                      {files.length > 1 && files.map((document: any, index: number) => (
                         <object
                           key={index}
                           onClick={() => setMain(index)}
@@ -115,7 +115,7 @@ const ShowAttachments = ({ isModalOpen, setModalOpen, afterConfirmation, files, 
                 fileType === 'audio' && files && files.length > 0 && (
                   <div className="relative px-12 flex-auto">
                     <div className="flex justify-center gap-1 overflow-x-auto overflow-y-hidden">
-                      {files.map((audio: any, index: any) => (
+                      {files.map((audio: any, index: number) => (
                         <div
                           className='h-20 w-20 bg-yellow-500 flex justify-center items-center text-center my-1'
                           key={index} >

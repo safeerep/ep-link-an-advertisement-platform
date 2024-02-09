@@ -8,9 +8,10 @@ import { AiOutlineEdit } from 'react-icons/ai'
 import { FaSlidersH } from 'react-icons/fa';
 import ConfimationModal from '@/components/Modals/ConfirmationModal';
 import Link from 'next/link';
+import { AppDispatch, RootState } from '@/store/store';
 
 const Categories = () => {
-  const dispatch: any = useDispatch();
+  const dispatch: AppDispatch = useDispatch();
   const router = useRouter()
   const [modalState, setModalState] = useState(false);
   const [categoryId, setCategoryId] = useState<string>('');
@@ -25,7 +26,7 @@ const Categories = () => {
     dispatch(changeCategoryStatus({ categoryId, status, setModalState }))
   }
 
-  const categories = useSelector((state: any) => state?.admin?.data?.categories)
+  const categories = useSelector((state: RootState) => state?.admin?.data?.categories)
 
   return (
     <>
@@ -33,39 +34,9 @@ const Categories = () => {
         <h1 className='text-xl p-3'>Categories</h1>
         <Link
           href={'/admin/categories/add-category'}
-          className='bg-slate-950 flex justify-center items-center text-white rounded-md px-3 h-10'>
+          className='bg-slate-950 flex justify-center items-center text-white rounded-md px-3 h-8'>
           Add Category
         </Link>
-      </div>
-      {/*  */}
-      <div className="w-full flex justify-end px-3">
-
-        {/* dropdown button */}
-        <div>
-          <button
-            // onClick={}
-            type="button"
-            className="inline-flex"
-            id="menu-button"
-            aria-expanded="true"
-            aria-haspopup="true"
-          >
-            <FaSlidersH className='flex items-center' />
-          </button>
-        </div>
-        {/* dropdown button end */}
-        {/* dropdown item one */}
-        {/* <div
-              className="absolute right-0 z-10 mt-2 origin-top-right rounded-md bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
-              <div className="cursor-pointer">
-                <button
-                  // onClick={}
-                  className="block px-4 py-2 text-sm text-red-600">
-                  
-                </button>
-              </div>
-            </div> */}
-        {/* item one ends here */}
       </div>
       <table className="table border w-full overflow-scroll ms-2 ps-2">
         <thead>

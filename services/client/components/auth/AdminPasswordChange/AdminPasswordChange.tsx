@@ -6,11 +6,12 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { RequestToResetPassword, checkAuth } from '@/store/actions/adminActions/adminActions';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { passwordValidationSchema } from '@/models/validationSchemas';
+import { AppDispatch } from '@/store/store';
 
 const AdminChangePassword = () => {
     const [error, setError] = useState();
     const [success, setSuccess] = useState();
-    const dispatch:any = useDispatch()
+    const dispatch: AppDispatch = useDispatch()
     const router = useRouter();
     const searchParams = useSearchParams();
     const token: string | any = searchParams.get("me");

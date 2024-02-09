@@ -4,9 +4,10 @@ import { useRouter } from 'next/navigation'
 import { useDispatch, useSelector } from 'react-redux'
 import { FiUser } from 'react-icons/fi'
 import { logout } from '@/store/actions/adminActions/adminActions'
+import { AppDispatch } from '@/store/store'
 
 const AdminNavbar = () => {
-  const dispatch: any = useDispatch()
+  const dispatch: AppDispatch = useDispatch()
   const router = useRouter()
 
   const [isDropdownOpen, setDropdownOpen] = useState(false);

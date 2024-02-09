@@ -4,9 +4,10 @@ import { useDispatch, useSelector } from 'react-redux'
 import { logout } from '@/store/actions/userActions/userActions'
 import Link from 'next/link';
 import EditProfileModal from '../Modals/EditProfileModal';
+import { AppDispatch, RootState } from '@/store/store';
 
 const ProfileSidebar = () => {
-    const dispatch: any = useDispatch()
+    const dispatch: AppDispatch = useDispatch()
     const router = useRouter()
     const [updateProfileModalIsOpen, setUpdateProfileModalIsOpen] = useState(false);
     const [currentlyIn, setCurrentlyIn] = useState('profile')
@@ -21,7 +22,7 @@ const ProfileSidebar = () => {
         setUpdateProfileModalIsOpen(!updateProfileModalIsOpen)
     }
 
-    const user = useSelector((state: any) => state?.user?.data?.userData)
+    const user = useSelector((state: RootState) => state?.user?.data?.userData)
 
     return (
         <div className="lg:w-1/5 flex flex-col justify-center border-0 border-e-2">
