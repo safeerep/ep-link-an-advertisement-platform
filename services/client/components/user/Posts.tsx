@@ -23,7 +23,7 @@ const Posts = ({ from }: { from: string }) => {
 
     const products = useSelector((state: RootState) => state?.user?.data?.products)
     const favourites = useSelector((state: RootState) => state?.user?.data?.favourites)
-    const [isDropdownOpen, setIsDropdownOpen] = useState<boolean[]>(Array(products.length).fill(false));
+    const [isDropdownOpen, setIsDropdownOpen] = useState<boolean[]>(Array(products?.length).fill(false));
 
     const handleAddToFavourite = (productId: string) => {
         console.log(`called for add to favourite. product id is ${productId}`);
@@ -36,19 +36,19 @@ const Posts = ({ from }: { from: string }) => {
     }
 
     const handleSoldout = (productId: string, index: number) => {
-        setIsDropdownOpen(Array(products.length).fill(false))
+        setIsDropdownOpen(Array(products?.length).fill(false))
         console.log(`called for making this product status as sold out. product id is ${productId}`)
         dispatch(makeProductSoldOut(productId))
     }
 
     const handleAvailable = (productId: string, index: number) => {
-        setIsDropdownOpen(Array(products.length).fill(false))
+        setIsDropdownOpen(Array(products?.length).fill(false))
         console.log(`called for making this product status as sold out. product id is ${productId}`)
         dispatch(makeProductAvailable(productId))
     }
 
     const handleToggleDropdown = (index: number) => {
-        const updatedDropdownStates = Array(products.length).fill(false);
+        const updatedDropdownStates = [...isDropdownOpen];
         updatedDropdownStates[index] = !updatedDropdownStates[index];
         setIsDropdownOpen(updatedDropdownStates);
     };
