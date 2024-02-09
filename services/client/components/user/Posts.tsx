@@ -48,8 +48,7 @@ const Posts = ({ from }: { from: string }) => {
     }
 
     const handleToggleDropdown = (index: number) => {
-        const updatedDropdownStates = [...isDropdownOpen];
-        updatedDropdownStates[index] = !updatedDropdownStates[index];
+        const updatedDropdownStates = isDropdownOpen.map((state: boolean, i: number) => i !== index? false: !state)
         setIsDropdownOpen(updatedDropdownStates);
     };
 
