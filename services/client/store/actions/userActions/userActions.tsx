@@ -115,7 +115,7 @@ export const authRequired = createAsyncThunk('/user/auth-required', async (route
             withCredentials: true
         })
         if (response?.data) {
-            if (!response.data.success) router.push('/sign-up')
+            if (!response.data.success) router.push('/sign-in')
             else return response.data;
         } else {
             console.log('in else');
@@ -303,6 +303,55 @@ export const getFollowingList = createAsyncThunk('/user/get-following-list',
         }
     }
 )
+
+export const addToFavourites = createAsyncThunk('/user/add-to-favourites', async (productId: string) => {
+    try {
+        const response = await axios.patch(`${PRODUCT_SERVICE_BASE_URL}/add-to-favourites`, productId, {
+            headers: { "Content-Type": "application/json" },
+            withCredentials: true
+        })
+        if (response?.data?.success) {
+            toast.success(response?.data?.message)
+        } else {
+            toast.error(response?.data?.message)
+        }
+        return response?.data;
+    } catch (error: any) {
+        console.log(`an error happened during adding product to favourites ${error}`);
+        return error?.response?.data;
+    }
+})
+
+export const removeFromFavourites = createAsyncThunk('/user/remove-from-favourites', async (productId: string) => {
+    try {
+        const response = await axios.patch(`${PRODUCT_SERVICE_BASE_URL}/remove-from-favourites`, productId, {
+            headers: { "Content-Type": "application/json" },
+            withCredentials: true
+        })
+        if (response?.data?.success) {
+            toast.success(response?.data?.message)
+        } else {
+            toast.error(response?.data?.message)
+        }
+        return response?.data;
+    } catch (error: any) {
+        console.log(`an error happened during removing product from favourites ${error}`);
+        return error?.response?.data;
+    }
+})
+
+export const getFavouriteProducts = createAsyncThunk('/user/get-favourites', async () => {
+    try {
+        const response = await axios.get(`${PRODUCT_SERVICE_BASE_URL}/get-favourite-products`, {
+            headers: { "Content-Type": "application/json" },
+            withCredentials: true
+        })
+        return response?.data;
+    } catch (error: any) {
+        console.log(`an error happened during fetching favourite products of the current user ${error}`);
+        return error?.response?.data;
+    }
+})
 
 export const getAllCategories = createAsyncThunk(`/user/categories`,
     async () => {
@@ -789,7 +838,7 @@ export const getPremiumPolicies = createAsyncThunk('/user/get-premium-poicies',
 )
 
 export const updateUserProfileToPremium = createAsyncThunk('/user/update-to-premium',
-    async ({policyDuration, router}:{policyDuration: string, router: any}) => {
+    async ({ policyDuration, router }: { policyDuration: string, router: any }) => {
         try {
             const response = await axios.patch(`${USERS_SERVICE_BASE_URL}/user/update-to-premium`,
                 { subscriptionPolicy: policyDuration }, {
@@ -802,6 +851,7 @@ export const updateUserProfileToPremium = createAsyncThunk('/user/update-to-prem
                 router.push('/add-product')
             }
             else toast.error(response?.data?.message)
+            return response.data;
         } catch (error: any) {
             console.log(`something went wrong during updating user profile to premium ${error}`);
             toast.error(error?.response?.data?.message)

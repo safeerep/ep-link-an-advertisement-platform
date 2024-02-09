@@ -29,6 +29,9 @@ import {
     getPremiumPolicies,
     reportSeller,
     updateUserProfileToPremium,
+    addToFavourites,
+    removeFromFavourites,
+    getFavouriteProducts
 
 } from "@/store/actions/userActions/userActions";
 import { UserState } from "@/types/user";
@@ -405,6 +408,60 @@ const userSlice = createSlice({
                 state.error = null;
             })
             .addCase(getPremiumPolicies.rejected, (state: UserState, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            })
+            // on taking/subscribing a premium policy ;
+            .addCase(updateUserProfileToPremium.pending, (state: UserState) => {
+                state.loading = true;
+            })
+            .addCase(updateUserProfileToPremium.fulfilled, (state: UserState, action) => {
+                state.loading = false;
+                state.data = { ...state.data, ...action.payload };
+                state.error = null;
+            })
+            .addCase(updateUserProfileToPremium.rejected, (state: UserState, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            })
+            // on fetching favourite products of the current user;
+            .addCase(getFavouriteProducts.pending, (state: UserState) => {
+                state.loading = true;
+            })
+            .addCase(getFavouriteProducts.fulfilled, (state: UserState, action) => {
+                state.loading = false;
+                state.data = { ...state.data, ...action.payload };
+                state.error = null;
+            })
+            .addCase(getFavouriteProducts.rejected, (state: UserState, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            })
+            // on adding one product to favourites of current user;
+            .addCase(addToFavourites.pending, (state: UserState) => {
+                state.loading = true;
+            })
+            .addCase(addToFavourites.fulfilled, (state: UserState, action) => {
+                state.loading = false;
+                const { productId } = action.payload;
+                state.data.favourites = [ ...state.data.favourites, productId]
+                state.error = null;
+            })
+            .addCase(addToFavourites.rejected, (state: UserState, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            })
+            // on removing one product from favourites of current user;
+            .addCase(removeFromFavourites.pending, (state: UserState) => {
+                state.loading = true;
+            })
+            .addCase(removeFromFavourites.fulfilled, (state: UserState, action) => {
+                state.loading = false;
+                const { productId } = action.payload;
+                state.data.favourites = state.data?.favourites?.filter((favourite: string) => favourite != productId)
+                state.error = null;
+            })
+            .addCase(removeFromFavourites.rejected, (state: UserState, action) => {
                 state.loading = false;
                 state.error = action.error.message;
             })

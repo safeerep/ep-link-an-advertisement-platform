@@ -16,6 +16,7 @@ import {
     updatePremiumPolicy,
     getReportedUsers,
     getReportedProducts, 
+    getSubscribersList
 } from "@/store/actions/adminActions/adminActions";
 
 
@@ -212,6 +213,19 @@ const adminSlice = createSlice({
                 state.error = null;
             })
             .addCase(getReportedProducts.rejected, (state: AdminState, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            })
+            // fetching the list of subscribers;
+            .addCase(getSubscribersList.pending, (state: AdminState) => {
+                state.loading = true;
+            })
+            .addCase(getSubscribersList.fulfilled, (state: AdminState, action) => {
+                state.loading = false;
+                state.data = { ...state.data, ...action.payload };
+                state.error = null;
+            })
+            .addCase(getSubscribersList.rejected, (state: AdminState, action) => {
                 state.loading = false;
                 state.error = action.error.message;
             })

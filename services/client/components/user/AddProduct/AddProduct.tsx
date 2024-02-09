@@ -11,6 +11,7 @@ import { Formik, Form, Field, ErrorMessage } from 'formik'
 import { Toaster } from 'react-hot-toast'
 import addProductValidationSchema from '@/models/validationSchemas/user/addProductSchema'
 import PolicyAdvertisementModal from '@/components/Modals/PolicyAdvertisement'
+import { RootState } from '@/store/store'
 
 const AddProduct = () => {
     let imagesArray = new Array(8).fill(null)
@@ -33,7 +34,7 @@ const AddProduct = () => {
         dispatch(getAllCategories())
     }, [])
 
-    const user = useSelector((state: any) => state?.user?.data?.userData)
+    const user = useSelector((state: RootState) => state?.user?.data?.userData)
     const userId: string = String(user?._id);
     useEffect(() => {
         const checkCount = async () => {
@@ -49,7 +50,7 @@ const AddProduct = () => {
         checkCount();
     }, [userId])
 
-    const categories = useSelector((state: any) => state?.user?.data?.categories)
+    const categories = useSelector((state: RootState) => state?.user?.data?.categories)
     console.log(categories);
     console.log(currentCategory);
 

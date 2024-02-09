@@ -4,9 +4,10 @@ import React, { useEffect } from 'react'
 import { useDispatch } from 'react-redux'
 import { authRequired } from '@/store/actions/userActions/userActions'
 import { useRouter } from 'next/navigation'
+import { AppDispatch } from '@/store/store'
 
 const Favourites = () => {
-    const dispatch: any = useDispatch();
+    const dispatch: AppDispatch = useDispatch();
     const router = useRouter();
     useEffect(() => {
         dispatch(authRequired(router))

@@ -6,11 +6,12 @@ import { useDispatch } from 'react-redux';
 import { sendEmailToResetPassword, checkAuth } from '@/store/actions/adminActions/adminActions';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { emailValidationSchema } from '@/models/validationSchemas';
+import { AppDispatch } from '@/store/store';
 
 const AdminForgotPassword = () => {
     const [error, setError] = useState();
     const [success, setSuccess] = useState();
-    const dispatch:any = useDispatch()
+    const dispatch: AppDispatch = useDispatch()
     const router = useRouter()
     const handleSubmit = (userEmail: string | any ) => {
         dispatch(sendEmailToResetPassword({ userEmail, setSuccess, setError}))

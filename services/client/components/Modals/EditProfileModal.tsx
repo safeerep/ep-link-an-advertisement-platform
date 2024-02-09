@@ -4,10 +4,11 @@ import toast, { Toaster } from 'react-hot-toast';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { useDispatch, useSelector } from 'react-redux';
 import updateProfileSchema from '@/models/validationSchemas/user/updateProfileSchema';
+import { AppDispatch, RootState } from '@/store/store';
 
 const EditProfileModal = ({ isModalOpen, setIsModalOpen }: { isModalOpen: boolean, setIsModalOpen: any }) => {
-    const dispatch: any = useDispatch()
-    const user: any = useSelector((state: any) => state.user.data)
+    const dispatch: AppDispatch = useDispatch()
+    const user: any = useSelector((state: RootState) => state.user.data)
     const [image, setImage] = useState();
 
     const handleUpdateProfile = async (values: any) => {

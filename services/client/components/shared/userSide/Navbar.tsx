@@ -9,11 +9,13 @@ import { BsSearch } from 'react-icons/bs'
 import { RiArrowDownSLine } from 'react-icons/ri'
 import { logout } from '@/store/actions/userActions/userActions'
 import { Skeleton } from '@mui/material'
+import { AppDispatch, RootState } from '@/store/store'
+import { User } from '@/types/user'
 
 
 
 const Navbar = () => {
-  const dispatch: any = useDispatch()
+  const dispatch: AppDispatch = useDispatch()
   const router = useRouter()
 
   const [isDropdownOpen, setDropdownOpen] = useState(false);
@@ -31,8 +33,8 @@ const Navbar = () => {
     dispatch(logout(router))
   }
 
-  const user: any = useSelector((state: any) => state.user.data)
-  const userLoading: any = useSelector((state: any) => state.user.loading)
+  const user: User = useSelector((state: RootState) => state.user.data.userData)
+  const userLoading: boolean = useSelector((state: RootState) => state.user.loading)
   
   if (userLoading) {
     return <Skeleton variant="rectangular" className='w-full' sx={{ bgcolor: '#e3f2fd' }} height={60} />
@@ -62,7 +64,7 @@ const Navbar = () => {
         <BsChatDots
           className='cursor-pointer'
           onClick={() => router.push('/chat')} />
-        {(user && user?.userData?.userName !== undefined) ? (
+        {(user && user?.userName !== undefined) ? (
           <>
             <div className="relative inline-block text-left mx-4">
               <div>
@@ -74,7 +76,7 @@ const Navbar = () => {
                   aria-expanded="true"
                   aria-haspopup="true"
                 >
-                  {user?.userData?.userName}
+                  {user?.userName}
                   <RiArrowDownSLine />
                 </button>
               </div>

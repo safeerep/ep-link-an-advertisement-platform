@@ -8,9 +8,10 @@ import Banner from '../Banner'
 import Posts from '../Posts'
 import { Footer } from '@/components'
 import { Toaster } from 'react-hot-toast'
+import { AppDispatch } from '@/store/store'
 
 const Home = () => {
-  const dispatch: any = useDispatch();
+  const dispatch: AppDispatch = useDispatch();
   const router = useRouter();
 
   useEffect(() => {

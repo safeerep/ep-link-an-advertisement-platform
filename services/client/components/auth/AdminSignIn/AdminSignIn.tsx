@@ -8,9 +8,10 @@ import Image from 'next/image'
 import { signInValidationSchema } from '@/models/validationSchemas'
 import { login, checkAuth } from '@/store/actions/adminActions/adminActions'
 import { signInCredentials } from '@/types/admin'
+import { AppDispatch } from '@/store/store'
 
 const AdminSignIn = () => {
-    const dispatch: any = useDispatch();
+    const dispatch: AppDispatch = useDispatch();
     const [error, setError] = useState()
     const router = useRouter();
 

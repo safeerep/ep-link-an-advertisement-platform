@@ -36,7 +36,7 @@ export const initializepayment = (order: any, dispatch: AppDispatch, policyDurat
     rzp1.open()
 }
 
-const verifyPayment = async (response: any, dispatch: any, policyDuration: string, router: any) => {
+const verifyPayment = async (response: any, dispatch: AppDispatch, policyDuration: string, router: any) => {
     const paymentSuccessfull: boolean | any = await verifyRazorpayPayment(response)
 
     if (paymentSuccessfull) {

@@ -1,41 +1,46 @@
 "use client"
-import data from '@emoji-mart/data'
-import Picker from '@emoji-mart/react'
-import { useState } from "react"
+import { AdminNavbar, Categories } from "@/components";
+import { AdminSidebar } from "@/components";
+import Link from "next/link";
 
 export default function Home() {
-  const [ text, setText] = useState('')
 
   return (
-    <div className="flex flex-col items-center">
-      <span className="text-2xl">yeah its the value: {text}</span>
-      <input
-        onChange={(e) => setText(e.target.value)}
-        value={text}
-        type="text"
-        className="my-2 p-2 border border-gray-300"
-      />
-      <Picker
-        data={data}
-        onEmojiSelect={(e: any) => {
-          const sym = e.unified.split("_");
-          let codeArray: any = []
-          sym.forEach((el: any) => {
-            codeArray.push("0x" + el)
-          })
-          let emoji = String.fromCodePoint(...codeArray)
-          setText(text + emoji)
-        }}
-        className="my-2"
-      />
-      <button
-        className="bg-black p-2 text-white"
-        onClick={() => {
-          console.log(text);
-        }}
-      >
-        ok print
-      </button>
-    </div>
+    <>
+      <AdminNavbar />
+      <div className=" flex justify-center w-full px-2 p-2">
+        <AdminSidebar />
+        <div className="w-full">
+          {/* starting */}
+          <div className="flex justify-between w-full">
+            <h1 className='text-xl p-3'>Subscribers</h1>
+          </div>
+          <table className="table border w-full overflow-scroll ms-1">
+            <thead>
+              <tr>
+                <th className="border text-center">Email</th>
+                <th className="border text-center">Policy Chosen</th>
+                <th className="border text-center">Paid Amount</th>
+                <th className="border text-center">Taken On</th>
+                <th className="border text-center">Validity upto</th>
+              </tr>
+            </thead>
+            <tbody>
+
+              <tr key={''}>
+                <td className="border text-center">khk</td>
+                <td className="border text-center">hfjk</td>
+                <td className="border text-center">tfyioio</td>
+                <td className="border text-center">tfyioio</td>
+                <td className="border text-center">tfyioio</td>
+
+              </tr>
+            </tbody>
+          </table>
+          {/* ending */}
+        </div>
+      </div>
+    </>
+
   );
 }
