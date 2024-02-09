@@ -41,7 +41,7 @@ const Navbar = () => {
   }
   return (
     !userLoading &&
-    (<div className='fixed w-full h-16 shadow bg-blue-100 flex justify-between z-10'>
+    (<div className='fixed w-full h-16 shadow bg-blue-100 flex justify-between z-40'>
       <div
         style={{
           backgroundSize: 'cover',
