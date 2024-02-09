@@ -25,6 +25,10 @@ const Posts = ({ from }: { from: string }) => {
     const favourites = useSelector((state: RootState) => state?.user?.data?.favourites)
     const [isDropdownOpen, setIsDropdownOpen] = useState<boolean[]>(Array(products?.length).fill(false));
 
+    useEffect(() => {
+        setIsDropdownOpen(Array(products?.length).fill(false))
+    }, [products?.length])
+
     const handleAddToFavourite = (productId: string) => {
         console.log(`called for add to favourite. product id is ${productId}`);
         dispatch(addToFavourites(productId))
