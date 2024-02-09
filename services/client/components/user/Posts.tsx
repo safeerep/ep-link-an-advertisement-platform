@@ -91,7 +91,7 @@ const Posts = ({ from }: { from: string }) => {
                                                         className="absolute top-0 right-0 p-2">
                                                         <CgMoreO />
                                                     </button>
-                                                    {isDropdownOpen && (
+                                                    {isDropdownOpen[index] && (
                                                         <div className="absolute cursor-pointer top-6 right-2 p-1 z-10 rounded-md bg-white ring-1 ring-black ring-opacity-5 focus:outline-none">
                                                             <button
                                                                 onClick={() => router.push(`/edit-product?product=${product?._id}`)}
