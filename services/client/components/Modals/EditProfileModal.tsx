@@ -8,7 +8,7 @@ import { AppDispatch, RootState } from '@/store/store';
 
 const EditProfileModal = ({ isModalOpen, setIsModalOpen }: { isModalOpen: boolean, setIsModalOpen: any }) => {
     const dispatch: AppDispatch = useDispatch()
-    const user: any = useSelector((state: RootState) => state.user.data)
+    const user: any = useSelector((state: RootState) => state?.user?.data)
     const [image, setImage] = useState();
 
     const handleUpdateProfile = async (values: any) => {

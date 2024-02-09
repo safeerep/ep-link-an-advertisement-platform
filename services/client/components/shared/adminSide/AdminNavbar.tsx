@@ -19,7 +19,7 @@ const AdminNavbar = () => {
     dispatch(logout(router))
   }
 
-  const admin: any = useSelector((state: any) => state.admin.data)
+  const admin: any = useSelector((state: any) => state?.admin?.data)
   
   return (
     <div className='w-full h-16 shadow bg-blue-100 flex justify-between'>
