@@ -411,7 +411,7 @@ export const updatePremiumPolicy = createAsyncThunk(`/admin/update-premium-poici
 export const getSubscribersList = createAsyncThunk(`/admin/subscribers-list`,
     async ( page: number) => {
         try {
-            const response = await axios.get(`${USERS_SERVICE_BASE_URL}/admin/subscribers-list?page=${page}`, {
+            const response = await axios.get(`${PAYMENT_SERVICE_BASE_URL}/premium/subscribers-list?page=${page}`, {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true
             })
