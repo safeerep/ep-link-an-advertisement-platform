@@ -1,12 +1,14 @@
-import { premiumPlansRepo } from "../../adapters/database/mongo/repositories"
-import { premiumPlanUsecases } from "../../usecases"
+import { premiumPlansRepo, premiumMembersRepo } from "../../adapters/database/mongo/repositories"
+import { premiumPlanUsecases, premiumMemberUsecases } from "../../usecases"
 
 const usecases = {
-    premiumPlanUsecases
+    premiumPlanUsecases,
+    premiumMemberUsecases
 }
 
 const repositories = {
-    premiumPlansRepo
+    premiumPlansRepo,
+    premiumMembersRepo
 }
 
 export default {
