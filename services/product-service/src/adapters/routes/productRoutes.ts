@@ -1,6 +1,7 @@
 import { Router } from "express";
 import verifyUserAuth from "../../utils/middlewares/userAuthCheck";
 import productControllers from "../../handlers/controllers/productControllers";
+import userControllers from "../../handlers/controllers/userControllers";
 import upload from "../../utils/externalServices/multer/fileUpload";
 import verifyAdminAuth from "../../utils/middlewares/adminAuthCheck";
 
@@ -22,6 +23,12 @@ export default ( dependencies: any) => {
         changeProductStatusController
     }
     = productControllers(dependencies)
+    const {
+        addToFavouritesController,
+        getAllTheFavouritesController,
+        getFavouriteProductsController,
+        removeFromFavouritesController
+    } = userControllers(dependencies)
 
     // fetching products for user
     router.get('/get-all-products', getAvailableProductsController)
@@ -61,6 +68,14 @@ export default ( dependencies: any) => {
     router.get('/check-current-user-product-count', getCountOfProductsAddedByUserController)
     // to report a product;
     router.post('/report-one-product', reportProductController)
+    // to add a product to favourites;
+    router.patch('/add-to-favourites', addToFavouritesController)
+    // to remove a product from favourites;
+    router.patch('/remove-from-favourites', removeFromFavouritesController)
+    // to fetch favourite products of current user to show with details;
+    router.get('/get-favourite-products', getFavouriteProductsController)
+    // to fetch all the favourite products of current user to decide how to show products' heart icon;
+    router.get('/get-all-favourite-products', getAllTheFavouritesController)
 
     return router;
 } 
