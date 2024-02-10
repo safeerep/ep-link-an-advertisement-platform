@@ -22,11 +22,12 @@ export const saveNewMemberDetails = async ( userDetails: IUser) => {
     }
 }
 
-export const getPremiumMembersList = async (skip: number, limit: number): Promise<IUser[] | boolean> => {
+export const getPremiumMembersList = async (skip: number, limit: number) => {
     try {
         const subscribers = await PremiumMembersCollection.find().skip(skip).limit(limit)
+        const countOfSubscribers = await PremiumMembersCollection.countDocuments()
         if (subscribers) {
-            return subscribers;
+            return { subscribers, countOfSubscribers};
         }
         return false;
     } catch (error) {

@@ -14,7 +14,9 @@ export default ( dependencies: any) => {
         try {
             const subscribers = await premiumMemberUsecases.getPremiumMembersList_usecase(dependencies).interactor(page)
             if (subscribers) {
-                return res.json({ success: true, subscribers, message: "successfully fetched subscribers list"})
+                // here we will spread subscribers because, that will be an object which contains 
+                // the count of subscribers and limited number of subscribers details;
+                return res.json({ success: true, ...subscribers, currentPage: page, message: "successfully fetched subscribers list"})
             }
             else {
                 return res.status(503).json({ success: false, message: "something went wrong"})
