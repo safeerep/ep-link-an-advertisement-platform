@@ -82,9 +82,9 @@ export const logout = createAsyncThunk('/admin/logout', async (router: any) => {
 })
 
 
-export const getAllUsers = createAsyncThunk('/admin/get-all-users', async () => {
+export const getAllUsers = createAsyncThunk('/admin/get-all-users', async (page: number) => {
     try {
-        const response: any = await axios.get(`${USERS_SERVICE_BASE_URL}/admin/get-all-users`, {
+        const response: any = await axios.get(`${USERS_SERVICE_BASE_URL}/admin/get-all-users?page=${page}`, {
             headers: { "Content-Type": "application/json" },
             withCredentials: true
         })
@@ -100,9 +100,9 @@ export const getAllUsers = createAsyncThunk('/admin/get-all-users', async () => 
     }
 })
 
-export const getReportedUsers = createAsyncThunk('/admin/get-reported-users', async () => {
+export const getReportedUsers = createAsyncThunk('/admin/get-reported-users', async (page: number) => {
     try {
-        const response: any = await axios.get(`${USERS_SERVICE_BASE_URL}/admin/get-reported-users`, {
+        const response: any = await axios.get(`${USERS_SERVICE_BASE_URL}/admin/get-reported-users?page=${page}`, {
             headers: { "Content-Type": "application/json" },
             withCredentials: true
         })
@@ -192,9 +192,9 @@ export const RequestToResetPassword = createAsyncThunk('/admin/reset-password',
 )
 
 export const getAllCategories = createAsyncThunk(`/admin/categories`,
-    async () => {
+    async (page: number) => {
         try {
-            const response = await axios.get(`${PRODUCT_SERVICE_BASE_URL}/category/get-all-categories`, {
+            const response = await axios.get(`${PRODUCT_SERVICE_BASE_URL}/category/get-all-categories?page=${page}`, {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true
             })
@@ -302,9 +302,9 @@ export const updateCategoryDetails = createAsyncThunk('/admin/change-category-de
 })
 
 export const getProducts = createAsyncThunk(`/admin/get-products`,
-    async () => {
+    async (page: number) => {
         try {
-            const response = await axios.get(`${PRODUCT_SERVICE_BASE_URL}/admin/get-all-products`, {
+            const response = await axios.get(`${PRODUCT_SERVICE_BASE_URL}/admin/get-all-products?page=${page}`, {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true
             })
@@ -323,9 +323,9 @@ export const getProducts = createAsyncThunk(`/admin/get-products`,
 )
 
 export const getReportedProducts = createAsyncThunk(`/admin/get-reported-products`,
-    async () => {
+    async ( page: number) => {
         try {
-            const response = await axios.get(`${PRODUCT_SERVICE_BASE_URL}/admin/get-reported-products`, {
+            const response = await axios.get(`${PRODUCT_SERVICE_BASE_URL}/admin/get-reported-products?page=${page}`, {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true
             })
@@ -409,9 +409,9 @@ export const updatePremiumPolicy = createAsyncThunk(`/admin/update-premium-poici
 )
 
 export const getSubscribersList = createAsyncThunk(`/admin/subscribers-list`,
-    async () => {
+    async ( page: number) => {
         try {
-            const response = await axios.get(`${USERS_SERVICE_BASE_URL}/admin/subscribers-list`, {
+            const response = await axios.get(`${USERS_SERVICE_BASE_URL}/admin/subscribers-list?page=${page}`, {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true
             })

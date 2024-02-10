@@ -340,9 +340,22 @@ export const removeFromFavourites = createAsyncThunk('/user/remove-from-favourit
     }
 })
 
-export const getFavouriteProducts = createAsyncThunk('/user/get-favourites', async () => {
+export const getFavouriteProducts = createAsyncThunk('/user/get-favourites', async (page: number) => {
     try {
-        const response = await axios.get(`${PRODUCT_SERVICE_BASE_URL}/get-favourite-products`, {
+        const response = await axios.get(`${PRODUCT_SERVICE_BASE_URL}/get-favourite-products?page=${page}`, {
+            headers: { "Content-Type": "application/json" },
+            withCredentials: true
+        })
+        return response?.data;
+    } catch (error: any) {
+        console.log(`an error happened during fetching favourite products of the current user ${error}`);
+        return error?.response?.data;
+    }
+})
+
+export const getAllFavouriteProducts = createAsyncThunk('/user/get-all-favourites', async () => {
+    try {
+        const response = await axios.get(`${PRODUCT_SERVICE_BASE_URL}/get-all-favourite-products`, {
             headers: { "Content-Type": "application/json" },
             withCredentials: true
         })
@@ -484,9 +497,9 @@ export const editProduct = createAsyncThunk('/user/edit-product', async ({ produ
 });
 
 export const getProducts = createAsyncThunk(`/user/get-products`,
-    async () => {
-        try {
-            const response = await axios.get(`${PRODUCT_SERVICE_BASE_URL}/get-all-products`, {
+    async ( { searchQuery, page}: { searchQuery?: string, page?: number}) => {
+        try { 
+            const response = await axios.get(`${PRODUCT_SERVICE_BASE_URL}/get-all-products?search=${searchQuery}&page=${page}`, {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true
             })
@@ -506,11 +519,10 @@ export const getProducts = createAsyncThunk(`/user/get-products`,
 
 
 export const getCurrentUserProducts = createAsyncThunk(`/user/user-products`,
-    async () => {
+    async (page: number) => {
         console.log('called');
-
         try {
-            const response = await axios.get(`${PRODUCT_SERVICE_BASE_URL}/current-user-products`, {
+            const response = await axios.get(`${PRODUCT_SERVICE_BASE_URL}/current-user-products?page=${page}`, {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true
             })
@@ -838,10 +850,10 @@ export const getPremiumPolicies = createAsyncThunk('/user/get-premium-poicies',
 )
 
 export const updateUserProfileToPremium = createAsyncThunk('/user/update-to-premium',
-    async ({ policyDuration, router }: { policyDuration: string, router: any }) => {
+    async ({ policyDuration, subscriptionAmount, router }: { policyDuration: string, subscriptionAmount: number, router: any }) => {
         try {
             const response = await axios.patch(`${USERS_SERVICE_BASE_URL}/user/update-to-premium`,
-                { subscriptionPolicy: policyDuration }, {
+                { subscriptionPolicy: policyDuration, subscriptionAmount }, {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true
             })

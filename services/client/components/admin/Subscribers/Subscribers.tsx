@@ -1,17 +1,31 @@
-import { getSubscribersList } from '@/store/actions/adminActions/adminActions'
+import Pagination from '@/components/shared/common/Pagination'
+import { authRequired, getSubscribersList } from '@/store/actions/adminActions/adminActions'
 import { AppDispatch, RootState } from '@/store/store'
 import { User } from '@/types/user'
+import { useRouter, useSearchParams } from 'next/navigation'
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
 const Subscribers = () => {
 
+    const router = useRouter()
     const dispatch: AppDispatch = useDispatch()
+
     useEffect(() => {
-        dispatch(getSubscribersList())
+        dispatch(authRequired(router))
+        dispatch(getSubscribersList(page))
     }, [])
 
+    const searchQuery = useSearchParams();
+    const page: number = Number(searchQuery.get("page")) || 1;
+
     const subscribers: User[] = useSelector((state: RootState) => state?.user?.data?.subscribers)
+    const totalSubscribers = useSelector((state: RootState) => state?.user?.data?.countOfSubscribers)
+    const totalPages = Math.ceil(totalSubscribers/10);
+
+    const handlePageChanges = (pageNumber: number) => {
+        dispatch(getSubscribersList(pageNumber))
+    }
 
     return (
         <>
@@ -47,6 +61,7 @@ const Subscribers = () => {
                     }
                 </tbody>
             </table>
+            <Pagination currentPage={page} passPageToComponent={handlePageChanges} totalPages={totalPages} />
         </>
     )
 }

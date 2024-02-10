@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useRouter } from 'next/navigation'
+import { useRouter, useSearchParams } from 'next/navigation'
 import { HiOutlineHeart, HiHeart } from 'react-icons/hi'
 import { CgMoreO } from 'react-icons/cg'
 import {
     addToFavourites,
-    getFavouriteProducts,
+    getAllFavouriteProducts,
     makeProductAvailable,
     makeProductSoldOut,
     removeFromFavourites
@@ -17,8 +17,11 @@ const Posts = ({ from }: { from: string }) => {
     const dispatch: AppDispatch = useDispatch()
     const router = useRouter();
 
+    const searchQuery = useSearchParams();
+    const page: number = Number(searchQuery.get("page")) || 1;
+
     useEffect(() => {
-        dispatch(getFavouriteProducts())
+        dispatch(getAllFavouriteProducts())
     }, [])
 
     const products = useSelector((state: RootState) => state?.user?.data?.products)
