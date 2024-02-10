@@ -2,8 +2,8 @@
 import React, { useState } from 'react'
 import { Toaster } from 'react-hot-toast';
 
-const ConfimationModalWithDialogue = ({ isModalOpen, setModalOpen, notesHead, afterConfirmation }:
-    { isModalOpen: boolean, setModalOpen: any, notesHead: string, afterConfirmation: any }) => {
+const ConfimationModalWithDialogue = ({ isModalOpen, setModalOpen, notesHead, afterConfirmation, submitButtonName }:
+    { isModalOpen: boolean, setModalOpen: any, notesHead: string, afterConfirmation: any, submitButtonName?: string}) => {
 
     const [note, setNote] = useState('')
     const [noteIsNull, setNoteIsNull] = useState(false)
@@ -19,7 +19,8 @@ const ConfimationModalWithDialogue = ({ isModalOpen, setModalOpen, notesHead, af
     return (
         <>
             {isModalOpen && (
-                <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+                <div
+                    className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none bg-gray-500 bg-opacity-10">
                     <div className="relative w-auto my-6 shadow-lg mx-auto max-w-sm">
                         <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
                             {/*header*/}
@@ -33,16 +34,19 @@ const ConfimationModalWithDialogue = ({ isModalOpen, setModalOpen, notesHead, af
                                     x
                                 </button>
                             </div>
+                            <div className="flex p-5 rounded-t justify-center">
+                                <img src="brand.png" className='w-60 object-contain' alt="" />
+                            </div>
                             <div className="flex justify-center"></div>
                             {/* body */}
 
-                            <div className="relative px-12 flex-auto w-full my-2">
-                                <label htmlFor="notes">{notesHead}</label>
+                            <div className="relative px-12 flex-auto w-full my-4 gap-y-8">
+                                <label className='font-semibold text-lg' htmlFor="notes">{notesHead}</label>
                                 <input
                                     type="text"
                                     placeholder='write here'
                                     value={note}
-                                    className=" w-full py-2 px-2"
+                                    className=" w-full py-2 px-2 outline-none border-2 border-black"
                                     onChange={(e) => setNote(e.target.value)}
                                 />
                                 {
@@ -72,7 +76,7 @@ const ConfimationModalWithDialogue = ({ isModalOpen, setModalOpen, notesHead, af
                                     className="bg-slate-900 text-white active:bg-slate-950 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                                     type="submit"
                                 >
-                                    Confirm
+                                    {submitButtonName?submitButtonName:'Confirm'}
                                 </button>
                             </div>
                         </div>

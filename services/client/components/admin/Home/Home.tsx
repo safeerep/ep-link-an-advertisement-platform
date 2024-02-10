@@ -1,12 +1,13 @@
 "use client"
 import { authRequired, banAUser, getAllUsers, getReportedUsers } from '@/store/actions/adminActions/adminActions';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { FiUnlock, FiLock } from 'react-icons/fi';
 import ConfimationModal from '@/components/Modals/ConfirmationModal';
 import { AppDispatch, RootState } from '@/store/store';
-import { ReportedUser, User } from '@/types/user';
+import { User } from '@/types/user';
+import Pagination from '@/components/shared/common/Pagination';
 
 const Home = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -15,18 +16,20 @@ const Home = () => {
   const [currentUser, setCurrentUser] = useState<User | null>(null)
   const [showAllUsers, setShowAllUsers] = useState(true);
 
+  const searchParams = useSearchParams();
+  const page: number = Number(searchParams.get("page")) || 1;
 
   useEffect(() => {
     dispatch(authRequired(router))
-    dispatch(getAllUsers())
+    dispatch(getAllUsers(page))
   }, [])
 
   useEffect(() => {
     if (showAllUsers) {
-      dispatch(getAllUsers())
+      dispatch(getAllUsers(page))
     }
     else {
-      dispatch(getReportedUsers())
+      dispatch(getReportedUsers(page))
     }
   }, [showAllUsers])
 
@@ -36,7 +39,17 @@ const Home = () => {
 
   const users = useSelector((state: RootState) => state?.admin?.data?.users)
   const reportedUsers = useSelector((state: RootState) => state?.admin?.data?.reportedUsers)
+  const totalUsers = useSelector((state: RootState) => state?.admin?.data?.countOfUsers)
+  const totalPages = Math.ceil(totalUsers/10);
   console.log(users)
+  const handlePageChanges = (pageNumber: number) => {
+    if (showAllUsers) {
+      dispatch(getAllUsers(pageNumber))
+    }
+    else {
+      dispatch(getReportedUsers(pageNumber))
+    }
+  }
 
   return (
     <>
@@ -147,6 +160,7 @@ const Home = () => {
           }
 
       </table>
+      <Pagination currentPage={page} passPageToComponent={handlePageChanges} totalPages={totalPages} />
       <ConfimationModal
         afterConfirmation={blockOneUser}
         isModalOpen={modalOpen}

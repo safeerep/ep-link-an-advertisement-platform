@@ -7,21 +7,25 @@ import { FiUser } from 'react-icons/fi'
 import { BsChatDots } from 'react-icons/bs'
 import { BsSearch } from 'react-icons/bs'
 import { RiArrowDownSLine } from 'react-icons/ri'
-import { logout } from '@/store/actions/userActions/userActions'
+import { getProducts, logout } from '@/store/actions/userActions/userActions'
 import { Skeleton } from '@mui/material'
 import { AppDispatch, RootState } from '@/store/store'
 import { User } from '@/types/user'
-
-
+import ConfimationModalWithDialogue from '@/components/Modals/ConfirmationWithDialogue'
 
 const Navbar = () => {
   const dispatch: AppDispatch = useDispatch()
   const router = useRouter()
 
+  const [searchModalOpen, setSearchModalOpen] = useState(false);
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const handleButtonClickForDropDown = () => {
     setDropdownOpen(!isDropdownOpen);
   };
+
+  const searchProducts = (substring: string) => {
+    router.push(`/?search=${substring}`)
+  }
 
   const handleNavigate = (toRoute: string) => {
     setDropdownOpen(false);
@@ -35,13 +39,13 @@ const Navbar = () => {
 
   const user: User = useSelector((state: RootState) => state?.user?.data?.userData)
   const userLoading: boolean = useSelector((state: RootState) => state?.user?.loading)
-  
+
   if (userLoading) {
     return <Skeleton variant="rectangular" className='w-full' sx={{ bgcolor: '#e3f2fd' }} height={60} />
   }
   return (
     !userLoading &&
-    (<div className='fixed w-full h-16 shadow bg-blue-100 flex justify-between z-40'>
+    (<div className='fixed w-full h-16 shadow bg-cyan-100 flex justify-between z-40'>
       <div
         style={{
           backgroundSize: 'cover',
@@ -53,20 +57,21 @@ const Navbar = () => {
           width={200} height={200}>
         </img>
       </div>
-      <div className='flex relative items-center'>
-        <input
-          placeholder='Search for products'
-          className='text-black font-semibold p-2 pl-8 sm:w-32 md:w-60 lg:w-60 xl:w-80 border rounded-md'
+      <div className='flex items-center pe-10 gap-x-8'>
+        <BsSearch
+          // className='absolute top-6 left-2'
+          onClick={() => {
+            setSearchModalOpen(!searchModalOpen)
+          }}
+          className='cursor-pointer text-xl'
         />
-        <BsSearch className='absolute top-6 left-2' />
-      </div>
-      <div className='flex items-center pe-10'>
+
         <BsChatDots
-          className='cursor-pointer'
+          className='cursor-pointer text-xl'
           onClick={() => router.push('/chat')} />
         {(user && user?.userName !== undefined) ? (
           <>
-            <div className="relative inline-block text-left mx-4">
+            <div className="relative inline-block text-left">
               <div>
                 <button
                   onClick={() => handleButtonClickForDropDown()}
@@ -76,6 +81,7 @@ const Navbar = () => {
                   aria-expanded="true"
                   aria-haspopup="true"
                 >
+                  <FiUser className='text-xl' />
                   {user?.userName}
                   <RiArrowDownSLine />
                 </button>
@@ -106,8 +112,14 @@ const Navbar = () => {
             </div>
           </>
         ) : <Link href='/sign-up' className='text-black font-semibold ps-10 pe-2'>LOGIN</Link>}
-        <FiUser />
       </div>
+      < ConfimationModalWithDialogue
+        afterConfirmation={searchProducts}
+        isModalOpen={searchModalOpen}
+        setModalOpen={setSearchModalOpen}
+        notesHead="Search for products"
+        submitButtonName='Search'
+      />
     </div>)
   )
 }

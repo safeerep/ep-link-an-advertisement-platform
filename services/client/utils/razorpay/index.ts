@@ -14,7 +14,7 @@ export const initializepayment = (order: any, dispatch: AppDispatch, policyDurat
         description: "Test Transaction",
         image: imageName,
         order_id: order.id,
-        handler: (response: any) => verifyPayment({ ...response }, dispatch, policyDuration, router),
+        handler: (response: any) => verifyPayment({ ...response }, dispatch, policyDuration, order.amount, router),
         prefill: {
             user: "user"
         },
@@ -36,11 +36,11 @@ export const initializepayment = (order: any, dispatch: AppDispatch, policyDurat
     rzp1.open()
 }
 
-const verifyPayment = async (response: any, dispatch: AppDispatch, policyDuration: string, router: any) => {
+const verifyPayment = async (response: any, dispatch: AppDispatch, policyDuration: string, policyAmount: number, router: any) => {
     const paymentSuccessfull: boolean | any = await verifyRazorpayPayment(response)
 
     if (paymentSuccessfull) {
         console.log('yes payment successfull');
-        dispatch(updateUserProfileToPremium({policyDuration, router}))
+        dispatch(updateUserProfileToPremium({policyDuration, subscriptionAmount: policyAmount, router}))
     }
 }

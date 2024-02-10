@@ -79,7 +79,11 @@ const adminSlice = createSlice({
             })
             .addCase(getAllUsers.fulfilled, (state: AdminState, action) => {
                 state.loading = false;
-                state.data = { ...state.data, ...action.payload };
+                if (action.payload?.currentPage == 1) {
+                    state.data.users = action.payload?.users
+                } else if ( action.payload?.currentPage > 1) {
+                    state.data.users = [ ...state.data.users, ...action.payload?.users]
+                }
                 state.error = null;
             })
             .addCase(getAllUsers.rejected, (state: AdminState, action) => {
@@ -118,6 +122,11 @@ const adminSlice = createSlice({
             })
             .addCase(getAllCategories.fulfilled, (state: AdminState, action) => {
                 state.loading = false;
+                if (action.payload?.currentPage === 1) {
+                    state.data.categories = action.payload?.categories;
+                } else if (action.payload?.currentPage > 1) {
+                    state.data.categories = [...state.data.categories, ...action.payload.categories]
+                }
                 state.data = { ...state.data, ...action.payload };
                 state.error = null;
             })
@@ -157,7 +166,12 @@ const adminSlice = createSlice({
             })
             .addCase(getProducts.fulfilled, (state: AdminState, action) => {
                 state.loading = false;
-                state.data = { ...state.data, ...action.payload };
+                if (action.payload.currentPage === 1) {
+                    state.data.products = action.payload?.products;
+                }
+                else if (action.payload.currentPage > 1) {
+                    state.data.products = [ state.data.products, ...action.payload.products]
+                }
                 state.error = null;
             })
             .addCase(getProducts.rejected, (state: AdminState, action) => {
@@ -196,7 +210,12 @@ const adminSlice = createSlice({
             })
             .addCase(getReportedUsers.fulfilled, (state: AdminState, action) => {
                 state.loading = false;
-                state.data = { ...state.data, ...action.payload };
+                if ( action.payload.currentPage === 1 ) {
+                    state.data.reportedUsers = action.payload.reportedUsers
+                }
+                else if (action.payload.currentPage > 1) {
+                    state.data.reportedUsers = [ ...state.data.reportedUsers, ...action.payload.reportedUsers]
+                }
                 state.error = null;
             })
             .addCase(getReportedUsers.rejected, (state: AdminState, action) => {
@@ -209,7 +228,11 @@ const adminSlice = createSlice({
             })
             .addCase(getReportedProducts.fulfilled, (state: AdminState, action) => {
                 state.loading = false;
-                state.data = { ...state.data, ...action.payload };
+                if (action.payload.currentPage === 1 ) {
+                    state.data.reportedProducts = action.payload.reportedProducts;
+                } else if (action.payload.currentPage > 1) {
+                    state.data.reportedProducts = [ ...state.data?.reportedProducts, action.payload?.reportedProducts]
+                }
                 state.error = null;
             })
             .addCase(getReportedProducts.rejected, (state: AdminState, action) => {
@@ -222,6 +245,11 @@ const adminSlice = createSlice({
             })
             .addCase(getSubscribersList.fulfilled, (state: AdminState, action) => {
                 state.loading = false;
+                if (action.payload.currentPage == 1) {
+                    state.data.subscribers = action.payload.subscribers;
+                } else if (action.payload.currentPage > 1) {
+                    state.data.subscribers = [ ...state.data.subscribers, ...action.payload?.subscribers]
+                }
                 state.data = { ...state.data, ...action.payload };
                 state.error = null;
             })

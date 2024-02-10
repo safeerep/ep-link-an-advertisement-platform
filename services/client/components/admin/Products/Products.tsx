@@ -1,12 +1,13 @@
 "use client"
 import { authRequired, changeProductStatus, getProducts, getReportedProducts } from '@/store/actions/adminActions/adminActions';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { FiUnlock, FiLock } from 'react-icons/fi';
 import ConfimationModal from '@/components/Modals/ConfirmationModal';
 import { AppDispatch, RootState } from '@/store/store';
 import { Product } from '@/types/product';
+import Pagination from '@/components/shared/common/Pagination';
 
 const Products = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -14,17 +15,21 @@ const Products = () => {
   const [modalOpen, setModalOpen] = useState(false)
   const [currentProduct, setCurrentProduct] = useState<Product | null>(null)
   const [showReported, setShowReported] = useState<boolean>(false)
+
+  const searchQuery = useSearchParams();
+  const page: number = Number(searchQuery.get("page")) || 1;
+
   useEffect(() => {
     dispatch(authRequired(router))
-    dispatch(getProducts())
+    dispatch(getProducts(page))
   }, [dispatch])
 
   useEffect(() => {
     if (showReported) {
-      dispatch(getReportedProducts())
+      dispatch(getReportedProducts(page))
     }
     else {
-      dispatch(getProducts())
+      dispatch(getProducts(page))
     }
   },[showReported])
 
@@ -34,15 +39,26 @@ const Products = () => {
     dispatch(changeProductStatus({ productId: productId, status: !status }))
     setModalOpen(false)
     if (showReported) {
-      dispatch(getReportedProducts())
+      dispatch(getReportedProducts(page))
     }
     else {
-      dispatch(getProducts())
+      dispatch(getProducts(page))
     }
   }
 
   const products = useSelector((state: RootState) => state?.admin?.data?.products)
   const reportedProducts = useSelector((state: RootState) => state?.admin?.data?.reportedProducts)
+  const totalProducts = useSelector((state: RootState) => state?.admin?.data?.countOfProducts)
+  const totalPages: number = Math.ceil(totalProducts/10);
+
+  const handlePageChanges = (pageNumber: number) => {
+    if (showReported) {
+      dispatch(getReportedProducts(pageNumber))
+    }
+    else {
+      dispatch(getProducts(pageNumber))
+    }
+  }
 
   const filterToShowProducts = () => {
     setShowReported(!showReported)
@@ -158,6 +174,7 @@ const Products = () => {
             )
         }
       </table>
+      <Pagination currentPage={page} passPageToComponent={handlePageChanges} totalPages={totalPages} />
       <ConfimationModal
         afterConfirmation={changeStatus}
         isModalOpen={modalOpen}

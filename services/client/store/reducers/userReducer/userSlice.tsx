@@ -204,7 +204,11 @@ const userSlice = createSlice({
             })
             .addCase(getProducts.fulfilled, (state: UserState, action) => {
                 state.loading = false;
-                state.data = { ...state.data, ...action.payload };
+                if (action.payload.currentPage === 1) {
+                    state.data.products = action.payload.products;
+                } else if (action.payload.currentPage > 1) {
+                    state.data.products = [ state.data.products, ...action.payload.products]
+                }
                 state.error = null;
             })
             .addCase(getProducts.rejected, (state: UserState, action) => {
@@ -217,7 +221,11 @@ const userSlice = createSlice({
             })
             .addCase(getCurrentUserProducts.fulfilled, (state: UserState, action) => {
                 state.loading = false;
-                state.data = { ...state.data, ...action.payload };
+                if ( action.payload.currentPage === 1 ) {
+                    state.data.products = action.payload.products;
+                } else if (action.payload.currentPage > 1) {
+                    state.data.products = [ ...state.data.products, ...action.payload.products]
+                }
                 state.error = null;
             })
             .addCase(getCurrentUserProducts.rejected, (state: UserState, action) => {
@@ -430,7 +438,11 @@ const userSlice = createSlice({
             })
             .addCase(getFavouriteProducts.fulfilled, (state: UserState, action) => {
                 state.loading = false;
-                state.data = { ...state.data, ...action.payload };
+                if ( action.payload.currentPage === 1) {
+                    state.data.products = action.payload.products;
+                } else if ( action.payload.currentPage > 1) {
+                    state.data.products = [ state.data.products , ...action.payload.products]
+                }
                 state.error = null;
             })
             .addCase(getFavouriteProducts.rejected, (state: UserState, action) => {

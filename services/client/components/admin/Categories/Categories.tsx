@@ -1,25 +1,29 @@
 "use client"
 import { authRequired, changeCategoryStatus, getAllCategories } from '@/store/actions/adminActions/adminActions';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import React, { useState, useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { FiUnlock, FiLock } from 'react-icons/fi';
 import { AiOutlineEdit } from 'react-icons/ai'
-import { FaSlidersH } from 'react-icons/fa';
 import ConfimationModal from '@/components/Modals/ConfirmationModal';
 import Link from 'next/link';
 import { AppDispatch, RootState } from '@/store/store';
+import Pagination from '@/components/shared/common/Pagination';
 
 const Categories = () => {
   const dispatch: AppDispatch = useDispatch();
   const router = useRouter()
+  
   const [modalState, setModalState] = useState(false);
   const [categoryId, setCategoryId] = useState<string>('');
   const [status, setStatus] = useState<boolean | null>(null);
 
+  const searchParams = useSearchParams();
+  const page: number | any = searchParams.get("page") || 1;
+
   useEffect(() => {
     dispatch(authRequired(router))
-    dispatch(getAllCategories())
+    dispatch(getAllCategories(page))
   }, [])
 
   const changeStatus = () => {
@@ -27,6 +31,12 @@ const Categories = () => {
   }
 
   const categories = useSelector((state: RootState) => state?.admin?.data?.categories)
+  const totalCategories = useSelector((state: RootState) => state?.admin?.data?.countOfCategories)
+  const totalPages = Math.ceil(totalCategories/10);
+
+  const handlePageChanges = (pageNumber: number) => {
+    dispatch(getAllCategories(pageNumber))
+  }
 
   return (
     <>
@@ -88,6 +98,7 @@ const Categories = () => {
           ))}
         </tbody>
       </table>
+      <Pagination currentPage={page} passPageToComponent={handlePageChanges} totalPages={totalPages} />
 
       <ConfimationModal
         afterConfirmation={changeStatus}
