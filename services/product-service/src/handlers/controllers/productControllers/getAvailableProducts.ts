@@ -12,8 +12,10 @@ export default ( dependencies: any) => {
             // we will get current page in query
             // here we trying to fetch the products
             const page = req.query.page;
+            // also we may get search query to find products accordingly;
+            const search = req.query.search || '';
             const products = await productUsecases
-            .getAvailableProducts_usecase(dependencies).interactor(page)
+            .getAvailableProducts_usecase(dependencies).interactor(page, search)
             return res.json({ success: true, currentPage: page, ...products, message: 'successfully retrieved available products'})
         } catch (error) {
             console.log(`something went wrong during fetching the products ${error}`);
