@@ -75,7 +75,7 @@ const Posts = ({ from }: { from: string }) => {
                                     />
                                     {(from &&
                                         from !== 'profile') &&
-                                        favourites?.includes(product?._id) ?
+                                        favourites && favourites.length > 0 && favourites?.includes(product?._id) ?
                                         <button
                                             onClick={() => handleRemoveFromFavourite(product?._id)}
                                             className="absolute top-0 right-0 p-2">
