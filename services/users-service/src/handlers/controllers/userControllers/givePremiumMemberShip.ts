@@ -1,5 +1,7 @@
 import { Request, Response } from "express";
 import getUserId from "../../../utils/externalServices/jwt/getUserId";
+import { sendDataThroughRabbitMq } from "../../../adapters/messageBroker/rabbitmq/messageSender";
+import { PREMIUM_USER_QUEUE } from "../../../queues";
 
 export default (dependencies: any) => {
     const {
@@ -31,6 +33,10 @@ export default (dependencies: any) => {
 
             const updatedUserProfile = await givePremiumMemberShip_usecase(dependencies)
             .interactor( String(currentUserId), subscriptionPolicy)
+
+            // after updating user profile, we can send this data to the payment-service
+            // through the premium member queue, bcz, there we are saving the essential info of premium users;
+            await sendDataThroughRabbitMq(PREMIUM_USER_QUEUE, req.body)
 
             if (!updatedUserProfile) {
                 return res.status(503).json({ success: false, message: 'something went wrong'})

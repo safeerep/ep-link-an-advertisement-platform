@@ -5,8 +5,10 @@ export const getReportedUsers_usecase = (dependencies: any) => {
         }
     } = dependencies;
 
-    const interactor = () => {
-        return adminRepo.getReportedUsers() 
+    const interactor = (currentPage: number) => {
+        const limit = 10;
+        const skip = ( currentPage - 1) * limit;
+        return adminRepo.getReportedUsers( skip, limit) 
     }
 
     return { interactor }
