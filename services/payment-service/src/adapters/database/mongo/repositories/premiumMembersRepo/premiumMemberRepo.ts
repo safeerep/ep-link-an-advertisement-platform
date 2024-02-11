@@ -5,7 +5,7 @@ export const saveNewMemberDetails = async ( userDetails: IUser) => {
     try {
         await PremiumMembersCollection.findOneAndUpdate(
             {
-                _id: userDetails?._id
+                email: userDetails?.email
             }, {
                 ...userDetails
             },
