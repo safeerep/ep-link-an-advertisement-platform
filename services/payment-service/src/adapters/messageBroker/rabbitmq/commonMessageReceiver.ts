@@ -20,7 +20,7 @@ export const consumeDataFromQueue = async (dependencies: any) => {
         channel.ack(data);
         const userDetails = JSON.parse(response);
 
-        console.log("from user service receiver");
+        console.log("from payment service receiver");
         console.log(userDetails);
         // in this common message receiver we will get the details about new members who are taking premium membership
         // so, we have to save it here;
