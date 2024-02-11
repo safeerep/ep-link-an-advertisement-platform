@@ -31,7 +31,8 @@ import {
     updateUserProfileToPremium,
     addToFavourites,
     removeFromFavourites,
-    getFavouriteProducts
+    getFavouriteProducts,
+    getAllFavouriteProducts
 
 } from "@/store/actions/userActions/userActions";
 import { UserState } from "@/types/user";
@@ -204,6 +205,7 @@ const userSlice = createSlice({
             })
             .addCase(getProducts.fulfilled, (state: UserState, action) => {
                 state.loading = false;
+                state.data = { ...state.data, ...action.payload};
                 if (action.payload.currentPage === 1) {
                     state.data.products = action.payload.products;
                 } else if (action.payload.currentPage > 1) {
@@ -221,6 +223,7 @@ const userSlice = createSlice({
             })
             .addCase(getCurrentUserProducts.fulfilled, (state: UserState, action) => {
                 state.loading = false;
+                state.data = { ...state.data, ...action.payload }
                 if ( action.payload.currentPage === 1 ) {
                     state.data.products = action.payload.products;
                 } else if (action.payload.currentPage > 1) {
@@ -251,7 +254,7 @@ const userSlice = createSlice({
             })
             .addCase(followUser.fulfilled, (state: UserState, action) => {
                 state.loading = false;
-                state.data = { ...state.data, ...action.payload };
+                // state.data = { ...state.data, ...action.payload };
                 const { followedUserId } = action.payload;
                 state.data.userData.following = [...state?.data?.userData?.following, followedUserId];
                 state.error = null;
@@ -266,7 +269,7 @@ const userSlice = createSlice({
             })
             .addCase(unFollowUser.fulfilled, (state: UserState, action) => {
                 state.loading = false;
-                state.data = { ...state.data, ...action.payload };
+                // state.data = { ...state.data, ...action.payload };
                 const { unFollowedUserId } = action.payload;
                 state.data.userData.following = 
                 state.data.userData.following.filter((userId: any) => userId !== unFollowedUserId);
@@ -432,17 +435,32 @@ const userSlice = createSlice({
                 state.loading = false;
                 state.error = action.error.message;
             })
-            // on fetching favourite products of the current user;
+            // on fetching favourite products of the current user to show the favourites page;
             .addCase(getFavouriteProducts.pending, (state: UserState) => {
                 state.loading = true;
             })
             .addCase(getFavouriteProducts.fulfilled, (state: UserState, action) => {
                 state.loading = false;
+                state.data = { ...state.data, ...action.payload }
                 if ( action.payload.currentPage === 1) {
                     state.data.products = action.payload.products;
                 } else if ( action.payload.currentPage > 1) {
                     state.data.products = [ state.data.products , ...action.payload.products]
                 }
+                state.error = null;
+            })
+            .addCase(getFavouriteProducts.rejected, (state: UserState, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            })
+            // on fetching favourite products of the current user to decide how we want to show other products heart icon;
+            .addCase(getFavouriteProducts.pending, (state: UserState) => {
+                state.loading = true;
+            })
+            .addCase(getFavouriteProducts.fulfilled, (state: UserState, action) => {
+                state.loading = false;
+                state.data = { ...state.data, ...action.payload }
+                state.data.favourites = action.payload;
                 state.error = null;
             })
             .addCase(getFavouriteProducts.rejected, (state: UserState, action) => {

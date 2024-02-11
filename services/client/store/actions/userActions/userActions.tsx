@@ -306,7 +306,7 @@ export const getFollowingList = createAsyncThunk('/user/get-following-list',
 
 export const addToFavourites = createAsyncThunk('/user/add-to-favourites', async (productId: string) => {
     try {
-        const response = await axios.patch(`${PRODUCT_SERVICE_BASE_URL}/add-to-favourites`, productId, {
+        const response = await axios.patch(`${PRODUCT_SERVICE_BASE_URL}/add-to-favourites`, {productId}, {
             headers: { "Content-Type": "application/json" },
             withCredentials: true
         })
@@ -324,7 +324,7 @@ export const addToFavourites = createAsyncThunk('/user/add-to-favourites', async
 
 export const removeFromFavourites = createAsyncThunk('/user/remove-from-favourites', async (productId: string) => {
     try {
-        const response = await axios.patch(`${PRODUCT_SERVICE_BASE_URL}/remove-from-favourites`, productId, {
+        const response = await axios.patch(`${PRODUCT_SERVICE_BASE_URL}/remove-from-favourites`, {productId}, {
             headers: { "Content-Type": "application/json" },
             withCredentials: true
         })
