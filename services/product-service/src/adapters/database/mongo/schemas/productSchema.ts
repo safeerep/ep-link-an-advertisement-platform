@@ -51,16 +51,6 @@ const ProductsSchema: Schema = new Schema({
     required: true,
     default: false,
   },
-  reportsOnProduct: [
-    {
-      reason: {
-        type: String,
-      },
-      reportedBy: {
-        type: Schema.Types.ObjectId,
-      },
-    },
-  ],
   views: {
     type: Number,
   },

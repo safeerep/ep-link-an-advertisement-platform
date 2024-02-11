@@ -121,19 +121,30 @@ export const getProducts = async ( skip: number, limit: number) => {
 
 
 // to get available products
-export const getAvailableProducts = async ( skip: number, limit: number) => {
+export const getAvailableProducts = async ( skip: number, limit: number, searchQuery: string) => {
     try {
         const products = await ProductsCollection.find({
             status: true,
             categoryWiseStatus: true,
-            soldOut: false
+            soldOut: false,
+            $or: [
+                { productName: { $regex: searchQuery, $options: "i" }},
+                { categoryName: { $regex: searchQuery, $options: "i" }},
+                { description: { $regex: searchQuery, $options: "i" }}
+            ]
         }).skip(skip).limit(limit)
 
         const countOfProducts = await ProductsCollection.countDocuments({
             status: true,
             categoryWiseStatus: true,
-            soldOut: false
+            soldOut: false,
+            $or: [
+                { productName: { $regex: searchQuery, $options: "i" }},
+                { categoryName: { $regex: searchQuery, $options: "i" }},
+                { description: { $regex: searchQuery, $options: "i" }}
+            ]
         })
+        
         if (products) {
             return { 
                 products,
