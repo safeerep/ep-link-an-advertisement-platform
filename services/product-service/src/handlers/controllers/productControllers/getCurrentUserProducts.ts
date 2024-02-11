@@ -18,7 +18,7 @@ export default ( dependencies: any) => {
             // also we will get current page in query;
             const page = req.query.page;
             // after getting user id, we can fetch the products simply
-            const products = await productUsecases.getCurrentUserProducts_usecase(dependencies).interactor(userId, page)
+            const products = await productUsecases.getCurrentUserProducts_usecase(dependencies).interactor(String(userId), page)
             return res.json({ success: true, currentPage: page, ...products, message: "successfully fetched current user's products" })
         } catch (error) {
             console.log(`something went wrong during fetching a specific user's products ${error}`);

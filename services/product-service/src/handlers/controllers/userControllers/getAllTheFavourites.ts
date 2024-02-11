@@ -15,10 +15,10 @@ export default ( dependencies: any) => {
             // there should have difference between the products which is already in favourites and not in;
             // to fetch the favourites of current user, we have to get userId;
             const token: string = req.cookies.userJwt;
-            const currentUserId: string = String(getUserId(token));
+            const currentUserId = await getUserId(token)
 
             // after getting current user id we can fetch all the favourite products of current user;
-            const favourites = await userUsecases.getAllFavourites_usecase(dependencies).interactor( currentUserId)
+            const favourites = await userUsecases.getAllFavourites_usecase(dependencies).interactor( String(currentUserId))
             if (favourites) {
                 return res.json({ success: true, favourites, message: "successfully fetched all favourites"})
             }
