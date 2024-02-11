@@ -454,16 +454,16 @@ const userSlice = createSlice({
                 state.error = action.error.message;
             })
             // on fetching favourite products of the current user to decide how we want to show other products heart icon;
-            .addCase(getFavouriteProducts.pending, (state: UserState) => {
+            .addCase(getAllFavouriteProducts.pending, (state: UserState) => {
                 state.loading = true;
             })
-            .addCase(getFavouriteProducts.fulfilled, (state: UserState, action) => {
+            .addCase(getAllFavouriteProducts.fulfilled, (state: UserState, action) => {
                 state.loading = false;
                 state.data = { ...state.data, ...action.payload }
                 state.data.favourites = action.payload;
                 state.error = null;
             })
-            .addCase(getFavouriteProducts.rejected, (state: UserState, action) => {
+            .addCase(getAllFavouriteProducts.rejected, (state: UserState, action) => {
                 state.loading = false;
                 state.error = action.error.message;
             })
