@@ -34,15 +34,16 @@ export default (dependencies: any) => {
             const updatedUserProfile = await givePremiumMemberShip_usecase(dependencies)
             .interactor( String(currentUserId), subscriptionPolicy)
 
-            // after updating user profile, we can send this data to the payment-service
-            // through the premium member queue, bcz, there we are saving the essential info of premium users;
-            await sendDataThroughRabbitMq(PREMIUM_USER_QUEUE, req.body)
-
+            
             if (!updatedUserProfile) {
                 return res.status(503).json({ success: false, message: 'something went wrong'})
             }
             else {
-                return res.json({ success: true, updatedUserProfile, message: `successfully subscribed ${subscriptionPolicy} subscription policy`})
+                // after updating user profile, we can send this data to the payment-service
+                // through the premium member queue, bcz, there we are saving the essential info of premium users;
+                await sendDataThroughRabbitMq(PREMIUM_USER_QUEUE, { ...req.body, ...updatedUserProfile})
+                
+                return res.json({ success: true, userData: updatedUserProfile, message: `successfully subscribed ${subscriptionPolicy} subscription policy`})
             }
         } catch (error) {
             console.log(`something went wrong during making user as premium member;`);
