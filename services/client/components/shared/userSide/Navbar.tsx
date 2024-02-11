@@ -24,7 +24,11 @@ const Navbar = () => {
   };
 
   const searchProducts = (substring: string) => {
-    router.push(`/?search=${substring}`)
+    console.log(substring);
+    
+    setSearchModalOpen(false)
+    const encodedQuery = encodeURIComponent(substring);
+    router.push(`/?search=${encodedQuery}`)
   }
 
   const handleNavigate = (toRoute: string) => {
