@@ -15,7 +15,7 @@ export default ( dependencies: any) => {
             const token = req.cookies.userJwt;
             const userId = await getUserId(token)
             // after getting user id, we can fetch the products simply
-            const productsCount = await productUsecases.getCurrentUserProductsCount_usecase(dependencies).interactor(userId)
+            const productsCount = await productUsecases.getCurrentUserProductsCount_usecase(dependencies).interactor(String(userId))
             if (productsCount) {
                 return res.json({ success: true, addedProductCount: productsCount, message: "successfully fetched count of current user's products"})
             }

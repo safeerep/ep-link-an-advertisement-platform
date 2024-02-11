@@ -13,12 +13,12 @@ export default ( dependencies: any) => {
             // this function calls for to get the favourite product details;
             // to fetch the favourites of current user, we have to get userId;
             const token: string = req.cookies.userJwt;
-            const currentUserId: string = String(getUserId(token));
+            const currentUserId: string = await getUserId(token)
             // also we will get the current page of favourites showing, in query;
             const page = req.query.page;
 
             // after getting current user id we can fetch favourite products of current user;
-            const favourites = await userUsecases.getFavourites_usecase(dependencies).interactor( currentUserId, page)
+            const favourites = await userUsecases.getFavourites_usecase(dependencies).interactor( String(currentUserId), page)
             if (favourites) {
                 return res.json({ success: true, currentPage: page, ...favourites, message: "successfully fetched favourites"})
             }

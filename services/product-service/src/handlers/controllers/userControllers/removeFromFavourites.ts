@@ -14,11 +14,11 @@ export default ( dependencies: any) => {
             // to remove the product from favourites, we have to get userId;
             const productId = req.body.productId;
             const token: string = req.cookies.userJwt;
-            const currentUserId: string = String(getUserId(token));
+            const currentUserId: string = await getUserId(token);
 
             // after getting current user id we can start the process of removing a product from favourites;
             const favouritesUpdated = await userUsecases
-            .removeFromFavourites_usecase(dependencies).interactor( currentUserId, productId)
+            .removeFromFavourites_usecase(dependencies).interactor( String(currentUserId), productId)
             if (favouritesUpdated) {
                 return res.json({ success: true, message: "successfully removed one product from favourites", productId})
             }

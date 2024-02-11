@@ -1,5 +1,3 @@
-import { Request, Response } from "express";
-import getUserId from "../../../utils/externalServices/jwt/getUserId";
 import { sendDataThroughRabbitMq } from "../../../adapters/messageBroker/rabbitmq/messageSender";
 import { REPLY_QUEUE } from "../../../queues";
 
