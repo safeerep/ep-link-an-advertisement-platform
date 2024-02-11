@@ -50,7 +50,7 @@ export const getAllFavourites = async ( userId: string) => {
     try {
         const userDocument: IUser | null = await UserCollection.findOne({ userId: userId})
         console.log(userDocument?.favourites);
-        return userDocument?.favourites;
+        return userDocument? userDocument.favourites: [];
     } catch (error) {
         console.log(`something went wrong during fetching all the favourites of the current user ${error}`);
         return false;
@@ -68,7 +68,7 @@ export const getFavourites = async ( userId: string, skip: number, limit: number
 
         console.log(userDocumentPopulatedWithFavourites);
         return { 
-            favourites: userDocumentPopulatedWithFavourites?.favourites,
+            products: userDocumentPopulatedWithFavourites? userDocumentPopulatedWithFavourites.favourites: [],
             countOfFavouriteProducts
         };
     } catch (error) {
