@@ -460,7 +460,6 @@ const userSlice = createSlice({
             .addCase(getAllFavouriteProducts.fulfilled, (state: UserState, action) => {
                 state.loading = false;
                 state.data = { ...state.data, ...action.payload }
-                state.data.favourites = action.payload;
                 state.error = null;
             })
             .addCase(getAllFavouriteProducts.rejected, (state: UserState, action) => {
