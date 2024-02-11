@@ -21,14 +21,20 @@ const Home = () => {
 
   useEffect(() => {
     dispatch(checkAuth(router))
-    dispatch(getProducts({searchQuery, page}))
-  }, [ searchQuery, page])
+    dispatch(getProducts({ searchQuery, page }))
+  }, [])
+
+  useEffect(() => {
+    if (searchQuery) {
+      dispatch(getProducts({ searchQuery, page }))
+    }
+  }, [searchQuery])
 
   const totalProducts = useSelector((state: RootState) => state.user.data?.countOfProducts)
-  const totalPages = Math.ceil(totalProducts/8);
+  const totalPages = Math.ceil(totalProducts / 8);
 
   const handlePageChanges = (pageNumber: number) => {
-    dispatch(getProducts({page: pageNumber}))
+    dispatch(getProducts({ page: pageNumber }))
   }
 
   return (
@@ -39,7 +45,11 @@ const Home = () => {
       <div className='min-h-screen'>
         <Banner />
         <Posts from={'home'} />
-        <Pagination currentPage={page} passPageToComponent={handlePageChanges} totalPages={totalPages} />
+        {
+          totalProducts &&
+          totalProducts > 0 &&
+          <Pagination currentPage={page} passPageToComponent={handlePageChanges} totalPages={totalPages} />
+        }
       </div>
       <Footer />
       <Toaster />
