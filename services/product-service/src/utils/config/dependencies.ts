@@ -1,14 +1,16 @@
-import { categoryRepo, productRepo } from "../../adapters/database/mongo/repositories"
-import { categoryUsecases, productUsecases } from "../../usecases"
+import { categoryRepo, productRepo, userRepo } from "../../adapters/database/mongo/repositories"
+import { categoryUsecases, productUsecases, userUsecases } from "../../usecases"
 
 const repositories = {
     categoryRepo,
-    productRepo
+    productRepo,
+    userRepo
 }
 
 const usecases = {
     categoryUsecases,
-    productUsecases
+    productUsecases,
+    userUsecases
 }
 
 export default {

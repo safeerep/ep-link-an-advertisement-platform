@@ -47,10 +47,15 @@ export const isCategoryExistWithId = async ( categoryId: string) :Promise< ICate
 
 
 // to get all categories
-export const getCategories = async () :Promise< ICategory[] | boolean > => {
+export const getCategories = async (skip: number, limit: number) => {
     try {
-        const categories = await CategoriesCollection.find()
-        return categories as ICategory[];
+        const categories = await CategoriesCollection.find().skip(skip).limit(limit)
+        const countOfCategories = await CategoriesCollection.countDocuments();
+
+        return {
+            categories,
+            countOfCategories
+        };
     } catch (error) {
         console.log(`an error happened during fetching the categories ${error}`);
         return false;
