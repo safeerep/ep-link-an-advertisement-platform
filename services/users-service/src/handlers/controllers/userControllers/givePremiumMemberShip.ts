@@ -41,7 +41,8 @@ export default (dependencies: any) => {
             else {
                 // after updating user profile, we can send this data to the payment-service
                 // through the premium member queue, bcz, there we are saving the essential info of premium users;
-                await sendDataThroughRabbitMq(PREMIUM_USER_QUEUE, { ...req.body, ...updatedUserProfile})
+                updatedUserProfile.subscriptionAmount = req.body.subscriptionAmount;
+                await sendDataThroughRabbitMq(PREMIUM_USER_QUEUE, {...updatedUserProfile})
                 
                 return res.json({ success: true, userData: updatedUserProfile, message: `successfully subscribed ${subscriptionPolicy} subscription policy`})
             }
