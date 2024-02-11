@@ -41,6 +41,6 @@ const verifyPayment = async (response: any, dispatch: AppDispatch, policyDuratio
 
     if (paymentSuccessfull) {
         console.log('yes payment successfull');
-        dispatch(updateUserProfileToPremium({policyDuration, subscriptionAmount: policyAmount, router}))
+        dispatch(updateUserProfileToPremium({policyDuration, subscriptionAmount: (policyAmount / 100), router}))
     }
 }
