@@ -5,8 +5,10 @@ export const getCategories_usecase = ( dependencies: any) => {
         }
     } = dependencies;
 
-    const interactor = async () => {
-        return await categoryRepo.getCategories();
+    const interactor = async (currentPage: number) => {
+        const skip = (currentPage - 1) * 10;
+        const limit = 10;
+        return await categoryRepo.getCategories(skip, limit);
     }
 
     return { interactor }

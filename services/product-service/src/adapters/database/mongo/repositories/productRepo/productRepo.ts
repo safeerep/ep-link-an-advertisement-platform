@@ -102,10 +102,16 @@ export const makeProductAsAvailable = async (productId: string): Promise<IProduc
 }
 
 // to get products
-export const getProducts = async (): Promise<IProduct[] | boolean> => {
+export const getProducts = async ( skip: number, limit: number) => {
     try {
-        const products = await ProductsCollection.find()
-        if (products) return products as IProduct[];
+        const products = await ProductsCollection.find().skip( skip).limit(limit)
+        const countOfProducts = await ProductsCollection.countDocuments()
+        if (products) {
+            return { 
+                products, 
+                countOfProducts
+            }
+        } 
         return false;
     } catch (error) {
         console.log(`something went wrong during fetching all the products ${error}`);
@@ -115,14 +121,25 @@ export const getProducts = async (): Promise<IProduct[] | boolean> => {
 
 
 // to get available products
-export const getAvailableProducts = async (): Promise<IProduct[] | boolean> => {
+export const getAvailableProducts = async ( skip: number, limit: number) => {
     try {
         const products = await ProductsCollection.find({
             status: true,
             categoryWiseStatus: true,
             soldOut: false
+        }).skip(skip).limit(limit)
+
+        const countOfProducts = await ProductsCollection.countDocuments({
+            status: true,
+            categoryWiseStatus: true,
+            soldOut: false
         })
-        if (products) return products as IProduct[];
+        if (products) {
+            return { 
+                products,
+                countOfProducts
+            }
+        }
         return false;
     } catch (error) {
         console.log(`something went wrong during fetching all the available products ${error}`);
@@ -131,14 +148,43 @@ export const getAvailableProducts = async (): Promise<IProduct[] | boolean> => {
 }
 
 // to get a specific user's products only
-export const getCurrentUserProducts = async (userId: string): Promise<IProduct[] | boolean> => {
+export const getCurrentUserProducts = async (userId: string, skip: number, limit: number) => {
     try {
         const products = await ProductsCollection.find({
             userId: userId,
             status: true,
             categoryWiseStatus: true
+        }).skip(skip).limit(limit);
+
+        const countOfProducts = await ProductsCollection.countDocuments({
+            userId: userId,
+            status: true,
+            categoryWiseStatus: true
         })
-        if (products) return products as IProduct[];
+        if (products) {
+            return { 
+                products ,
+                countOfProducts
+            }
+        } 
+        return false;
+    } catch (error) {
+        console.log(`something went wrong during fetching all the products of current user ${error}`);
+        return false;
+    }
+}
+
+export const getCurrentUserProductsCount = async (userId: string) => {
+    try {
+        const productsCount = await ProductsCollection.countDocuments({
+            userId: userId,
+            status: true,
+            categoryWiseStatus: true
+        })
+
+        if (productsCount) {
+            return productsCount;
+        } 
         return false;
     } catch (error) {
         console.log(`something went wrong during fetching all the products of current user ${error}`);
@@ -184,7 +230,7 @@ export const reportProduct = async (productId: string, report: ReportType) => {
 }
 
 // to get products ReportedProducts
-export const getReportedProducts = async () => {
+export const getReportedProducts = async (skip: number, limit: number) => {
     try {
         // const reportedProducts = await ReportedProductsCollection.find().populate("productId")
         const reportedProducts = await ReportedProductsCollection.aggregate([
@@ -198,13 +244,39 @@ export const getReportedProducts = async () => {
                     foreignField: "_id",
                     as: "reportedOn"
                 }
+            },
+            {
+                $skip: skip
+            },
+            {
+                $limit: limit
             }
         ])
 
-        if (reportedProducts) return reportedProducts;
+        const totalNumberOfReports =  await ReportedProductsCollection.aggregate([
+            {
+                $unwind: "$reports"
+            },
+            {
+                $group: {
+                    _id: null,
+                    totalCount: { $sum: 1 }
+                }
+            }
+            
+        ])
+
+        const countOfReportedProducts = totalNumberOfReports.length > 0 ? totalNumberOfReports[0].totalCount : 0;
+
+        if (reportedProducts) {
+            return { 
+                products: reportedProducts,
+                countOfReportedProducts
+            };
+        } 
         return false;
     } catch (error) {
-        console.log(`something went wrong during fetching all the products ${error}`);
+        console.log(`something went wrong during fetching all the reported products ${error}`);
         return false;
     }
 }

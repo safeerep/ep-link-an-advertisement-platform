@@ -14,9 +14,12 @@ export default ( dependencies: any) => {
             // we have to get that user's id first
             const token = req.cookies.userJwt;
             const userId = await getUserId(token)
+
+            // also we will get current page in query;
+            const page = req.query.page;
             // after getting user id, we can fetch the products simply
-            const products = await productUsecases.getCurrentUserProducts_usecase(dependencies).interactor(userId)
-            return res.json({ success: true, message: "successfully fetched current user's products", products })
+            const products = await productUsecases.getCurrentUserProducts_usecase(dependencies).interactor(userId, page)
+            return res.json({ success: true, currentPage: page, ...products, message: "successfully fetched current user's products" })
         } catch (error) {
             console.log(`something went wrong during fetching a specific user's products ${error}`);
             return res.status(503).json({ success: false, message: "something went wrong" })

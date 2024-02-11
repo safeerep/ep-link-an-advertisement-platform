@@ -5,8 +5,10 @@ export const getProducts_usecase = ( dependencies: any) => {
         }
     } = dependencies;
 
-    const interactor = async () => {
-        return await productRepo.getProducts()
+    const interactor = async ( currentPage: number) => {
+        const limit = 10;
+        const skip = (currentPage - 1) * limit;
+        return await productRepo.getProducts( skip, limit)
     }
 
     return { interactor }

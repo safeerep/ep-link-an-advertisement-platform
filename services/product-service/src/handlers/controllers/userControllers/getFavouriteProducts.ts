@@ -20,7 +20,7 @@ export default ( dependencies: any) => {
             // after getting current user id we can fetch favourite products of current user;
             const favourites = await userUsecases.getFavourites_usecase(dependencies).interactor( currentUserId, page)
             if (favourites) {
-                return res.json({ success: true, favourites, message: "successfully fetched favourites"})
+                return res.json({ success: true, currentPage: page, ...favourites, message: "successfully fetched favourites"})
             }
             else throw new Error('something went wrong')
         } catch (error) {

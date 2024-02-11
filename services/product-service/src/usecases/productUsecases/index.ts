@@ -10,6 +10,7 @@ import { banProduct_usecase } from "./banProduct"
 import { changeProductStatus_usecase } from "./changeProductStatus"
 import { reportProduct_usecase } from "./reportProduct"
 import { getReportedProducts_usecase } from "./getReportedProducts"
+import { getCurrentUserProductsCount_usecase } from "./getCountOfProductsAddedByUser"
 
 
 export default {
@@ -24,5 +25,6 @@ export default {
     banProduct_usecase,
     reportProduct_usecase,
     getReportedProducts_usecase,
-    changeProductStatus_usecase
+    changeProductStatus_usecase,
+    getCurrentUserProductsCount_usecase
 }

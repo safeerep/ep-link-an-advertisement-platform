@@ -15,12 +15,12 @@ export default ( dependencies: any) => {
             const token = req.cookies.userJwt;
             const userId = await getUserId(token)
             // after getting user id, we can fetch the products simply
-            const products = await productUsecases.getCurrentUserProducts_usecase(dependencies).interactor(userId)
-            if (products) {
-                return res.json({ success: true, addedProductCount: products?.length, message: "successfully fetched count of current user's products"})
+            const productsCount = await productUsecases.getCurrentUserProductsCount_usecase(dependencies).interactor(userId)
+            if (productsCount) {
+                return res.json({ success: true, addedProductCount: productsCount, message: "successfully fetched count of current user's products"})
             }
         } catch (error) {
-            console.log(`something went wrong during fetching a specific user's products ${error}`);
+            console.log(`something went wrong during fetching a specific user's products count ${error}`);
             return res.status(503).json({ success: false, message: "something went wrong" })
         }
     }

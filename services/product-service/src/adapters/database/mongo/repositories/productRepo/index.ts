@@ -10,7 +10,8 @@ import {
   makeProductAsSoldOut,
   updateProduct,
   reportProduct,
-  getReportedProducts
+  getReportedProducts,
+  getCurrentUserProductsCount
 } from "./productRepo";
 
 export default {
