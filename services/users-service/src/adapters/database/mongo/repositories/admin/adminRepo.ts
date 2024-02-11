@@ -25,10 +25,14 @@ export const getAdminDataFromId = async (adminId: string):Promise <IAdmin | bool
     }
 };
 
-export const getAllUsers = async () :Promise <IUserData [] | boolean> => {
+export const getAllUsers = async ( skip: number, limit: number) => {
   try {
-    const users = await userCollection.find()
-    return users as IUserData[];
+    const users = await userCollection.find().skip(skip).limit(limit)
+    const countOfUsers = await userCollection.countDocuments()
+    return {
+      users,
+      countOfUsers
+    }
   } catch (error) {
     console.log(`an error happened ${error}`);
     return false;
@@ -64,7 +68,7 @@ export const updatePassword = async (
   }
 };
 
-export const getReportedUsers = async ():Promise<IReportedUser[] | boolean> => {
+export const getReportedUsers = async ( skip: number, limit: number) => {
   try {
     const reportedUsers = await reportedUserCollection.aggregate([
       {
@@ -85,12 +89,36 @@ export const getReportedUsers = async ():Promise<IReportedUser[] | boolean> => {
           foreignField: "_id",
           as: "reportedBy"
         }
+      }, 
+      {
+        $skip: skip
+      },
+      {
+        $limit: limit
       }
     ])
+
+    const totalReportedUsers = await reportedUserCollection.aggregate([
+      {
+        $unwind: "$reports"
+      }, {
+        $group: {
+          _id: null,
+          totalCount: {
+            $sum: 1
+          }
+        }
+      }
+    ])
+
+    const countOfReportedUsers = totalReportedUsers.length > 0 ? totalReportedUsers[0].totalCount: 0;
     
     if (reportedUsers) {
       console.log(reportedUsers);
-      return reportedUsers as IReportedUser[];
+      return { 
+        reportedUsers,
+        countOfReportedUsers 
+      } 
     }
     else return false;
   } catch (error) {

@@ -12,8 +12,11 @@ export default ( dependencies: any) => {
 
         try {
             // to give reported users list after successful auth check;
-            const reportedUsers = await getReportedUsers_usecase(dependencies).interactor();
-            return res.json({ success: true, message: "successfully fetched all the reported users", reportedUsers})
+            // we will get current page in query;
+            const page = req.query.page;
+
+            const reportedUsers = await getReportedUsers_usecase(dependencies).interactor(page);
+            return res.json({ success: true, currentPage: page, ...reportedUsers, message: "successfully fetched all the reported users"})
         } catch (error) {
             console.log(`something went wrong during fetching reported users ${error}`);
             return res.status(503).json({ success: false, message: 'something went wrong'})
