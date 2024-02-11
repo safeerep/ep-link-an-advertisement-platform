@@ -389,7 +389,7 @@ const Chat = () => {
                                         )}
                                         {messageDoc.typeOfMessage === 'document' && (
                                             <div className="flex items-center max-w-2/3">
-                                                <img src="document-icon.png" alt="Document Icon" className="w-6 h-6 mr-2" />
+                                                <GrDocument className="w-6 h-6 mr-2" />
                                                 <a href={messageDoc?.message} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
                                                     {messageDoc.documentName || "Download Document"}
                                                 </a>
@@ -428,7 +428,7 @@ const Chat = () => {
                                         )}
                                         {messageDoc.typeOfMessage === 'document' && (
                                             <div className="flex items-center max-w-2/3">
-                                                <img src="document-icon.png" alt="Document Icon" className="w-6 h-6 mr-2" />
+                                                <GrDocument className="w-6 h-6 mr-2" />
                                                 <a href={messageDoc?.message} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
                                                     {messageDoc.documentName || "Download Document"}
                                                 </a>
