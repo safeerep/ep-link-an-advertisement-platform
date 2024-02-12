@@ -1,3 +1,4 @@
+"use client"
 import { GrMore, GrEmoji, GrDocument } from 'react-icons/gr'
 import { IoIosCall } from 'react-icons/io'
 import { BsCameraVideoFill, BsCameraVideo, BsImageAlt } from 'react-icons/bs'
@@ -39,7 +40,7 @@ const Chat = () => {
     const [modalOpen, setModalOpen] = useState(false)
     const [showTyping, setShowTyping] = useState(false)
     const [videoCallOngoing, setVideoCallOngoing] = useState(false)
-    const [initiateCall, setInitiateCall] = useState(false)
+    const [incomingCallOn, setIncomingCallOn] = useState('')
     const [newMessages, setNewMessages] = useState<any>([])
     const inputRef = useRef<HTMLInputElement | null>(null)
     const roomId = useSelector((state: RootState) => state?.user?.data?.chatroom?._id)
@@ -163,6 +164,7 @@ const Chat = () => {
             from: user?.userName,
             fromUserId: user?._id,
             to: seller?._id,
+            roomId: roomId
         }))
     }
 
@@ -170,7 +172,13 @@ const Chat = () => {
     // at that point of time, video call page will shows;
     socket?.on("calling-user", (data: any) => {
         setVideoCallOngoing(true)
+        setIncomingCallOn(data.roomId)
     })
+
+    const endCall = () => {
+        console.log('called for call end');
+        router.push('/chat')
+    }
 
     const handleAttachmentChanges = (event: any, fileType: string) => {
         const files = event.target.files;
@@ -565,7 +573,7 @@ const Chat = () => {
             </div> :
             (
                 videoCallOngoing && 
-                <VideoCall roomID={roomId} />
+                <VideoCall roomID={roomId} callerRoomId={incomingCallOn} rejectCall={endCall} />
             )
     )
 }
