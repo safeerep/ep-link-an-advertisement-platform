@@ -27,6 +27,7 @@ import ConfimationModalWithDialogue from '@/components/Modals/ConfirmationWithDi
 import ShowAttachments from '@/components/Modals/showAttachments'
 import { AppDispatch, RootState } from '@/store/store'
 import { User } from '@/types/user'
+import IncomingCallModal from '@/components/Modals/IncomingCallModal'
 
 const Chat = () => {
     const socket = io(`${SOCKET_BASE_URL}`)
@@ -34,9 +35,11 @@ const Chat = () => {
     const router = useRouter()
     const scrollContainerRef = useRef<HTMLDivElement | null>(null);
     const [message, setMessage] = useState('')
+    const [dataFromIncomingCall, setDataFromIncomingCall] = useState(null)
     const [showEmojis, setShowEmojis] = useState(false)
     const [isDropdownOpen, setIsDropdownOpen] = useState(false)
     const [isFileAttachDropdownOpen, setIsFileAttachDropdownOpen] = useState(false)
+    const [incomingCallModalOpen, setIncomingCallModalOpen] = useState(false)
     const [modalOpen, setModalOpen] = useState(false)
     const [showTyping, setShowTyping] = useState(false)
     const [videoCallOngoing, setVideoCallOngoing] = useState(false)
@@ -171,13 +174,27 @@ const Chat = () => {
     // its the time when user is active and user getting calls;
     // at that point of time, video call page will shows;
     socket?.on("calling-user", (data: any) => {
+        setDataFromIncomingCall(data)
+        setIncomingCallModalOpen(!incomingCallModalOpen)
+    })
+    
+    // after accepting incoming calls;
+    const incomingCallAccepted = (data: any) => {
+        setIncomingCallModalOpen(!incomingCallModalOpen)
         setVideoCallOngoing(true)
         setIncomingCallOn(data.roomId)
-    })
+    }
+    
+    // after declining incoming calls;
+    const incomingCallDeclined = () => {
+        setIncomingCallModalOpen(!incomingCallModalOpen)
+        socket.emit("call-declined", data)
+    }
 
     const endCall = () => {
         console.log('called for call end');
-        router.push('/chat')
+        setVideoCallOngoing(false)
+        // socket.emit("call-ended")
     }
 
     const handleAttachmentChanges = (event: any, fileType: string) => {
@@ -214,7 +231,7 @@ const Chat = () => {
     }
 
     const sendMediaFiles = async () => {
-        if ( currentUserBlockedReceiver ) {
+        if (currentUserBlockedReceiver) {
             toast.error('unblock first to continue')
             return;
         }
@@ -227,7 +244,7 @@ const Chat = () => {
             }
             const files = await sendMediaFilesAsMessage(docToSend);
             setShowAttachments(false)
-    
+
             files?.forEach((file: string) => {
                 const messageDoc = {
                     typeOfMessage: currentlySelectedAttachmentType,
@@ -557,6 +574,13 @@ const Chat = () => {
                         </div>
                     </div>}
                 <Toaster />
+                <IncomingCallModal
+                    data={dataFromIncomingCall}
+                    afterAccepting={incomingCallAccepted}
+                    afterDeclining={incomingCallDeclined}
+                    isModalOpen={incomingCallModalOpen}
+                    setModalOpen={setIncomingCallModalOpen}
+                />
                 <ConfimationModalWithDialogue
                     afterConfirmation={reportOneUser}
                     isModalOpen={modalOpen}
@@ -572,10 +596,17 @@ const Chat = () => {
                 />
             </div> :
             (
-                videoCallOngoing && 
-                <VideoCall roomID={roomId} callerRoomId={incomingCallOn} rejectCall={endCall} />
+                videoCallOngoing &&
+                <VideoCall 
+                roomID={roomId} 
+                callerRoomId={incomingCallOn} 
+                rejectCall={endCall} 
+                currentUserName={user?.userName} 
+                callTo={seller?.userName} 
+                data={dataFromIncomingCall}
+                />
             )
     )
 }
 
-export default Chat
+export default Chat;

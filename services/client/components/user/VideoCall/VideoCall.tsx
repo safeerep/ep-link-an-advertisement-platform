@@ -1,10 +1,8 @@
 "use client"
 import React, { useEffect, useRef } from 'react'
-import { ZIM } from "zego-zim-web";
-import { ZegoUIKitPrebuilt } from '@zegocloud/zego-uikit-prebuilt'
 
-
-const VideoCall = ({ roomID, callerRoomId, rejectCall }: {roomID: string, callerRoomId: string, rejectCall?: any}) => {
+const VideoCall = ({ roomID, callerRoomId, rejectCall, currentUserName, callTo = '', data }:
+    { roomID: string, callerRoomId: string, rejectCall?: any, currentUserName?: string, callTo?: string, data?: any }) => {
     const containerRef = useRef<HTMLDivElement>(null);
 
     useEffect(() => {
@@ -14,35 +12,49 @@ const VideoCall = ({ roomID, callerRoomId, rejectCall }: {roomID: string, caller
     }, [roomID]);
 
     const meeting = async (element: any) => {
-        // give your' appid and serverSecret;
-        const appID = 954938289;
-        const serverSecret = "038030dcd5637db0a420ed6d4e06e9f7";
-        const safeRoomID: string = callerRoomId? callerRoomId: roomID;
-        const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
-            appID,
-            serverSecret,
-            safeRoomID,
-            Date.now().toString(),
-            "ep-private"
-            );
-        const zp = ZegoUIKitPrebuilt.create(kitToken);
+        if (typeof window !== 'undefined') {
+            try {
+                const { ZegoUIKitPrebuilt } = await import('@zegocloud/zego-uikit-prebuilt');
+                const appID = 954938289;
+                const serverSecret = "038030dcd5637db0a420ed6d4e06e9f7";
+                const safeRoomID: string = callerRoomId ? callerRoomId : roomID;
+                const kitToken = ZegoUIKitPrebuilt.generateKitTokenForTest(
+                    appID,
+                    serverSecret,
+                    safeRoomID,
+                    Date.now().toString(),
+                    currentUserName
+                );
+                const zp = ZegoUIKitPrebuilt.create(kitToken);
+                // zp.addPlugins({ ZIM })
+        
+                zp.joinRoom({
+                    container: element,
+                    scenario: {
+                        mode: ZegoUIKitPrebuilt.OneONoneCall
+                    },
+                    showPreJoinView: false,
+                    onLeaveRoom() {
+                        rejectCall()
+                    },
+                    onReturnToHomeScreenClicked() {
+                        rejectCall()
+                    },
+        
+                });
+            } catch (error) {
+                alert(`something went wrong during importing ui kit zego`)
+            }
+        } else {
+            alert(`we can't use ui kit in ssr`);
+        }
 
-        zp.joinRoom({
-            container: element,
-            scenario: {
-                mode: ZegoUIKitPrebuilt.OneONoneCall
-              },
-            showPreJoinView: callerRoomId? true: false,
-            onLeaveRoom() {
-                rejectCall()
-            },
-        });
     };
 
 
     return (
-        <div ref={containerRef} className='h-4/5 w-full'></div>
+        <div ref={containerRef} className='h-3/4 w-full'></div>
     )
 }
 
-export default VideoCall
+export default VideoCall;
