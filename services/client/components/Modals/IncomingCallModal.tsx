@@ -1,13 +1,11 @@
-"use client"
-import { useState } from "react";
+import React from 'react'
 import { Toaster } from 'react-hot-toast';
 
-export default function Home({ isModalOpen, setModalOpen, afterAccepting, afterDeclining }: 
-  { isModalOpen: boolean, setModalOpen: any, afterAccepting: any, afterDeclining: any }) {
-const [ open, setOpen] = useState(true)
+const IncomingCallModal = ({ isModalOpen, setModalOpen, afterAccepting, afterDeclining, data }: 
+    { isModalOpen: boolean, setModalOpen: any, afterAccepting: any, afterDeclining: any, data: any }) => {
   return (
     <>
-      {open && (
+      {isModalOpen && (
         <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
           <div className="relative w-auto my-6 shadow-lg mx-auto max-w-sm">
             <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
@@ -31,7 +29,7 @@ const [ open, setOpen] = useState(true)
               {/* body */}
 
               <div className="relative px-12 flex-auto">
-                <p className="font-bold text-lg p-5">safeer is calling...</p>
+                <p className="font-bold text-lg p-5">{data?.from} is calling...</p>
               </div>
               {/*footer*/}
 
@@ -41,7 +39,7 @@ const [ open, setOpen] = useState(true)
                   type="button"
                   onClick={(e) => {
                     e.preventDefault()
-                    afterDeclining();
+                    afterDeclining(data);
                   }}
                 >
                   Decline
@@ -49,7 +47,7 @@ const [ open, setOpen] = useState(true)
                 <button
                   onClick={(e) => {
                     e.preventDefault();
-                    afterAccepting()
+                    afterAccepting(data)
                   }}
                   className="bg-green-600 text-white active:bg-slate-950 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                   type="submit"
@@ -63,6 +61,7 @@ const [ open, setOpen] = useState(true)
       )}
       <Toaster />
     </>
-
-  );
+  )
 }
+
+export default IncomingCallModal
