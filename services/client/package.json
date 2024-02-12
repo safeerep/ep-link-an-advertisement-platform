@@ -17,6 +17,7 @@
     "@mui/material": "^5.15.6",
     "@reduxjs/toolkit": "^2.0.1",
     "@types/socket.io-client": "^3.0.0",
+    "@zegocloud/zego-uikit-prebuilt": "^1.10.2",
     "axios": "^1.6.2",
     "dotenv": "^16.4.1",
     "emoji-mart": "^5.5.2",

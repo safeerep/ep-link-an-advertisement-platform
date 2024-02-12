@@ -40,11 +40,6 @@ const Chat = () => {
     const [showTyping, setShowTyping] = useState(false)
     const [videoCallOngoing, setVideoCallOngoing] = useState(false)
     const [initiateCall, setInitiateCall] = useState(false)
-    const [callerName, setCallerName] = useState('')
-    const [receiverName, setReceiverName] = useState('')
-    const [callerId, setCallerId] = useState('')
-    const [receiverId, setReceiverId] = useState('')
-    const [signalData, setSignalData] = useState(null)
     const [newMessages, setNewMessages] = useState<any>([])
     const inputRef = useRef<HTMLInputElement | null>(null)
     const roomId = useSelector((state: RootState) => state?.user?.data?.chatroom?._id)
@@ -163,24 +158,18 @@ const Chat = () => {
     // this function calls onthe time when user presses video call button
     // at that point of time the chat page will hide and video call page will shows
     const handleVideoCall = () => {
-        if (videoCallOngoing) toast.error(`You can't have multiple calls at a time`)
-        else {
-            setInitiateCall(true)
-            setReceiverName(seller ? seller.userName : 'User')
-            setCallerId(userId)
-            setCallerName(user?.userName)
-            setReceiverId(seller?._id)
-            setVideoCallOngoing(!videoCallOngoing)
-        }
+        setVideoCallOngoing(true)
+        socket.emit('call-user', ({
+            from: user?.userName,
+            fromUserId: user?._id,
+            to: seller?._id,
+        }))
     }
 
     // its the time when user is active and user getting calls;
     // at that point of time, video call page will shows;
     socket?.on("calling-user", (data: any) => {
-        setCallerName(data?.from)
-        setCallerId(data.fromUserId)
-        setSignalData(data.signalData)
-        setVideoCallOngoing(true);
+        setVideoCallOngoing(true)
     })
 
     const handleAttachmentChanges = (event: any, fileType: string) => {
@@ -574,19 +563,10 @@ const Chat = () => {
                     fileType={currentlySelectedAttachmentType}
                 />
             </div> :
-            <VideoCall
-                fromUserId={callerId}
-                videoCallOngoing={videoCallOngoing}
-                endVideoCall={setVideoCallOngoing}
-                receiverName={receiverName}
-                setReceiverName={setReceiverName}
-                callerName={callerName}
-                setCallerName={setCallerName}
-                to={receiverId}
-                startCall={initiateCall}
-                signal={signalData}
-                chatPageSocket={socket}
-            />
+            (
+                videoCallOngoing && 
+                <VideoCall roomID={roomId} />
+            )
     )
 }
 
