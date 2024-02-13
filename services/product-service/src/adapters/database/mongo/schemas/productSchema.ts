@@ -25,6 +25,10 @@ const ProductsSchema: Schema = new Schema({
   categoryName: {
     type: String
   },
+  location: {
+    type: String,
+    required: true
+  },
   status: {
     type: Boolean,
     required: true,
