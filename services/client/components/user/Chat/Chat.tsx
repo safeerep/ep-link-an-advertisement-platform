@@ -159,6 +159,8 @@ const Chat = () => {
         }
     }
 
+    // call related socket events starting;
+
     // this function calls onthe time when user presses video call button
     // at that point of time the chat page will hide and video call page will shows
     const handleVideoCall = () => {
@@ -173,9 +175,11 @@ const Chat = () => {
 
     // its the time when user is active and user getting calls;
     // at that point of time, video call page will shows;
+    const ringtone = new Audio('ringtone.mp3')
     socket?.on("calling-user", (data: any) => {
         setDataFromIncomingCall(data)
         setIncomingCallModalOpen(!incomingCallModalOpen)
+        ringtone.play()
     })
     
     // after accepting incoming calls;
@@ -183,19 +187,26 @@ const Chat = () => {
         setIncomingCallModalOpen(!incomingCallModalOpen)
         setVideoCallOngoing(true)
         setIncomingCallOn(data.roomId)
+        ringtone.pause();
+        ringtone.currentTime = 0;
     }
     
     // after declining incoming calls;
     const incomingCallDeclined = () => {
         setIncomingCallModalOpen(!incomingCallModalOpen)
         socket.emit("call-declined", data)
+        ringtone.pause();
+        ringtone.currentTime = 0;
     }
 
-    const endCall = () => {
+    // after clicking button for end call;
+    const endCall = (data: any) => {
         console.log('called for call end');
         setVideoCallOngoing(false)
-        // socket.emit("call-ended")
+        socket.emit("call-ended", data)
     }
+
+    // call related socket events ended here;
 
     const handleAttachmentChanges = (event: any, fileType: string) => {
         const files = event.target.files;
