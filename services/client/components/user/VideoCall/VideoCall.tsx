@@ -35,10 +35,10 @@ const VideoCall = ({ roomID, callerRoomId, rejectCall, currentUserName, callTo =
                     },
                     showPreJoinView: false,
                     onLeaveRoom() {
-                        rejectCall()
+                        rejectCall(data)
                     },
                     onReturnToHomeScreenClicked() {
-                        rejectCall()
+                        rejectCall(data)
                     },
         
                 });
