@@ -36,6 +36,7 @@ const Chat = () => {
     const scrollContainerRef = useRef<HTMLDivElement | null>(null);
     const [message, setMessage] = useState('')
     const [dataFromIncomingCall, setDataFromIncomingCall] = useState(null)
+    const [ringtone, setRingtone] = useState<HTMLAudioElement | null>(null);
     const [showEmojis, setShowEmojis] = useState(false)
     const [isDropdownOpen, setIsDropdownOpen] = useState(false)
     const [isFileAttachDropdownOpen, setIsFileAttachDropdownOpen] = useState(false)
@@ -173,23 +174,35 @@ const Chat = () => {
         }))
     }
 
+    useEffect(() => {
+        const ringtone = new Audio('ringtone.mp3')
+        setRingtone(ringtone)
+    }, [])
     // its the time when user is active and user getting calls;
     // at that point of time, video call page will shows;
-    const ringtone = new Audio('ringtone.mp3')
+    
     socket?.on("calling-user", (data: any) => {
         setDataFromIncomingCall(data)
         setIncomingCallModalOpen(!incomingCallModalOpen)
-        ringtone.play()
+        if (ringtone) {
+            ringtone.play()
+        }
     })
 
     // event from backend on when receiver declined
     socket?.on("receiver-declined", (data: any) => {
+        console.log(`yes receiver declined`);
+        
         setVideoCallOngoing(false)
+        window.location.reload()
     })
-
+    
     // on call end;
     socket?.on("call-ended", (data: any) => {
         setVideoCallOngoing(false)
+        if (data.fromUserId === user?._id) {
+            window.location.reload()
+        }
     })
     
     // after accepting incoming calls;
@@ -197,16 +210,21 @@ const Chat = () => {
         setIncomingCallModalOpen(!incomingCallModalOpen)
         setVideoCallOngoing(true)
         setIncomingCallOn(data.roomId)
-        ringtone.pause();
-        ringtone.currentTime = 0;
+        if (ringtone) {
+            ringtone.pause();
+            ringtone.currentTime = 0;
+        }
     }
     
     // after declining incoming calls;
-    const incomingCallDeclined = () => {
-        setIncomingCallModalOpen(!incomingCallModalOpen)
+    const incomingCallDeclined = (data: any) => {
+        setIncomingCallModalOpen(false)
         socket.emit("call-declined", data)
-        ringtone.pause();
-        ringtone.currentTime = 0;
+        router.push('/chat')
+        if (ringtone) {
+            ringtone.pause();
+            ringtone.currentTime = 0;
+        }
     }
 
     // after clicking button for end call;
