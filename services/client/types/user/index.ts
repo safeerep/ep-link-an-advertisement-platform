@@ -37,6 +37,7 @@ export type User = {
         policy: 'annual' | 'monthly';
         takenOn?: Date;
     };
+    subscriptionAmount?: number;
     createdAt: Date;
     updatedAt: Date;
 };

@@ -411,18 +411,19 @@ export const addProduct = createAsyncThunk(`/user/add-product`, async ({ product
     try {
         const formData = new FormData();
 
-        // Append standard fields
+        // appending standard fields
         formData.append('categoryName', productDetails.categoryName);
         formData.append('productName', productDetails.productName);
         formData.append('description', productDetails.description);
         formData.append('price', productDetails.price);
+        formData.append('location', productDetails.location);
 
-        // Append images
+        // appending images
         productDetails.images.forEach((imageFile: any) => {
             formData.append('images', imageFile);
         });
 
-        // Serialize complex fields
+        // serializing complex fields
         formData.append('inputFields', JSON.stringify(productDetails.inputFields));
         formData.append('checkBoxes', JSON.stringify(productDetails.checkBoxes));
         formData.append('radioButtons', JSON.stringify(productDetails.radioButtons));
