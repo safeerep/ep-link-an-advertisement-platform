@@ -12,7 +12,6 @@ export default ( dependencies: any) => {
     } = dependencies;
 
     const addProduct = async ( req: Request, res: Response) => {
-
         try {
             // first we are going to validate the data
             console.log('body',req.body);

@@ -8,7 +8,7 @@ const productValidationSchema = Yup.object().shape({
   images: Yup.array()
     .of(Yup.string().nullable())
     .min(4, 'At least four images should be selected'),
-  
+  location: Yup.string().required('location is not included in the data submitted')
 });
 
 export default productValidationSchema;
