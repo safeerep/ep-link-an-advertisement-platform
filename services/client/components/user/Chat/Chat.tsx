@@ -181,6 +181,16 @@ const Chat = () => {
         setIncomingCallModalOpen(!incomingCallModalOpen)
         ringtone.play()
     })
+
+    // event from backend on when receiver declined
+    socket?.on("receiver-declined", (data: any) => {
+        setVideoCallOngoing(false)
+    })
+
+    // on call end;
+    socket?.on("call-ended", (data: any) => {
+        setVideoCallOngoing(false)
+    })
     
     // after accepting incoming calls;
     const incomingCallAccepted = (data: any) => {
