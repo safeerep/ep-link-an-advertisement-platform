@@ -38,28 +38,31 @@ export const handleSocketEvents = ( socket: Socket) => {
 
     // call related events starting
 
-    socket.on("call-user", (data) => {
+    socket.on("call-user", async (data) => {
         console.log('call user in backend');
         console.log(data);   
-        socket.to(data?.to).emit("calling-user", data)      
+        const obj = {
+            chatRoomId: data.roomId, 
+            senderId: data.fromUserId, 
+            message: ""
+        }
+        const isBlocked: boolean | any = await checkIsReceiverBlockedController(obj);
+        if (!isBlocked) {
+            socket.to(data?.to).emit("calling-user", data)      
+        }
     })
 
-    socket.on('call-accepted', (data) => {
-        console.log(`call accepted `);
+    socket.on('call-declined', (data) => {
+        console.log(`call declined by receiver`);
         console.log(data);        
-        socket.in(data.to).emit("receiver-accepted", data.signalData);
+        socket.to(data.fromUserId).emit("receiver-declined", data);
     });
     
-    socket.on("call-rejected", (data) => {
-        console.log("call rejected");
+    socket.on("call-ended", (data) => {
+        console.log("call ended");
         console.log(data);
-        socket.to(data?.to).emit("call-rejected", data)      
-    })
-
-    socket.on("call-cancelled", (data) => {
-        console.log('call rejected');
-        console.log(data);
-        socket.to(data?.to).emit("call-cancelled", data)      
+        socket.to(data?.to).emit("call-ended", data)      
+        socket.to(data?.fromUserId).emit("call-ended", data)      
     })
 
     // call related events ending
