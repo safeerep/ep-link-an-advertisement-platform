@@ -16,6 +16,7 @@ import { Toaster } from 'react-hot-toast'
 import addProductValidationSchema from '@/models/validationSchemas/user/addProductSchema'
 import { Skeleton } from '@mui/material'
 import { AppDispatch, RootState } from '@/store/store'
+import { Country, State, City } from 'country-state-city'
 
 const EditProduct = () => {
     const [imageUrls, setImageUrls] = useState<Array<string | null>>(new Array(8).fill(null));
@@ -29,6 +30,15 @@ const EditProduct = () => {
     const [priceError, setPriceError] = useState<any>(null);
     const [descriptionError, setDescriptionError] = useState<any>(null);
     const [imagesError, setImagesError] = useState<any>(null);
+    const [countryError, setCountryError] = useState<any>(null);
+    const [stateError, setStateError] = useState<any>(null);
+    const [cityError, setCityError] = useState<any>(null);
+    const countries = Country.getAllCountries()
+    let [selectedCountry, setSelectedCountry] = useState('');
+    let [states, setStates] = useState<any[]>([]);
+    let [selectedState, setSelectedState] = useState('');
+    let [cities, setCities] = useState<any[]>([]);
+    let [selectedCity, setSelectedCity] = useState('');
 
     const dispatch: AppDispatch = useDispatch()
     const router = useRouter();
@@ -53,6 +63,15 @@ const EditProduct = () => {
             setImageUrls([...currentProduct?.images]);
         }
     }, [categories, currentProduct]);
+
+    useEffect(() => {
+        if ( currentProduct?.location ) {
+            const location: string[] = currentProduct?.location.split(',');
+            setSelectedCountry(location[0])
+            setSelectedState(location[1])
+            setSelectedCity(location[2])
+        }
+    }, [currentProduct?.location, dispatch])
 
 
 
@@ -107,6 +126,23 @@ const EditProduct = () => {
         }));
     };
 
+    const handleCountrySelect = (countryName: string) => {
+        const selectedCountry = countries.filter((country) => {
+            return countryName === country.name;
+        })
+        
+        const statesInCountry = State.getStatesOfCountry(selectedCountry[0].isoCode);
+        setStates(statesInCountry)
+    };
+    const handleSelectState = (stateName: string) => {
+        const selectedState = states.filter((state) => {
+            return stateName === state.name;
+        })
+
+        const cities = City.getCitiesOfState(selectedState[0].countryCode, selectedState[0].isoCode);
+        setCities(cities);
+    };
+
     const handleFormSubmit = async (values: any) => {
 
         setProductNameError(null)
@@ -114,6 +150,9 @@ const EditProduct = () => {
         setCategoryNameError(null)
         setPriceError(null)
         setImagesError(null)
+        setCountryError(null)
+        setStateError(null)
+        setCityError(null)
         try {
             const {
                 categoryName,
@@ -185,6 +224,9 @@ const EditProduct = () => {
                 if (fieldErrors?.categoryName) setCategoryNameError(fieldErrors?.categoryName)
                 if (fieldErrors?.price) setPriceError(fieldErrors?.price)
                 if (fieldErrors?.images) setImagesError(fieldErrors?.images)
+                if (fieldErrors?.country) setCountryError(fieldErrors?.country)
+                if (fieldErrors?.state) setStateError(fieldErrors?.state)
+                if (fieldErrors?.city) setCityError(fieldErrors?.city)
             } else {
                 console.log('Validation error:', err);
             }
@@ -278,6 +320,84 @@ const EditProduct = () => {
                             </div>
                             {priceError && <div className='text-red-600'>{priceError}</div>}
                         </div>
+
+                        <div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 w-full gap-4 px-2">
+                            <div>
+                                <label htmlFor="country" className="block text-md font-semibold text-gray-600">Country</label>
+                                <Field
+                                    name="country"
+                                    className="p-2 border  w-full rounded-md bg-light"
+                                    as="select"
+                                    defaultValue=''
+                                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                                        const currentlySelectedCountry = e.target.value;
+                                        setSelectedCountry(currentlySelectedCountry);
+                                        handleCountrySelect(currentlySelectedCountry);
+                                    }}
+                                >
+                                    <option value={selectedCountry}>{selectedCountry}</option>
+                                    {countries?.length > 0 &&
+                                        countries.map((country: any) => (
+                                            <option key={country.name}
+                                                value={country.name}>
+                                                {country.name}
+                                            </option>
+                                        ))
+                                    }
+                                </Field>
+                                {countryError && <div className='text-red-600'>{countryError}</div>}
+                            </div>
+                            <div>
+                                <label htmlFor="state" className="block text-md font-semibold text-gray-600">State</label>
+                                <Field
+                                    name="state"
+                                    className="p-2 border  w-full rounded-md bg-light"
+                                    as="select"
+                                    defaultValue=''
+                                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                                        const currentlyselectedState = e.target.value;
+                                        setSelectedState(currentlyselectedState)
+                                        handleSelectState(currentlyselectedState)
+                                    }}
+                                >
+                                    <option value={selectedState}>{selectedState}</option>
+                                    {states?.length > 0 &&
+                                        states.map((state: any) => (
+                                            <option key={state.name}
+                                                value={state.name}>
+                                                {state.name}
+                                            </option>
+                                        ))
+                                    }
+                                </Field>
+                                {stateError && <div className='text-red-600'>{stateError}</div>}
+                            </div>
+                            <div>
+                                <label htmlFor="city" className="block text-md font-semibold text-gray-600">Nearest City</label>
+                                <Field
+                                    name="city"
+                                    className="p-2 border  w-full rounded-md bg-light"
+                                    as="select"
+                                    defaultValue=''
+                                    onChange={(e: React.ChangeEvent<HTMLSelectElement>) => {
+                                        const currentlyselectedCity = e.target.value;
+                                        setSelectedCity(currentlyselectedCity)
+                                    }}
+                                >
+                                    <option value={selectedCity}>{selectedCity}</option>
+                                    {cities?.length > 0 &&
+                                        cities.map((city: any) => (
+                                            <option key={city.name}
+                                                value={city.name}>
+                                                {city.name}
+                                            </option>
+                                        ))
+                                    }
+                                </Field>
+                                { cityError && <div className='text-red-600'>{cityError}</div>}
+                            </div>
+                        </div>
+
                         {/* dynamic fields starting */}
 
                         {(currentCategory?.inputFields?.length > 0) &&

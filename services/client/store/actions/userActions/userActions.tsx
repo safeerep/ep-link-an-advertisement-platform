@@ -306,7 +306,7 @@ export const getFollowingList = createAsyncThunk('/user/get-following-list',
 
 export const addToFavourites = createAsyncThunk('/user/add-to-favourites', async (productId: string) => {
     try {
-        const response = await axios.patch(`${PRODUCT_SERVICE_BASE_URL}/add-to-favourites`, {productId}, {
+        const response = await axios.patch(`${PRODUCT_SERVICE_BASE_URL}/add-to-favourites`, { productId }, {
             headers: { "Content-Type": "application/json" },
             withCredentials: true
         })
@@ -324,7 +324,7 @@ export const addToFavourites = createAsyncThunk('/user/add-to-favourites', async
 
 export const removeFromFavourites = createAsyncThunk('/user/remove-from-favourites', async (productId: string) => {
     try {
-        const response = await axios.patch(`${PRODUCT_SERVICE_BASE_URL}/remove-from-favourites`, {productId}, {
+        const response = await axios.patch(`${PRODUCT_SERVICE_BASE_URL}/remove-from-favourites`, { productId }, {
             headers: { "Content-Type": "application/json" },
             withCredentials: true
         })
@@ -498,8 +498,8 @@ export const editProduct = createAsyncThunk('/user/edit-product', async ({ produ
 });
 
 export const getProducts = createAsyncThunk(`/user/get-products`,
-    async ( { searchQuery, page}: { searchQuery?: string, page?: number}) => {
-        try { 
+    async ({ searchQuery, page }: { searchQuery?: string, page?: number, locations?: string[], categories?: string[] }) => {
+        try {
             const response = await axios.get(`${PRODUCT_SERVICE_BASE_URL}/get-all-products?search=${searchQuery}&page=${page}`, {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true
@@ -937,3 +937,16 @@ export const sendMediaFilesAsMessage = async (filesToSend: any) => {
         return false;
     }
 }
+
+export const getMostlyActiveLocations = createAsyncThunk('/user/fetching-locations', async () => {
+    try {
+        const response = await axios.get(`${PRODUCT_SERVICE_BASE_URL}/get-most-active-locations`, {
+            headers: { "Content-Type": "application/json" },
+            withCredentials: true
+        })
+        return response.data;
+    } catch (error: any) {
+        console.log(`something went wrong during fetching top ten active locations ${error}`);
+        return error?.response.data;
+    }
+})

@@ -206,9 +206,9 @@ const userSlice = createSlice({
             .addCase(getProducts.fulfilled, (state: UserState, action) => {
                 state.loading = false;
                 state.data = { ...state.data, ...action.payload};
-                if (action.payload.currentPage === 1) {
+                if (action.payload?.currentPage === 1) {
                     state.data.products = action.payload.products;
-                } else if (action.payload.currentPage > 1) {
+                } else if (action.payload?.currentPage > 1) {
                     state.data.products = [ state.data.products, ...action.payload.products]
                 }
                 state.error = null;
@@ -224,9 +224,9 @@ const userSlice = createSlice({
             .addCase(getCurrentUserProducts.fulfilled, (state: UserState, action) => {
                 state.loading = false;
                 state.data = { ...state.data, ...action.payload }
-                if ( action.payload.currentPage === 1 ) {
+                if ( action.payload?.currentPage === 1 ) {
                     state.data.products = action.payload.products;
-                } else if (action.payload.currentPage > 1) {
+                } else if (action.payload?.currentPage > 1) {
                     state.data.products = [ ...state.data.products, ...action.payload.products]
                 }
                 state.error = null;
@@ -442,9 +442,9 @@ const userSlice = createSlice({
             .addCase(getFavouriteProducts.fulfilled, (state: UserState, action) => {
                 state.loading = false;
                 state.data = { ...state.data, ...action.payload }
-                if ( action.payload.currentPage === 1) {
+                if ( action.payload?.currentPage === 1) {
                     state.data.products = action.payload.products;
-                } else if ( action.payload.currentPage > 1) {
+                } else if ( action.payload?.currentPage > 1) {
                     state.data.products = [ state.data.products , ...action.payload.products]
                 }
                 state.error = null;

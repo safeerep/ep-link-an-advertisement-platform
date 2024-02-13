@@ -29,13 +29,13 @@ const AddProduct = () => {
     const [countryError, setCountryError] = useState<any>(null);
     const [stateError, setStateError] = useState<any>(null);
     const [cityError, setCityError] = useState<any>(null);
-    const [advertisementModalOpen, setAdvertisementModalOpen] = useState<boolean>(false);
     const countries = Country.getAllCountries()
     let [selectedCountry, setSelectedCountry] = useState('');
     let [states, setStates] = useState<any[]>([]);
     let [selectedState, setSelectedState] = useState('');
     let [cities, setCities] = useState<any[]>([]);
     let [selectedCity, setSelectedCity] = useState('');
+    const [advertisementModalOpen, setAdvertisementModalOpen] = useState<boolean>(false);
 
     const dispatch: any = useDispatch()
     const router = useRouter();
