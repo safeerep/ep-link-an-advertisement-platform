@@ -39,6 +39,7 @@ const Subscribers = () => {
                         <th className="border text-center">Policy Chosen</th>
                         <th className="border text-center">Taken On</th>
                         <th className="border text-center">Validity upto</th>
+                        <th className="border text-center">Amount paid</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -56,6 +57,7 @@ const Subscribers = () => {
                                             : new Date(user.subscription.takenOn).setMonth(new Date(user.subscription.takenOn).getMonth() + 1).toLocaleString()
                                         : ''}
                                 </td>
+                                <td className="border text-center">{user?.subscriptionAmount}</td>
                             </tr>
                         ))
                     }

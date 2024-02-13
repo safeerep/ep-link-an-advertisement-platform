@@ -15,7 +15,10 @@ const addProductValidationSchema = Yup.object({
                 const nonNullValues = array.filter((element: any) => element !== null);
                 return nonNullValues.length >= 4;
             }
-        )
+        ),
+    country: Yup.string().required('Please select your country'),
+    state: Yup.string().required('Please select your state'),
+    city: Yup.string().required('Please select your city'),
 });
 
 export default addProductValidationSchema;
