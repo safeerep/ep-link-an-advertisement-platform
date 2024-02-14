@@ -498,7 +498,9 @@ export const editProduct = createAsyncThunk('/user/edit-product', async ({ produ
 });
 
 export const getProducts = createAsyncThunk(`/user/get-products`,
-    async ({ searchQuery, page, locations, categories }: { searchQuery?: string, page?: number, locations?: string, categories?: string }) => {
+
+async ({ searchQuery, page, locations, categories }: { searchQuery?: string, page?: number, locations?: string, categories?: string }) => {
+        console.log(`going to request with categories`, categories);
         try {
             const response = await 
             axios.get(`${PRODUCT_SERVICE_BASE_URL}/get-all-products?search=${searchQuery}&page=${page}&locations=${locations}&categories=${categories}`, {
