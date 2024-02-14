@@ -40,7 +40,7 @@ export default ( dependencies: any) => {
                 .then((products: any) => {
                     if (products) {
                         console.log(`current seller' products are`, products);
-                        return res.json({ success: true, seller, products, message: "successfully fetched seller' products"})
+                        return res.json({ success: true, seller, ...products, message: "successfully fetched seller' products"})
                     }
                 })
                 .catch((err: any) => {
