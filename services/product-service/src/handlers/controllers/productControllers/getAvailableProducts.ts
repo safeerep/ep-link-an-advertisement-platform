@@ -14,7 +14,11 @@ export default ( dependencies: any) => {
             const page = req.query.page;
             // also we may get search query to find products accordingly;
             const search = req.query.search || '';
-            const categories = typeof req.query?.categories === 'string' ? req.query.categories.split(',') : [];
+            const categories = typeof req.query?.categories === 'string' ? req.query.categories.split(',')
+            .filter((categoryName: string) => {
+                return categoryName !== ''
+            })
+             : [];
             // console.log(locations);
             console.log(categories);
             const products = await productUsecases
