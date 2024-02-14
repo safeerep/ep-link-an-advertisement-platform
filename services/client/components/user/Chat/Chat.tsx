@@ -12,6 +12,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import {
     authRequired,
     blockSeller,
+    changeMessageStatusAsRead,
     changeRoom,
     getCurrentUserChatRooms,
     reportSeller,
@@ -97,18 +98,21 @@ const Chat = () => {
             typeOfMessage: 'text',
             message: message,
             chatRoomId: roomId,
-            senderId: user?._id
+            senderId: user?._id,
+            receiverId: seller?._id
         }
+        setMessage('')
         socket.emit("send-message", messageDoc)
-        dispatch(saveNewMessage(messageDoc))
     }
 
     socket.on("show-message", (data: any) => {
         console.log('----show message received in front end-----------');
         data.showToReceiver = true;
         setNewMessages((newMessages: any) => [...newMessages, data]);
-        setMessage('')
         scrollToBottom()
+        if ( data.senderId === user?._id) {
+            dispatch(saveNewMessage(data))
+        }
     })
 
     socket.on("receiver-blocked", (data: any) => {
@@ -116,6 +120,16 @@ const Chat = () => {
         console.log(data);
         data.showToReceiver = false;
         setNewMessages((newMessages: any) => [...newMessages, data]);
+        dispatch(saveNewMessage(data))
+    })
+
+    socket.on("show-notification", (data: any) => {
+        if (roomId !== data.chatRoomId && userId !== data.senderId) {
+            dispatch(getCurrentUserChatRooms())
+        }
+        else if ( roomId === data.chatRoomId) {
+            changeMessageStatusAsRead({roomId, userId: user?._id})
+        }
     })
 
     socket.on("typing", ({ chatRoomId, senderId }: { chatRoomId: string, senderId: string }) => {
@@ -191,7 +205,7 @@ const Chat = () => {
 
     // event from backend on when receiver declined
     socket?.on("receiver-declined", (data: any) => {
-        console.log(`yes receiver declined`);
+        console.log('yes receiver declined');
         
         setVideoCallOngoing(false)
         window.location.reload()
@@ -289,7 +303,8 @@ const Chat = () => {
                     typeOfMessage: currentlySelectedAttachmentType,
                     message: file,
                     chatRoomId: roomId,
-                    senderId: user?._id
+                    senderId: user?._id,
+                    receiverId: seller?._id
                 }
                 socket.emit("send-message", messageDoc)
             })

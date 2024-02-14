@@ -748,6 +748,25 @@ export const saveNewMessage = createAsyncThunk('/user/new-message',
     }
 )
 
+export const changeMessageStatusAsRead = createAsyncThunk('/user/change-message-status',
+    async ( {roomId, userId}: {roomId: string, userId: string}) => {
+        console.log('called to save new message');
+
+        try {
+            const response = await axios.patch(`${CHAT_SERVICE_BASE_URL}/change-message-status`, { roomId, userId}, {
+                headers: { "Content-Type": "application/json" },
+                withCredentials: true
+            })
+            if (response?.data) {
+                return response.data;
+            }
+        } catch (error: any) {
+            console.log(`an error happened during changing message status ${error}`);
+            return error?.response?.data;
+        }
+    }
+)
+
 export const makeProductAvailable = createAsyncThunk('/user/make-product-available',
     async (productId: string) => {
         try {
