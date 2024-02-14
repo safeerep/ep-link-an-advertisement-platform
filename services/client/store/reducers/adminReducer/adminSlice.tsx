@@ -165,12 +165,16 @@ const adminSlice = createSlice({
                 state.loading = true;
             })
             .addCase(getProducts.fulfilled, (state: AdminState, action) => {
+                console.log(`ok here`);
+                
                 state.loading = false;
-                if (action.payload.currentPage === 1) {
+                state.loading = false;
+                if (state.data) {
                     state.data.products = action.payload?.products;
                 }
-                else if (action.payload.currentPage > 1) {
-                    state.data.products = [state.data.products, ...action.payload.products]
+                else {
+                    state.data = {};
+                    state.data.products = action.payload?.products;
                 }
                 state.error = null;
             })
@@ -228,10 +232,12 @@ const adminSlice = createSlice({
             })
             .addCase(getReportedProducts.fulfilled, (state: AdminState, action) => {
                 state.loading = false;
-                if (action.payload.currentPage === 1) {
-                    state.data.reportedProducts = action.payload.reportedProducts;
-                } else if (action.payload.currentPage > 1) {
-                    state.data.reportedProducts = [...state.data?.reportedProducts, action.payload?.reportedProducts]
+                if (state.data) {
+                    state.data.reportedProducts = action.payload?.products;
+                }
+                else {
+                    state.data = {};
+                    state.data.reportedProducts = action.payload?.products;
                 }
                 state.error = null;
             })
