@@ -30,7 +30,9 @@ const Home = () => {
   }, [dispatch])
 
   useEffect(() => {
-    dispatch(getProducts({ searchQuery, page, locations: selectedLocations, categories: selectedCategories }))
+    const currentlySelectedCategories = selectedCategories.join(',')
+    const currentlySelectedLocations = selectedCategories.join(',')
+    dispatch(getProducts({ searchQuery, page, locations: currentlySelectedLocations, categories: currentlySelectedCategories }))
   }, [searchQuery, selectedLocations, selectedCategories])
 
   const handleCategorySelectionChanges = (categoryName: string) => {
@@ -67,7 +69,9 @@ const Home = () => {
   const totalPages = Math.ceil(totalProducts / 8);
 
   const handlePageChanges = (pageNumber: number) => {
-    dispatch(getProducts({ searchQuery, page: pageNumber, locations: selectedLocations, categories: selectedCategories }))
+    const currentlySelectedCategories = selectedCategories.join(',')
+    const currentlySelectedLocations = selectedCategories.join(',')
+    dispatch(getProducts({ searchQuery, page: pageNumber, locations: currentlySelectedLocations, categories: currentlySelectedCategories }))
   }
 
   return (

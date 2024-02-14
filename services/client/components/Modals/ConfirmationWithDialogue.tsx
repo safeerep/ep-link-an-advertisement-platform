@@ -13,7 +13,12 @@ const ConfimationModalWithDialogue = ({ isModalOpen, setModalOpen, notesHead, af
             setNoteIsNull(true)
         }
         else {
-            afterConfirmation(note)
+            if (!note.trim()) {
+                setNoteIsNull(true)
+            }
+            else {
+                afterConfirmation(note)
+            }
         }
     }
     return (
