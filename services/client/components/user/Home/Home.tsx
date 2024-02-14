@@ -89,19 +89,19 @@ const Home = () => {
             categories?.length &&
             <div className="flex justify-start px-12 gap-2 my-4">
               {categories?.map((category: any) => (
-                <button
+                <div
                   onClick={() => {
                     handleCategorySelectionChanges(category?.categoryName)
                   }}
-                  type="button" >
+                   >
                   <span className={`${selectedCategories?.includes(category?.categoryName)?' bg-cyan-100': 'bg-white'} border border-black p-2 rounded`}>{category?.categoryName}</span>
-                </button>
+                </div>
               ))}
             </div>
           }
 
           {/* here we will show maximum of top ten locations*/}
-          {
+          {/* {
             locations?.length &&
             <span className='text-2xl font-semibold text-black px-12 '>Frequently Active Locations</span>
           }
@@ -109,16 +109,16 @@ const Home = () => {
             locations?.length &&
             <div className="flex justify-start px-12 gap-2 my-4">
               {locations?.map((location: string) => (
-                <button
+                <div
                   onClick={() => {
                     handleLocationSelectionChanges(location)
                   }}
-                  type="button" >
+                   >
                   <span className={`${selectedLocations?.includes(location)?'bg-cyan-100': 'bg-white' } border border-black p-2 rounded`}>{location}</span>
-                </button>
+                </div>
               ))}
             </div>
-          }
+          } */}
 
           <div className="flex justify-center ">
             <span className='font-semibold '>looking for to sell your product?
