@@ -14,8 +14,11 @@ export default ( dependencies: any) => {
             const page = req.query.page;
             // also we may get search query to find products accordingly;
             const search = req.query.search || '';
+            const categories = typeof req.query?.categories === 'string' ? req.query.categories.split(',') : [];
+            // console.log(locations);
+            console.log(categories);
             const products = await productUsecases
-            .getAvailableProducts_usecase(dependencies).interactor(page, search)
+            .getAvailableProducts_usecase(dependencies).interactor(page, search, categories)
             return res.json({ success: true, currentPage: page, ...products, message: 'successfully retrieved available products'})
         } catch (error) {
             console.log(`something went wrong during fetching the products ${error}`);

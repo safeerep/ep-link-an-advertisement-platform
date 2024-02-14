@@ -12,6 +12,7 @@ import getCountOfProductsAddedByUser from "./getCountOfProductsAddedByUser"
 import reportProduct from "./reportProduct"
 import getReportedProducts from "./getReportedProducts"
 import changeProductStatus from "./changeProductStatus"
+import getMostActiveTenLocations from "./getMostActiveTenLocations"
 
 export default ( dependencies: any) => {
     return {
@@ -28,6 +29,7 @@ export default ( dependencies: any) => {
         getCountOfProductsAddedByUserController: getCountOfProductsAddedByUser(dependencies),
         reportProductController: reportProduct(dependencies),
         getReportedProductsController: getReportedProducts(dependencies),
-        changeProductStatusController: changeProductStatus(dependencies)
+        changeProductStatusController: changeProductStatus(dependencies),
+        getMostActiveTenLocationsController: getMostActiveTenLocations(dependencies)
     }
 }

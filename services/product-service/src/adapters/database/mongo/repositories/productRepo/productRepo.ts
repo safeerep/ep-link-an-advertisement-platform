@@ -72,7 +72,6 @@ export const changeProductStatus = async (productId: string, status: boolean): P
     }
 }
 
-
 // to make the product status as sold out
 export const makeProductAsSoldOut = async (productId: string): Promise<IProduct | boolean> => {
     try {
@@ -102,16 +101,16 @@ export const makeProductAsAvailable = async (productId: string): Promise<IProduc
 }
 
 // to get products
-export const getProducts = async ( skip: number, limit: number) => {
+export const getProducts = async (skip: number, limit: number) => {
     try {
-        const products = await ProductsCollection.find().skip( skip).limit(limit)
+        const products = await ProductsCollection.find().skip(skip).limit(limit)
         const countOfProducts = await ProductsCollection.countDocuments()
         if (products) {
-            return { 
-                products, 
+            return {
+                products,
                 countOfProducts
             }
-        } 
+        }
         return false;
     } catch (error) {
         console.log(`something went wrong during fetching all the products ${error}`);
@@ -119,44 +118,88 @@ export const getProducts = async ( skip: number, limit: number) => {
     }
 }
 
-
 // to get available products
-export const getAvailableProducts = async ( skip: number, limit: number, searchQuery: string) => {
-    try {
-        const products = await ProductsCollection.find({
-            status: true,
-            categoryWiseStatus: true,
-            soldOut: false,
-            $or: [
-                { productName: { $regex: searchQuery, $options: "i" }},
-                { categoryName: { $regex: searchQuery, $options: "i" }},
-                { description: { $regex: searchQuery, $options: "i" }}
-            ]
-        }).skip(skip).limit(limit)
+export const getAvailableProducts =
+    async (skip: number, limit: number, searchQuery: string, categories: string[]) => {
+        try {
+            // starting 
+            if (categories?.length) {
+                const products = await ProductsCollection.find({
+                    status: true,
+                    categoryWiseStatus: true,
+                    soldOut: false,
+                    $or: [
+                        { productName: { $regex: searchQuery, $options: "i" } },
+                        { categoryName: { $regex: searchQuery, $options: "i" } },
+                        { description: { $regex: searchQuery, $options: "i" } },
+                        { location: { $regex: searchQuery, $options: "i" }},
+                    ],
+                    categoryName: {
+                        $in: categories
+                    }
+                }).skip(skip).limit(limit)
+                console.log(products);
 
-        const countOfProducts = await ProductsCollection.countDocuments({
-            status: true,
-            categoryWiseStatus: true,
-            soldOut: false,
-            $or: [
-                { productName: { $regex: searchQuery, $options: "i" }},
-                { categoryName: { $regex: searchQuery, $options: "i" }},
-                { description: { $regex: searchQuery, $options: "i" }}
-            ]
-        })
-        
-        if (products) {
-            return { 
-                products,
-                countOfProducts
+                const countOfProducts = await ProductsCollection.countDocuments({
+                    status: true,
+                    categoryWiseStatus: true,
+                    soldOut: false,
+                    $or: [
+                        { productName: { $regex: searchQuery, $options: "i" } },
+                        { categoryName: { $regex: searchQuery, $options: "i" } },
+                        { description: { $regex: searchQuery, $options: "i" } },
+                        { location: { $regex: searchQuery, $options: "i" }},
+                    ],
+                    categoryName: {
+                        $in: categories
+                    }
+                })
+
+                if (products) {
+                    return {
+                        products,
+                        countOfProducts
+                    }
+                }
+            } else {
+                const products = await ProductsCollection.find({
+                    status: true,
+                    categoryWiseStatus: true,
+                    soldOut: false,
+                    $or: [
+                        { productName: { $regex: searchQuery, $options: "i" }},
+                        { categoryName: { $regex: searchQuery, $options: "i" }},
+                        { description: { $regex: searchQuery, $options: "i" }},
+                        { location: { $regex: searchQuery, $options: "i" }},
+                    ]
+                }).skip(skip).limit(limit)
+    
+                const countOfProducts = await ProductsCollection.countDocuments({
+                    status: true,
+                    categoryWiseStatus: true,
+                    soldOut: false,
+                    $or: [
+                        { productName: { $regex: searchQuery, $options: "i" }},
+                        { categoryName: { $regex: searchQuery, $options: "i" }},
+                        { description: { $regex: searchQuery, $options: "i" }},
+                        { location: { $regex: searchQuery, $options: "i" }},
+
+                    ]
+                })
+    
+                if (products) {
+                    return { 
+                        products,
+                        countOfProducts
+                    }
+                }
             }
+            return false;
+        } catch (error) {
+            console.log(`something went wrong during fetching all the available products ${error}`);
+            return false;
         }
-        return false;
-    } catch (error) {
-        console.log(`something went wrong during fetching all the available products ${error}`);
-        return false;
     }
-}
 
 // to get a specific user's products only
 export const getCurrentUserProducts = async (userId: string, skip: number, limit: number) => {
@@ -173,11 +216,11 @@ export const getCurrentUserProducts = async (userId: string, skip: number, limit
             categoryWiseStatus: true
         })
         if (products) {
-            return { 
-                products ,
+            return {
+                products,
                 countOfProducts
             }
-        } 
+        }
         return false;
     } catch (error) {
         console.log(`something went wrong during fetching all the products of current user ${error}`);
@@ -195,7 +238,7 @@ export const getCurrentUserProductsCount = async (userId: string) => {
 
         if (productsCount) {
             return productsCount;
-        } 
+        }
         return false;
     } catch (error) {
         console.log(`something went wrong during fetching all the products of current user ${error}`);
@@ -264,7 +307,7 @@ export const getReportedProducts = async (skip: number, limit: number) => {
             }
         ])
 
-        const totalNumberOfReports =  await ReportedProductsCollection.aggregate([
+        const totalNumberOfReports = await ReportedProductsCollection.aggregate([
             {
                 $unwind: "$reports"
             },
@@ -274,20 +317,51 @@ export const getReportedProducts = async (skip: number, limit: number) => {
                     totalCount: { $sum: 1 }
                 }
             }
-            
+
         ])
 
         const countOfReportedProducts = totalNumberOfReports.length > 0 ? totalNumberOfReports[0].totalCount : 0;
 
         if (reportedProducts) {
-            return { 
+            return {
                 products: reportedProducts,
                 countOfReportedProducts
             };
-        } 
+        }
         return false;
     } catch (error) {
         console.log(`something went wrong during fetching all the reported products ${error}`);
+        return false;
+    }
+}
+
+export const getMostActiveTenLocations = async (): Promise<string[] | boolean> => {
+    try {
+        const locations = await ProductsCollection.aggregate([
+            {
+                $group: {
+                    _id: "$location",
+                    count: { $sum: 1 }
+                }
+            }, {
+                $sort: {
+                    count: -1
+                }
+            }, {
+                $limit: 10
+            }, {
+                $project: {
+                    _id: 0,
+                    location: "$_id"
+                }
+            }
+        ])
+        const mostActiveLocations = locations.map((item) => item.location);
+        console.log(mostActiveLocations);
+
+        return mostActiveLocations;
+    } catch (error) {
+        console.log(`something went wrong during taking most active ten locations ${error}`);
         return false;
     }
 }
