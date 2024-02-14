@@ -1,47 +1,9 @@
 import { Request, Response } from "express";
 
-export default (dependencies: any) => {
-    const {
-        usecases: {
-            messageUsecases,
-            chatRoomUsecases,
-            userUsecases
-        }
-    } = dependencies;
-
+export default () => {
+    
     const saveNewFileAsMessage = async (req: Request, res: Response) => {
         // we will get roomId, message, senderId as req.body;
-        try {
-            // we have to get current user id and receiver Id;
-            // current userId will be the sender Id ;
-            // with the chatRoomId and current userId, we have to find receiver Id
-            const { chatRoomId, senderId } = req.body;
-            const users = await chatRoomUsecases
-                .getUsersIdFromChatroom_usecase(dependencies).interactor(chatRoomId)
-
-            try {
-                const receiverId = users.filter((userId: string) => String(userId) !== senderId)
-                const chatRoomDocument = await chatRoomUsecases
-                    .checkUserOnlineStatusInARoom_usecase(dependencies).interactor(chatRoomId, String(receiverId))
-
-                if (chatRoomDocument) {
-                    const receiver = chatRoomDocument.users?.find((user: any) => String(user.userId) === String(receiverId));
-                    if (receiver?.onlineStatus) {
-                        // its the condition that the receiver is currently online and active in this room;
-                        req.body.unRead = false;
-                    }
-                }
-
-            } catch (error) {
-                console.log(`something went wrong during checking receiver is in online or not`);
-                return res.status(503).json({ success: false, message: "something went wrong" })
-            }
-
-        } catch (error) {
-            console.log(`something went wrong during taking users ids from a chatroom ${error}`);
-            return res.status(503).json({ success: false, message: "something went wrong" })
-        }
-
         try {
             // now we are taking all the files from request;
             const messageFiles = Array.isArray(req?.files) ?
@@ -50,28 +12,11 @@ export default (dependencies: any) => {
                 })
                 : [];
 
-            // here we are going to save each file as seperate messages;
-            for (let fileLocation of messageFiles) {
-                const newMessage = await messageUsecases
-                    .saveNewMessage_usecase(dependencies).interactor({
-                        ...req.body,
-                        message: fileLocation
-                    })
-
-                if (!newMessage) {
-                    return res.json({ success: false, message: 'something went wrong during saving one message'})
-                }
+            if (!messageFiles) {
+                return res.json({ success: false, message: "there is no files in request;" })
             }
-            const { chatRoomId, typeOfMessage } = req.body;
-            const updatedLatestMessage = await chatRoomUsecases
-                .updateLatestMessage_usecase(dependencies).interactor( chatRoomId, typeOfMessage)
-            if (updatedLatestMessage) {
-                return res.json({ success: true, files: messageFiles, message: 'successfully saved new messages' })
-            }
-            else {
-                console.log('something went wrong during updating latest message');
-                return res.json({ success: true, files: messageFiles ,message: "something went wrong during updating latest message" })
-            }
+            // here we will return the files which we saved in s3-bucket;
+            return res.json({ success: true, files: messageFiles, message: 'successfully saved files to send message' })
         } catch (error) {
             console.log(`something went wrong during taking all files from request ${error}`);
             return res.status(503).json({ success: false, message: "something went wrong" })

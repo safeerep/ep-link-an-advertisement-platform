@@ -74,6 +74,10 @@ export const makeMessageStatusAsRead =
                 },
                 chatRoomId: chatRoomId,
                 unRead: true
+            }, {
+                $set: {
+                    unRead: false
+                }
             }
         )
         return true;

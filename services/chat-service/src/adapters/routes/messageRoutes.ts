@@ -7,12 +7,15 @@ const messageRoutes = ( dependencies: any) => {
     const router = Router();
     const {
         saveMessageController,
-        saveMediafilesController
+        saveMediafilesController,
+        changeMessagesStatusAsReadController
     } = messageControllers(dependencies);
 
     router.use(verifyUserAuth)
     router.post('/save-message', saveMessageController)
     router.post('/save-media-files', upload.array("files"), saveMediafilesController)
+    router.patch('/change-message-status', changeMessagesStatusAsReadController)
+    
     return router;
 }
 

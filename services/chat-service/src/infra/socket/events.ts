@@ -1,11 +1,16 @@
 import { Socket } from "socket.io"
 // importing controller to check receiver is blocked or not the sender;
 import userControllers from "../../handlers/contollers/userControllers"
+import messageControllers from "../../handlers/contollers/messageControllers"
 import dependencies from "../../utils/config/dependencies"
 
 const {
     checkIsReceiverBlockedController
 } = userControllers(dependencies)
+
+const {
+    changeMessageStatusOnEventController
+} = messageControllers(dependencies)
 
 export const handleSocketEvents = ( socket: Socket) => {
 
@@ -14,7 +19,8 @@ export const handleSocketEvents = ( socket: Socket) => {
         console.log('user joined in user room');
     })
 
-    socket.on("join-room", ( roomId: string, userId: string) => {
+    socket.on("join-room", async ( roomId: string, userId: string) => {
+        await changeMessageStatusOnEventController( userId, roomId)
         socket.join(roomId)
         console.log('user joined in a room');
     })
@@ -25,6 +31,7 @@ export const handleSocketEvents = ( socket: Socket) => {
         const isBlocked: boolean | any = await checkIsReceiverBlockedController(data);
         if (!isBlocked) {
             socket.in(data?.chatRoomId).emit("show-message", data)
+            socket.to(data?.receiverId).emit("show-notification", data)
         }
         else {
             socket.in(data?.senderId).emit("receiver-blocked", data)
