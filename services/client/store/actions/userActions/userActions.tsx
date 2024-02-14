@@ -462,6 +462,7 @@ export const editProduct = createAsyncThunk('/user/edit-product', async ({ produ
         formData.append('productName', productDetails.productName);
         formData.append('description', productDetails.description);
         formData.append('price', productDetails.price);
+        formData.append('location', productDetails.location);
 
         // appending images
         Object.keys(productDetails?.images).forEach((key) => {
