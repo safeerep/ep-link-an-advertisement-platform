@@ -4,7 +4,7 @@ import { BsArrowLeft, BsArrowRight, BsChevronDoubleLeft, BsChevronDoubleRight } 
 const Pagination = ({ totalPages, currentPage, passPageToComponent }: { totalPages: number, currentPage: number, passPageToComponent: any }) => {
     return (
         <>
-            <div className="flex gap-2 justify-end px-20 mb-2">
+            <div className="flex gap-2 justify-end px-20 m-2">
                 {
                     currentPage > 2 &&
                     <div

@@ -19,8 +19,8 @@ const Subscribers = () => {
     const searchQuery = useSearchParams();
     const page: number = Number(searchQuery.get("page")) || 1;
 
-    const subscribers: User[] = useSelector((state: RootState) => state?.user?.data?.subscribers)
-    const totalSubscribers = useSelector((state: RootState) => state?.user?.data?.countOfSubscribers)
+    const subscribers: User[] = useSelector((state: RootState) => state?.admin?.data?.subscribers)
+    const totalSubscribers = useSelector((state: RootState) => state?.admin?.data?.countOfSubscribers)
     const totalPages = Math.ceil(totalSubscribers/10);
 
     const handlePageChanges = (pageNumber: number) => {
@@ -38,25 +38,18 @@ const Subscribers = () => {
                         <th className="border text-center">Email</th>
                         <th className="border text-center">Policy Chosen</th>
                         <th className="border text-center">Taken On</th>
-                        <th className="border text-center">Validity upto</th>
                         <th className="border text-center">Amount paid</th>
                     </tr>
                 </thead>
                 <tbody>
                     {
-                        subscribers &&
-                        subscribers.map((user: User) => (
+                        subscribers?.length < 1? '':
+                    
+                        subscribers?.map((user: User) => (
                             <tr key={user?._id}>
                                 <td className="border text-center">{user?.email}</td>
                                 <td className="border text-center">{user?.subscription?.policy}</td>
-                                <td className="border text-center">{user?.subscription?.takenOn ? new Date(user.subscription.takenOn).toLocaleDateString() : ''}</td>
-                                <td className="border text-center">
-                                    {user?.subscription?.takenOn
-                                        ? user?.subscription?.policy === 'annual'
-                                            ? new Date(user.subscription.takenOn).setFullYear(new Date(user.subscription.takenOn).getFullYear() + 1).toLocaleString()
-                                            : new Date(user.subscription.takenOn).setMonth(new Date(user.subscription.takenOn).getMonth() + 1).toLocaleString()
-                                        : ''}
-                                </td>
+                                <td className="border text-center">{user?.subscription?.takenOn ? new Date(user.subscription.takenOn).toLocaleDateString() : ''}</td> 
                                 <td className="border text-center">{user?.subscriptionAmount}</td>
                             </tr>
                         ))
@@ -68,4 +61,4 @@ const Subscribers = () => {
     )
 }
 
-export default Subscribers
+export default Subscribers;
