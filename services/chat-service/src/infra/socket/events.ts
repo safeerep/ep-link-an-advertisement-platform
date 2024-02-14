@@ -19,8 +19,10 @@ export const handleSocketEvents = ( socket: Socket) => {
         console.log('user joined in user room');
     })
 
-    socket.on("join-room", async ( roomId: string, userId: string) => {
+    socket.on("join-room", async ( prevRoom: string, roomId: string, userId: string) => {
         await changeMessageStatusOnEventController( userId, roomId)
+        socket.leave(prevRoom)
+        console.log(`prev room `, prevRoom);
         socket.join(roomId)
         console.log('user joined in a room');
     })
