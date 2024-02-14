@@ -11,7 +11,8 @@ import {
   updateProduct,
   reportProduct,
   getReportedProducts,
-  getCurrentUserProductsCount
+  getCurrentUserProductsCount,
+  getMostActiveTenLocations
 } from "./productRepo";
 
 export default {
@@ -27,5 +28,6 @@ export default {
     makeProductAsAvailable,
     reportProduct,
     getReportedProducts,
-    getCurrentUserProductsCount
+    getCurrentUserProductsCount,
+    getMostActiveTenLocations
 }

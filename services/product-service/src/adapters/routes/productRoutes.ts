@@ -20,7 +20,8 @@ export default ( dependencies: any) => {
         getCountOfProductsAddedByUserController,
         reportProductController,
         getReportedProductsController,
-        changeProductStatusController
+        changeProductStatusController,
+        getMostActiveTenLocationsController
     }
     = productControllers(dependencies)
     const {
@@ -32,6 +33,8 @@ export default ( dependencies: any) => {
 
     // fetching products for user
     router.get('/get-all-products', getAvailableProductsController)
+    // to fetch most active ten locations to show to user;
+    router.get('/get-most-active-locations', getMostActiveTenLocationsController )
     // fetching products for admin
     router.get('/admin/get-all-products', verifyAdminAuth, getProductsController)
     // fetching reported products only for admin
@@ -76,6 +79,7 @@ export default ( dependencies: any) => {
     router.get('/get-favourite-products', getFavouriteProductsController)
     // to fetch all the favourite products of current user to decide how to show products' heart icon;
     router.get('/get-all-favourite-products', getAllTheFavouritesController)
+    
 
     return router;
 } 

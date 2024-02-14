@@ -11,6 +11,7 @@ import { changeProductStatus_usecase } from "./changeProductStatus"
 import { reportProduct_usecase } from "./reportProduct"
 import { getReportedProducts_usecase } from "./getReportedProducts"
 import { getCurrentUserProductsCount_usecase } from "./getCountOfProductsAddedByUser"
+import { getMostActiveTenLocations_usecase } from "./getMostActiveLocations"
 
 
 export default {
@@ -26,5 +27,6 @@ export default {
     reportProduct_usecase,
     getReportedProducts_usecase,
     changeProductStatus_usecase,
-    getCurrentUserProductsCount_usecase
+    getCurrentUserProductsCount_usecase,
+    getMostActiveTenLocations_usecase
 }
