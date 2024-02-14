@@ -46,6 +46,7 @@ const Chat = () => {
     const [showTyping, setShowTyping] = useState(false)
     const [videoCallOngoing, setVideoCallOngoing] = useState(false)
     const [incomingCallOn, setIncomingCallOn] = useState('')
+    const [prevRoom, setPrevRoom] = useState('')
     const [newMessages, setNewMessages] = useState<any>([])
     const inputRef = useRef<HTMLInputElement | null>(null)
     const roomId = useSelector((state: RootState) => state?.user?.data?.chatroom?._id)
@@ -66,6 +67,7 @@ const Chat = () => {
     }, [userId])
 
     const handleRoomChange = (userId: string) => {
+        setPrevRoom(roomId)
         console.log('clicked for room change');
         dispatch(changeRoom({ userId, currentRoomId: roomId }))
     }
@@ -85,7 +87,7 @@ const Chat = () => {
     };
 
     useEffect(() => {
-        socket.emit("join-room", roomId, user?._id)
+        socket.emit("join-room", prevRoom, roomId, user?._id)
         setNewMessages([])
         setMessage('')
         scrollToBottom()
