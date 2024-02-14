@@ -65,7 +65,7 @@ const EditProduct = () => {
     }, [categories, currentProduct]);
 
     useEffect(() => {
-        if ( currentProduct?.location ) {
+        if (currentProduct?.location) {
             const location: string[] = currentProduct?.location.split(',');
             setSelectedCountry(location[0])
             setSelectedState(location[1])
@@ -130,7 +130,7 @@ const EditProduct = () => {
         const selectedCountry = countries.filter((country) => {
             return countryName === country.name;
         })
-        
+
         const statesInCountry = State.getStatesOfCountry(selectedCountry[0].isoCode);
         setStates(statesInCountry)
     };
@@ -179,6 +179,9 @@ const EditProduct = () => {
                     description,
                     price: Number(price) || null,
                     images: imageUrls,
+                    country: selectedCountry,
+                    state: selectedState,
+                    city: selectedCity
                 },
                 { abortEarly: false });
 
@@ -204,7 +207,8 @@ const EditProduct = () => {
                 ...productObj,
                 inputFields: { ...inputFields },
                 checkBoxes: { ...checkBoxes },
-                radioButtons: { ...selectedOptionsInRadioButton }
+                radioButtons: { ...selectedOptionsInRadioButton },
+                location: `${selectedCountry}, ${selectedState}, ${selectedCity}`
             };
             console.log(`yes its final`, productDetails);
             dispatch(editProduct({ productId, productDetails, router }))
@@ -394,7 +398,7 @@ const EditProduct = () => {
                                         ))
                                     }
                                 </Field>
-                                { cityError && <div className='text-red-600'>{cityError}</div>}
+                                {cityError && <div className='text-red-600'>{cityError}</div>}
                             </div>
                         </div>
 
