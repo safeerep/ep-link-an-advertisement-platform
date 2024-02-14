@@ -4,7 +4,6 @@ import { useDispatch, useSelector } from 'react-redux'
 import { checkAuth, getAllCategories, getProducts } from '@/store/actions/userActions/userActions'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Navbar from '../../shared/userSide/Navbar'
-import Banner from '../Banner'
 import Link from 'next/link'
 import Posts from '../Posts'
 import { Footer } from '@/components'
@@ -15,8 +14,7 @@ import Pagination from '@/components/shared/common/Pagination'
 const Home = () => {
   const dispatch: AppDispatch = useDispatch();
   const router = useRouter();
-  const [selectedCategories, setSelectedCategories] = useState<string[]>([''])
-  const [selectedLocations, setSelectedLocations] = useState<string[]>([''])
+  const [selectedCategories, setSelectedCategories] = useState<string[]>([])
 
 
   const searchParams = useSearchParams();
@@ -33,9 +31,11 @@ const Home = () => {
     const currentlySelectedCategories = selectedCategories.join(',')
     const currentlySelectedLocations = selectedCategories.join(',')
     dispatch(getProducts({ searchQuery, page, locations: currentlySelectedLocations, categories: currentlySelectedCategories }))
-  }, [searchQuery, selectedLocations, selectedCategories])
+  }, [searchQuery])
 
   const handleCategorySelectionChanges = (categoryName: string) => {
+    console.log('category change called', categoryName);
+
     const currentlySelectedCategories: string[] = selectedCategories;
     if (currentlySelectedCategories?.includes(categoryName)) {
       const updatedCategories: string[] = currentlySelectedCategories?.filter((category: string) => {
@@ -47,24 +47,18 @@ const Home = () => {
       currentlySelectedCategories.push(categoryName);
       setSelectedCategories(currentlySelectedCategories)
     }
-  }
-
-  const handleLocationSelectionChanges = (locationName: string) => {
-    const currentlySelectedLocations: string[] = selectedLocations;
-    if (currentlySelectedLocations?.includes(locationName)) {
-      const updatedLocations: string[] = currentlySelectedLocations?.filter((location: string) => {
-        return locationName !== location;
-      })
-      setSelectedLocations(updatedLocations)
-    } else {
-      currentlySelectedLocations.push(locationName);
-      setSelectedLocations(currentlySelectedLocations)
+    if (currentlySelectedCategories.length) {
+      const currentlySelectedCategoriesString = currentlySelectedCategories.join(',')
+      const currentlySelectedLocations = currentlySelectedCategories.join(',')
+      dispatch(getProducts({ searchQuery, page, locations: currentlySelectedLocations, categories: currentlySelectedCategoriesString }))
     }
-
+    else {
+      const currentlySelectedLocations = currentlySelectedCategories.join(',')
+      dispatch(getProducts({ searchQuery, page, locations: currentlySelectedLocations, categories: '' }))
+    }
   }
 
   const categories = useSelector((state: RootState) => state.user?.data?.categories)
-  const locations = useSelector((state: RootState) => state.user?.data?.locations)
   const totalProducts = useSelector((state: RootState) => state.user.data?.countOfProducts)
   const totalPages = Math.ceil(totalProducts / 8);
 
@@ -83,43 +77,32 @@ const Home = () => {
         <div className='w-full bg-slate-200 h-auto pt-20'>
           {
             categories?.length &&
-            <span className='text-2xl font-semibold text-black px-12 '>Categories to Shop</span>
+            <span className='text-2xl font-semibold text-black px-12 '>Categories to Explore</span>
           }
           {
+            selectedCategories.length > 0 &&
+            <div
+              onClick={() => {
+                setSelectedCategories([])
+                dispatch(getProducts({ searchQuery, page, locations: '', categories: '' }))
+              }}
+              className='text-sm font-semibold text-black px-12 cursor-pointer '>Remove Filters</div>}
+          {
             categories?.length &&
-            <div className="flex justify-start px-12 gap-2 my-4">
+            <div className="flex flex-wrap justify-start px-12 gap-2 my-4">
               {categories?.map((category: any) => (
                 <div
+                  className='cursor-pointer my-2'
+                  key={category.categoryName}
                   onClick={() => {
                     handleCategorySelectionChanges(category?.categoryName)
                   }}
-                   >
-                  <span className={`${selectedCategories?.includes(category?.categoryName)?' bg-cyan-100': 'bg-white'} border border-black p-2 rounded`}>{category?.categoryName}</span>
+                >
+                  <span className={`${selectedCategories?.includes(category?.categoryName) ? ' bg-cyan-100' : 'bg-white'} border border-black p-2 rounded`}>{category?.categoryName}</span>
                 </div>
               ))}
             </div>
           }
-
-          {/* here we will show maximum of top ten locations*/}
-          {/* {
-            locations?.length &&
-            <span className='text-2xl font-semibold text-black px-12 '>Frequently Active Locations</span>
-          }
-          {
-            locations?.length &&
-            <div className="flex justify-start px-12 gap-2 my-4">
-              {locations?.map((location: string) => (
-                <div
-                  onClick={() => {
-                    handleLocationSelectionChanges(location)
-                  }}
-                   >
-                  <span className={`${selectedLocations?.includes(location)?'bg-cyan-100': 'bg-white' } border border-black p-2 rounded`}>{location}</span>
-                </div>
-              ))}
-            </div>
-          } */}
-
           <div className="flex justify-center ">
             <span className='font-semibold '>looking for to sell your product?
               <Link href='/add-product' className='text-blue-600'>addproduct</Link>
@@ -139,4 +122,4 @@ const Home = () => {
   )
 }
 
-export default Home
+export default Home;

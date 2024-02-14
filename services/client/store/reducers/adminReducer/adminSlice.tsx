@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import { createSlice } from "@reduxjs/toolkit";
 import { AdminState } from "@/types/admin";
 import {
     login,
@@ -15,7 +15,7 @@ import {
     getPremiumPolicies,
     updatePremiumPolicy,
     getReportedUsers,
-    getReportedProducts, 
+    getReportedProducts,
     getSubscribersList
 } from "@/store/actions/adminActions/adminActions";
 
@@ -81,8 +81,8 @@ const adminSlice = createSlice({
                 state.loading = false;
                 if (action.payload?.currentPage == 1) {
                     state.data.users = action.payload?.users
-                } else if ( action.payload?.currentPage > 1) {
-                    state.data.users = [ ...state.data.users, ...action.payload?.users]
+                } else if (action.payload?.currentPage > 1) {
+                    state.data.users = [...state.data.users, ...action.payload?.users]
                 }
                 state.error = null;
             })
@@ -170,7 +170,7 @@ const adminSlice = createSlice({
                     state.data.products = action.payload?.products;
                 }
                 else if (action.payload.currentPage > 1) {
-                    state.data.products = [ state.data.products, ...action.payload.products]
+                    state.data.products = [state.data.products, ...action.payload.products]
                 }
                 state.error = null;
             })
@@ -210,11 +210,11 @@ const adminSlice = createSlice({
             })
             .addCase(getReportedUsers.fulfilled, (state: AdminState, action) => {
                 state.loading = false;
-                if ( action.payload.currentPage === 1 ) {
+                if (action.payload.currentPage === 1) {
                     state.data.reportedUsers = action.payload.reportedUsers
                 }
                 else if (action.payload.currentPage > 1) {
-                    state.data.reportedUsers = [ ...state.data.reportedUsers, ...action.payload.reportedUsers]
+                    state.data.reportedUsers = [...state.data.reportedUsers, ...action.payload.reportedUsers]
                 }
                 state.error = null;
             })
@@ -228,10 +228,10 @@ const adminSlice = createSlice({
             })
             .addCase(getReportedProducts.fulfilled, (state: AdminState, action) => {
                 state.loading = false;
-                if (action.payload.currentPage === 1 ) {
+                if (action.payload.currentPage === 1) {
                     state.data.reportedProducts = action.payload.reportedProducts;
                 } else if (action.payload.currentPage > 1) {
-                    state.data.reportedProducts = [ ...state.data?.reportedProducts, action.payload?.reportedProducts]
+                    state.data.reportedProducts = [...state.data?.reportedProducts, action.payload?.reportedProducts]
                 }
                 state.error = null;
             })
@@ -245,12 +245,14 @@ const adminSlice = createSlice({
             })
             .addCase(getSubscribersList.fulfilled, (state: AdminState, action) => {
                 state.loading = false;
-                if (action.payload.currentPage == 1) {
-                    state.data.subscribers = action.payload.subscribers;
-                } else if (action.payload.currentPage > 1) {
-                    state.data.subscribers = [ ...state.data.subscribers, ...action.payload?.subscribers]
+                if (state.data) {
+                    state.data.subscribers = action.payload?.subscribers;
                 }
-                state.data = { ...state.data, ...action.payload };
+                else {
+                    state.data = {};
+                    state.data.subscribers = action.payload?.subscribers;
+                }
+                state.data.countOfSubscribers = action.payload?.countOfSubscribers;
                 state.error = null;
             })
             .addCase(getSubscribersList.rejected, (state: AdminState, action) => {
