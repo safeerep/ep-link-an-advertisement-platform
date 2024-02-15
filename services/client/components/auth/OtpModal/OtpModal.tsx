@@ -4,6 +4,8 @@ import { MdClose } from 'react-icons/md'
 import { Formik, Form, Field, ErrorMessage} from 'formik'
 import otpValidationSchema from '@/models/validationSchemas/user/otpSchema';
 import { signUpCredentials } from '@/types/user';
+import { AppDispatch } from '@/store/store';
+import { useDispatch } from 'react-redux';
 
 interface ModalProps {
     isOpen: boolean;
@@ -15,6 +17,7 @@ interface ModalProps {
 }
 
 const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onModalSubmit, userData, modalError, resendOtp}) => {
+  const dispatch: AppDispatch = useDispatch();
 
   const [resendTimer, setResendTimer] = useState(60);
 
@@ -29,7 +32,7 @@ const Modal: React.FC<ModalProps> = ({ isOpen, onClose, onModalSubmit, userData,
     }
 
     return () => clearInterval(intervalId);
-  }, [isOpen]);
+  }, [ dispatch ,isOpen]);
 
     return (
       <>

@@ -91,7 +91,7 @@ const ShowAttachments = ({ isModalOpen, setModalOpen, afterConfirmation, files, 
                       type="application/pdf"
                       className="p-4"
                     >
-                      <p>Your browser doesn't support embedded PDFs. You can still download it.</p>
+                      <p>Your browser doesn&apos;t support embedded PDFs. You can still download it.</p>
                       <a href={URL.createObjectURL(files[main])} target="_blank" rel="noopener noreferrer">Download PDF</a>
                     </object>
                     <div className="flex justify-center gap-1 overflow-x-auto overflow-y-hidden">
@@ -103,7 +103,7 @@ const ShowAttachments = ({ isModalOpen, setModalOpen, afterConfirmation, files, 
                           type="application/pdf"
                           className="p-4"
                         >
-                          <p>Your browser doesn't support embedded PDFs. You can still download it.</p>
+                          <p>Your browser doesn&apos;t support embedded PDFs. You can still download it.</p>
                           <a href={URL.createObjectURL(document)} target="_blank" rel="noopener noreferrer">Download PDF</a>
                         </object>
                       ))}

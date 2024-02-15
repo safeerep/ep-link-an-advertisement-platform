@@ -12,6 +12,7 @@ import { Skeleton } from '@mui/material'
 import { AppDispatch, RootState } from '@/store/store'
 import { User } from '@/types/user'
 import ConfimationModalWithDialogue from '@/components/Modals/ConfirmationWithDialogue'
+import Image from 'next/image'
 
 const Navbar = () => {
   const dispatch: AppDispatch = useDispatch()
@@ -56,10 +57,9 @@ const Navbar = () => {
         }}
         className='cursor-pointer flex justify-center items-center'
         onClick={() => router.push('/')}>
-        <img src="/brand.png"
+        <Image src="/brand.png"
           alt='logo'
-          width={200} height={200}>
-        </img>
+          width={200} height={200} />
       </div>
       <div className='flex items-center pe-10 gap-x-8'>
         <BsSearch

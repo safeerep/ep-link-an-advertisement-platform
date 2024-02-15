@@ -22,7 +22,7 @@ const Signup = () => {
 
     useEffect(() => {
         dispatch(checkAuth(router))
-    }, [])
+    }, [dispatch])
 
     const handleSubmit = (userCredentials: signUpCredentials) => {
         dispatch(sendOtp({ userCredentials, setError, setCredentials, setIsModalOpen}))

@@ -18,7 +18,7 @@ const ForgotPassword = () => {
     }
     useEffect(() => {
         dispatch(checkAuth(router))
-    }, [])
+    }, [ dispatch])
 
     return (
         <>

@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import React from 'react'
 import { Toaster } from 'react-hot-toast';
 
@@ -23,7 +24,7 @@ const IncomingCallModal = ({ isModalOpen, setModalOpen, afterAccepting, afterDec
               <div className="w-full flex justify-center">
 
               <div className="flex justify-center w-40 h-40 rounded-full bg-black">
-                <img className="obj" src="profile.jpg" alt="" />
+                <Image className="obj" src="profile.jpg" alt="" />
               </div>
               </div>
               {/* body */}

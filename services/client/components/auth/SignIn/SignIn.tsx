@@ -22,7 +22,7 @@ const SignIn = () => {
 
     useEffect(() => {
         dispatch(checkAuth(router))
-    }, [])
+    }, [dispatch])
     
     const handleSubmit = (userCredentials: signInCredentials) => {
         dispatch(login({ userCredentials, router, setError}))
