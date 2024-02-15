@@ -29,7 +29,7 @@ const PolicyAdvertisementModal = ({ isModalOpen, setModalOpen }:
 
     useEffect(() => {
         dispatch(getPremiumPolicies())
-    }, [])
+    }, [dispatch])
 
     const policies = useSelector((state: RootState) => state?.user?.data?.policies)
 

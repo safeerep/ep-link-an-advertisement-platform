@@ -22,7 +22,7 @@ const AdminChangePassword = () => {
 
     useEffect(() => {
         dispatch(checkAuth(router))
-    }, [])
+    }, [dispatch])
 
     return (
         <>

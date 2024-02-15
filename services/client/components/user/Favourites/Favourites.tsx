@@ -20,7 +20,7 @@ const Favourites = () => {
     useEffect(() => {
         dispatch(authRequired(router))
         dispatch(getFavouriteProducts(page))
-    }, [])
+    }, [dispatch])
 
     const totalFavouriteProducts = useSelector((state: RootState) => state.user.data?.countOfFavouriteProducts)
     const totalPages = Math.ceil(totalFavouriteProducts / 8);

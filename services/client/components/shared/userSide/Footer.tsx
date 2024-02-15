@@ -1,3 +1,4 @@
+import Image from 'next/image';
 import React from 'react';
 
 const Footer = () => {
@@ -5,12 +6,10 @@ const Footer = () => {
     <>
         <div className="flex flex-wrap p-4 border-t-2 border-black">
           <div className="w-full md:w-1/4 px-4 mb-8 md:mb-0">
-          <img src="/brand.png"
+          <Image src="/brand.png"
           alt='logo'
           width={200} height={200}
-          className='mb-5'>
-            
-        </img>
+          className='mb-5' />
             <ul className="list-none">
               <li>
                 <a href="" className="text-dark text-decoration-none">

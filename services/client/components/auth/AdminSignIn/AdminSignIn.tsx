@@ -17,7 +17,7 @@ const AdminSignIn = () => {
 
     useEffect(() => {
         dispatch(checkAuth(router))
-    }, [])
+    }, [dispatch])
 
     const handleSubmit = ( adminCredentials: signInCredentials) => {
         dispatch(login({ adminCredentials, router, setError}))

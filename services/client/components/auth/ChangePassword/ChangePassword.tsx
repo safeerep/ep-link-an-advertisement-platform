@@ -22,7 +22,7 @@ const ChangePassword = () => {
 
     useEffect(() => {
         dispatch(checkAuth(router))
-    }, [])
+    }, [ dispatch])
 
     return (
         <>

@@ -18,7 +18,7 @@ const AdminForgotPassword = () => {
     }
     useEffect(() => {
         dispatch(checkAuth(router))
-    }, [])
+    }, [dispatch])
 
     return (
         <>

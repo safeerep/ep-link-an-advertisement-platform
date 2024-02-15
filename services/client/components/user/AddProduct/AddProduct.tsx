@@ -425,7 +425,7 @@ const AddProduct = () => {
                             ))}
 
                         {/* dynamic fields ending */}
-                        <h1 className='text-xl block p-4'> Add your product' images</h1>
+                        <h1 className='text-xl block p-4'> Add your product&apos; images</h1>
                         {imagesError && <div className='text-red-600 px-4'>{imagesError}</div>}
                         <div className="flex justify-center mt-4 flex-wrap">
                             <ErrorMessage name="images" component="div" className="error-message" />
