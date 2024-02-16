@@ -10,6 +10,7 @@ import {
 } from '@/store/actions/userActions/userActions'
 import { useDispatch, useSelector } from 'react-redux'
 import { FiUserCheck } from 'react-icons/fi'
+import { GoLocation } from 'react-icons/go'
 import { FaRegFlag } from 'react-icons/fa'
 import { ImPower } from 'react-icons/im'
 import { AiOutlineEdit } from 'react-icons/ai'
@@ -137,7 +138,7 @@ const ProductView = () => {
                             <p>{product?.categoryName}</p>
                             <h1 className="text-3xl font-bold">{product?.productName}</h1>
                             <p className="text-2xl font-bold">&#x20B9; {product?.price} </p>
-                            <span> posted on: {product?.createdAt}</span>
+                            <span> <GoLocation /> { product?.location}</span>
                         </>
 
                     </div>
