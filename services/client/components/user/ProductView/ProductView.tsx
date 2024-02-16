@@ -138,7 +138,7 @@ const ProductView = () => {
                             <p>{product?.categoryName}</p>
                             <h1 className="text-3xl font-bold">{product?.productName}</h1>
                             <p className="text-2xl font-bold">&#x20B9; {product?.price} </p>
-                            <span> <GoLocation /> { product?.location}</span>
+                            <div className=' flex items-center'> <GoLocation /> { product?.location}</div>
                         </>
 
                     </div>
