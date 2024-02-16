@@ -14,13 +14,12 @@ const Favourites = () => {
     const dispatch: AppDispatch = useDispatch();
     const router = useRouter();
 
-    const searchQuery = useSearchParams();
-    const page: number = Number(searchQuery.get('page')) || 1;
+    const page: number = useSelector((state: RootState) => state.user.data?.currentPage) ?? 1;
 
     useEffect(() => {
         dispatch(authRequired(router))
         dispatch(getFavouriteProducts(page))
-    }, [dispatch])
+    }, [])
 
     const totalFavouriteProducts = useSelector((state: RootState) => state.user.data?.countOfFavouriteProducts)
     const totalPages = Math.ceil(totalFavouriteProducts / 8);

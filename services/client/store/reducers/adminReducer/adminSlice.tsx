@@ -84,6 +84,7 @@ const adminSlice = createSlice({
                 } else if (action.payload?.currentPage > 1) {
                     state.data.users = [...state.data.users, ...action.payload?.users]
                 }
+                state.data.currentPage = action.payload?.currentPage;
                 state.error = null;
             })
             .addCase(getAllUsers.rejected, (state: AdminState, action) => {
@@ -122,11 +123,6 @@ const adminSlice = createSlice({
             })
             .addCase(getAllCategories.fulfilled, (state: AdminState, action) => {
                 state.loading = false;
-                if (action.payload?.currentPage === 1) {
-                    state.data.categories = action.payload?.categories;
-                } else if (action.payload?.currentPage > 1) {
-                    state.data.categories = [...state.data.categories, ...action.payload.categories]
-                }
                 state.data = { ...state.data, ...action.payload };
                 state.error = null;
             })
@@ -176,6 +172,7 @@ const adminSlice = createSlice({
                     state.data = {};
                     state.data.products = action.payload?.products;
                 }
+                state.data.currentPage = action.payload?.currentPage;
                 state.error = null;
             })
             .addCase(getProducts.rejected, (state: AdminState, action) => {
@@ -220,6 +217,7 @@ const adminSlice = createSlice({
                 else if (action.payload.currentPage > 1) {
                     state.data.reportedUsers = [...state.data.reportedUsers, ...action.payload.reportedUsers]
                 }
+                state.data.currentPage = action.payload?.currentPage;
                 state.error = null;
             })
             .addCase(getReportedUsers.rejected, (state: AdminState, action) => {
@@ -239,6 +237,7 @@ const adminSlice = createSlice({
                     state.data = {};
                     state.data.reportedProducts = action.payload?.products;
                 }
+                state.data.currentPage = action.payload?.currentPage;
                 state.error = null;
             })
             .addCase(getReportedProducts.rejected, (state: AdminState, action) => {
@@ -258,6 +257,7 @@ const adminSlice = createSlice({
                     state.data = {};
                     state.data.subscribers = action.payload?.subscribers;
                 }
+                state.data.currentPage = action.payload?.currentPage;
                 state.data.countOfSubscribers = action.payload?.countOfSubscribers;
                 state.error = null;
             })

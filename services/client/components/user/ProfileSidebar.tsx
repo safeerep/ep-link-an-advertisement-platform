@@ -5,6 +5,7 @@ import { logout } from '@/store/actions/userActions/userActions'
 import Link from 'next/link';
 import EditProfileModal from '../Modals/EditProfileModal';
 import { AppDispatch, RootState } from '@/store/store';
+import { User } from '@/types/user';
 
 const ProfileSidebar = () => {
     const dispatch: AppDispatch = useDispatch()
@@ -21,8 +22,19 @@ const ProfileSidebar = () => {
         setCurrentlyIn('edit')
         setUpdateProfileModalIsOpen(!updateProfileModalIsOpen)
     }
+    const calculateEndDate = (takenOnDate: Date) => {
+        const endDate = new Date(takenOnDate);
+        endDate.setMonth(endDate.getMonth() + 1);
 
-    const user = useSelector((state: RootState) => state?.user?.data?.userData)
+        return endDate.toLocaleString('en-US', {
+            weekday: 'long',
+            month: 'numeric',
+            day: 'numeric',
+            year: 'numeric'
+        });
+    }
+
+    const user: User = useSelector((state: RootState) => state?.user?.data?.userData)
 
     return (
         <div className="lg:w-1/5 flex flex-col justify-center border-0 border-e-2">
@@ -34,6 +46,20 @@ const ProfileSidebar = () => {
                     style={{ width: '150px', height: '150px' }}
                 />
             </div>
+            {/* starting */}
+            {
+                user?.premiumMember &&
+                <div className="mx-2 p-2">
+                    {
+                        user?.subscription?.takenOn && (
+                            <div className='text-yellow-700 '>
+                                Your premium plan will end on {calculateEndDate(user.subscription.takenOn)}.
+                            </div>
+                        )
+                    }
+                </div>
+            }
+            {/* ending */}
             {/* starting */}
             <div className="flex mx-2 p-2 justify-around">
                 <div
