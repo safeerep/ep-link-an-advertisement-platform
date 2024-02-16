@@ -1,8 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import { HiOutlineHeart, HiHeart } from 'react-icons/hi'
 import { CgMoreO } from 'react-icons/cg'
+import { GoLocation } from 'react-icons/go'
 import {
     addToFavourites,
     getAllFavouriteProducts,
@@ -39,18 +40,18 @@ const Posts = ({ from }: { from: string }) => {
     const handleRemoveFromFavourite = (productId: string) => {
         console.log(`called for remove from favourite. product id is ${productId}`);
         dispatch(removeFromFavourites(productId))
-        if (from === 'favourites') {
+        if (from == 'favourites') {
             dispatch(getFavouriteProducts(page))
         }
     }
 
-    const handleSoldout = (productId: string, index: number) => {
+    const handleSoldout = (productId: string) => {
         setIsDropdownOpen(Array(products?.length).fill(false))
         console.log(`called for making this product status as sold out. product id is ${productId}`)
         dispatch(makeProductSoldOut(productId))
     }
 
-    const handleAvailable = (productId: string, index: number) => {
+    const handleAvailable = (productId: string) => {
         setIsDropdownOpen(Array(products?.length).fill(false))
         console.log(`called for making this product status as sold out. product id is ${productId}`)
         dispatch(makeProductAvailable(productId))
@@ -63,7 +64,7 @@ const Posts = ({ from }: { from: string }) => {
 
     return (
         <>
-            {products?.length > 0 ?
+            {(products && products?.length > 0) ?
                 (<div className="grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 w-full gap-4 my-2 px-12">
                     {
                         products.map((product: Product, index: number) => {
@@ -109,12 +110,12 @@ const Posts = ({ from }: { from: string }) => {
                                                             </button>
                                                             {product?.soldOut ?
                                                                 <button
-                                                                    onClick={() => handleAvailable(product?._id, index)}
+                                                                    onClick={() => handleAvailable(product?._id)}
                                                                     className="block px-4 py-2 text-sm text-red-600">
                                                                     Make it available
                                                                 </button> :
                                                                 <button
-                                                                    onClick={() => handleSoldout(product?._id, index)}
+                                                                    onClick={() => handleSoldout(product?._id)}
                                                                     className="block px-4 py-2 text-sm text-red-600">
                                                                     Sold out
                                                                 </button>}
@@ -129,14 +130,16 @@ const Posts = ({ from }: { from: string }) => {
                                         <p className="font-semibold text-lg text-gray-800 group-hover:text-black">
                                             {product?.productName}
                                         </p>
-                                        <p className="blueberry font-semibold text-gray-800 text-xs">
+                                        <p className="font-semibold text-gray-800 text-xs">
                                             {product?.categoryName}
                                         </p>
-                                        <div className="ordernow flex flex-row justify-between items-center w-full">
-                                            <p className="ordernow-text text-gray-800 font-semibold group-hover:text-black">
+                                        <div className="flex flex-row justify-between items-center w-full">
+                                            <p className=" text-gray-800 font-semibold group-hover:text-black">
                                                 &#x20B9; {product?.price}
                                             </p>
-
+                                            <>
+                                                <GoLocation /> { product?.location}
+                                            </>
                                         </div>
                                     </div>
                                 </div>

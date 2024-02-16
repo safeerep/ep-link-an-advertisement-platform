@@ -11,6 +11,7 @@ export type Product = {
     soldOut: boolean;
     images: string[];
     featured: boolean;
+    location: string;
     reportsOnProduct: {
       reason?: string;
       reportedBy?: string;

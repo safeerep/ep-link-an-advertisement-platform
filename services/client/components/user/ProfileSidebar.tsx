@@ -37,7 +37,7 @@ const ProfileSidebar = () => {
     const user: User = useSelector((state: RootState) => state?.user?.data?.userData)
 
     return (
-        <div className="lg:w-1/5 flex flex-col justify-center border-0 border-e-2">
+        <div className="lg:w-1/5 flex flex-col border-0 border-e-2">
             <div className='w-full flex justify-center'>
                 <img
                     src={user?.profilePhoto}
