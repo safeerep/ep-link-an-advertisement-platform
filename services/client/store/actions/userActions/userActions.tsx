@@ -768,6 +768,21 @@ export const changeMessageStatusAsRead = createAsyncThunk('/user/change-message-
     }
 )
 
+export const getTotalCountOfUnreadMessage = createAsyncThunk('/user/get-total-unread-messages',
+    async () => {
+        try {
+            const response = await axios.get(`${CHAT_SERVICE_BASE_URL}/get-unread-messages-count`, {
+                headers: { "Content-Type": "application/json" },
+                withCredentials: true
+            })
+            return response?.data;
+        } catch (error: any) {
+            console.log(`something went wrong during fetching total count of unread messages ${error}`);
+            return error.response.data;
+        }
+    }
+)
+
 export const makeProductAvailable = createAsyncThunk('/user/make-product-available',
     async (productId: string) => {
         try {

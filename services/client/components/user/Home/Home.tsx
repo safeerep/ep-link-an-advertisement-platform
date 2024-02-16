@@ -71,22 +71,35 @@ const Home = () => {
   return (
     <>
       <div className='mt-[-8px]'>
-        <Navbar />
+        <Navbar from='home' />
       </div>
       <div className='min-h-screen'>
         <div className='w-full bg-slate-200 h-auto pt-20'>
           {
-            categories?.length &&
-            <span className='text-2xl font-semibold text-black px-12 '>Categories to Explore</span>
+            categories?.length > 0 &&
+            (
+              <span className='text-2xl font-semibold text-black px-12 '>
+                Categories to Explore
+              </span>
+            )
           }
           {
-            selectedCategories.length > 0 &&
-            <div
-              onClick={() => {
-                setSelectedCategories([])
-                dispatch(getProducts({ searchQuery, page, locations: '', categories: '' }))
-              }}
-              className='text-sm font-semibold text-black px-12 cursor-pointer '>Remove Filters</div>}
+            selectedCategories.length > 0 ?
+              (
+                <div
+                  onClick={() => {
+                    setSelectedCategories([])
+                    dispatch(getProducts({ searchQuery, page, locations: '', categories: '' }))
+                  }}
+                  className='text-sm font-semibold text-black px-12 cursor-pointer '>Remove Filters
+                </div>
+              ) :
+              (
+                <div className='w-full text-md text-red-600 px-12 flex justify-center'>
+                  sorry for the inconvenience, there is no categories to Explore
+                </div>
+              )
+          }
           {
             categories?.length &&
             <div className="flex flex-wrap justify-start px-12 gap-2 my-4">

@@ -314,6 +314,13 @@ const Chat = () => {
 
     }
 
+    const formatTime = (timeStamp: Date) => {
+        const date = new Date(timeStamp);
+        const hour = date.getHours().toString().padStart(2, '0')
+        const minute = date.getMinutes().toString().padStart(2, '0')
+        return `${hour}: ${minute}`
+    }
+
     return (
         !videoCallOngoing ?
             <div className="fixed flex justify-around gap-2 p-4 h-4/5 w-full">
