@@ -41,13 +41,13 @@ const PremiumPolicy = () => {
                 <div className="relative h-40 bg-blue-100 flex flex-col items-center rounded-md">
                     <div className='w-full flex justify-start p-4 gap-2 items-center'>
                         <GiChessQueen className='ms-4 text-2xl text-yellow-600' />
-                        <span className='text-2xl'>{policies && policies[0]?.policyDuration} Subscription Plan </span>
+                        <span className='text-2xl'>Monthly Subscription Plan </span>
                     </div>
                     <span className='text-xl'>Subscription Amount: {policies && policies[0]?.subscriptionAmount} </span>
                     <div
                         onClick={() => { 
                             setIsModalOpen(!isModalOpen)
-                            setCurrentPolicyDuration(policies && policies[0]?.policyDuration)
+                            setCurrentPolicyDuration('monthly')
                         }}
                         className="absolute top-2 right-2 cursor-pointer">
                         < AiOutlineEdit />
@@ -56,13 +56,13 @@ const PremiumPolicy = () => {
                 <div className="relative h-40 bg-blue-100 flex flex-col items-center rounded-md">
                     <div className='w-full flex justify-start p-4 gap-2 items-center'>
                         <GiChessQueen className='ms-4 text-2xl text-yellow-600' />
-                        <span className='text-2xl'>{policies && policies[1]?.policyDuration} Subscription Plan </span>
+                        <span className='text-2xl'>Annual Subscription Plan </span>
                     </div>
                     <span className='text-xl'>Subscription Amount: {policies && policies[1]?.subscriptionAmount} </span>
                     <div
                         onClick={() => {
                             setIsModalOpen(!isModalOpen)
-                            setCurrentPolicyDuration(policies && policies[1]?.policyDuration)
+                            setCurrentPolicyDuration('annual')
                         }}
                         className="absolute top-2 right-2 cursor-pointer">
                         < AiOutlineEdit />

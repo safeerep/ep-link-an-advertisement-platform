@@ -137,9 +137,9 @@ const Posts = ({ from }: { from: string }) => {
                                             <p className=" text-gray-800 font-semibold group-hover:text-black">
                                                 &#x20B9; {product?.price}
                                             </p>
-                                            <>
-                                                <GoLocation /> { product?.location}
-                                            </>
+                                        </div>
+                                        <div className='flex items-center justify-end'>
+                                            <GoLocation /> {product?.location}
                                         </div>
                                     </div>
                                 </div>
