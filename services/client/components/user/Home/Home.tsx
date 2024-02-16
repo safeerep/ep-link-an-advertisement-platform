@@ -35,28 +35,25 @@ const Home = () => {
 
   const handleCategorySelectionChanges = (categoryName: string) => {
     console.log('category change called', categoryName);
-
-    const currentlySelectedCategories: string[] = selectedCategories;
-    if (currentlySelectedCategories?.includes(categoryName)) {
-      const updatedCategories: string[] = currentlySelectedCategories?.filter((category: string) => {
-        return categoryName !== category;
-      })
-      setSelectedCategories(updatedCategories)
-    }
-    else {
-      currentlySelectedCategories.push(categoryName);
-      setSelectedCategories(currentlySelectedCategories)
-    }
-    if (currentlySelectedCategories.length) {
-      const currentlySelectedCategoriesString = currentlySelectedCategories.join(',')
-      const currentlySelectedLocations = currentlySelectedCategories.join(',')
-      dispatch(getProducts({ searchQuery, page, locations: currentlySelectedLocations, categories: currentlySelectedCategoriesString }))
-    }
-    else {
-      const currentlySelectedLocations = currentlySelectedCategories.join(',')
-      dispatch(getProducts({ searchQuery, page, locations: currentlySelectedLocations, categories: '' }))
-    }
-  }
+  
+    setSelectedCategories((prevSelectedCategories) => {
+      const isCategorySelected = prevSelectedCategories?.includes(categoryName);
+  
+      if (isCategorySelected) {
+        const updatedCategories = prevSelectedCategories?.filter((category) => categoryName !== category);
+        if (updatedCategories) {
+          dispatch(getProducts({ searchQuery, page, locations: updatedCategories.join(','), categories: updatedCategories.join(',') }));
+        } else {
+          dispatch(getProducts({ searchQuery, page, locations: '', categories: '' }));
+        }
+        return updatedCategories;
+      } else {
+        const updatedCategories = prevSelectedCategories ? [...prevSelectedCategories, categoryName] : [categoryName];
+        dispatch(getProducts({ searchQuery, page, locations: updatedCategories.join(','), categories: updatedCategories.join(',') }));
+        return updatedCategories;
+      }
+    });
+  };
 
   const categories = useSelector((state: RootState) => state.user?.data?.categories)
   const totalProducts = useSelector((state: RootState) => state.user.data?.countOfProducts)
@@ -84,37 +81,40 @@ const Home = () => {
             )
           }
           {
-            selectedCategories.length > 0 ?
+            selectedCategories.length > 0 &&
+            (
+              <div
+                onClick={() => {
+                  setSelectedCategories([])
+                  dispatch(getProducts({ searchQuery, page, locations: '', categories: '' }))
+                }}
+                className='text-sm font-semibold text-black px-12 cursor-pointer '>Remove Filters
+              </div>
+            )
+          }
+          {
+            categories?.length > 0 ?
               (
-                <div
-                  onClick={() => {
-                    setSelectedCategories([])
-                    dispatch(getProducts({ searchQuery, page, locations: '', categories: '' }))
-                  }}
-                  className='text-sm font-semibold text-black px-12 cursor-pointer '>Remove Filters
+                <div className="flex flex-wrap justify-start px-12 gap-2 my-4">
+                  {categories?.map((category: any) => (
+                    <div
+                      className='cursor-pointer my-2'
+                      key={category.categoryName}
+                      onClick={() => {
+                        handleCategorySelectionChanges(category?.categoryName)
+                      }}
+                    >
+                      <span className={`${selectedCategories?.includes(category?.categoryName) ? ' bg-cyan-100' : 'bg-white'} border border-black p-2 rounded`}>{category?.categoryName}</span>
+                    </div>
+                  ))}
                 </div>
-              ) :
+              )
+              :
               (
                 <div className='w-full text-md text-red-600 px-12 flex justify-center'>
                   sorry for the inconvenience, there is no categories to Explore
                 </div>
               )
-          }
-          {
-            categories?.length &&
-            <div className="flex flex-wrap justify-start px-12 gap-2 my-4">
-              {categories?.map((category: any) => (
-                <div
-                  className='cursor-pointer my-2'
-                  key={category.categoryName}
-                  onClick={() => {
-                    handleCategorySelectionChanges(category?.categoryName)
-                  }}
-                >
-                  <span className={`${selectedCategories?.includes(category?.categoryName) ? ' bg-cyan-100' : 'bg-white'} border border-black p-2 rounded`}>{category?.categoryName}</span>
-                </div>
-              ))}
-            </div>
           }
           <div className="flex justify-center ">
             <span className='font-semibold '>looking for to sell your product?

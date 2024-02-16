@@ -19,7 +19,7 @@ const Pagination = ({ totalPages, currentPage, passPageToComponent }: { totalPag
                     currentPage > 1 &&
                     <div
                         onClick={() => {
-                            passPageToComponent(currentPage - 1)
+                            passPageToComponent(Number(currentPage) - 1)
                         }}
                         className="w-8 h-8 rounded-md bg-white border-2 border-black flex justify-center items-center">
                         <BsArrowLeft />
@@ -32,7 +32,7 @@ const Pagination = ({ totalPages, currentPage, passPageToComponent }: { totalPag
                     totalPages > currentPage &&
                     <div
                         onClick={() => {
-                            passPageToComponent(currentPage + 1)
+                            passPageToComponent(Number(currentPage) + 1)
                         }}
                         className="w-8 h-8 rounded-md bg-white border-2 border-black flex justify-center items-center">
                         <BsArrowRight />
@@ -42,7 +42,7 @@ const Pagination = ({ totalPages, currentPage, passPageToComponent }: { totalPag
                     totalPages > currentPage && (totalPages - currentPage) > 1 &&
                     <div
                         onClick={() => {
-                            passPageToComponent(totalPages)
+                            passPageToComponent(Number(totalPages))
                         }}
                         className="w-8 h-8 rounded-full bg-white border-2 border-black flex justify-center items-center">
                         <BsChevronDoubleRight />
