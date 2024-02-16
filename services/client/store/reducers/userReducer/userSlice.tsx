@@ -32,7 +32,8 @@ import {
     addToFavourites,
     removeFromFavourites,
     getFavouriteProducts,
-    getAllFavouriteProducts
+    getAllFavouriteProducts,
+    getTotalCountOfUnreadMessage
 
 } from "@/store/actions/userActions/userActions";
 import { UserState } from "@/types/user";
@@ -339,6 +340,19 @@ const userSlice = createSlice({
                 state.error = null;
             })
             .addCase(changeRoom.rejected, (state: UserState, action) => {
+                state.loading = false;
+                state.error = action.error.message;
+            })
+            // on fetching the total count of unread messages;
+            .addCase(getTotalCountOfUnreadMessage.pending, (state: UserState) => {
+                state.loading = true;
+            })
+            .addCase(getTotalCountOfUnreadMessage.fulfilled, (state: UserState, action) => {
+                state.loading = false;
+                state.data = { ...state.data, ...action.payload };
+                state.error = null;
+            })
+            .addCase(getTotalCountOfUnreadMessage.rejected, (state: UserState, action) => {
                 state.loading = false;
                 state.error = action.error.message;
             })
