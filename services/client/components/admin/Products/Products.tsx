@@ -16,13 +16,12 @@ const Products = () => {
   const [currentProduct, setCurrentProduct] = useState<Product | null>(null)
   const [showReported, setShowReported] = useState<boolean>(false)
 
-  const searchQuery = useSearchParams();
-  const page: number = Number(searchQuery.get("page")) || 1;
+  const page: number = useSelector((state: RootState) => state?.admin?.data?.currentPage) ?? 1;
 
   useEffect(() => {
     dispatch(authRequired(router))
     dispatch(getProducts(page))
-  }, [dispatch])
+  }, [])
 
   useEffect(() => {
     if (showReported) {

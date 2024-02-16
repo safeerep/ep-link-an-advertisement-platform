@@ -17,7 +17,7 @@ const Home = () => {
   const [showAllUsers, setShowAllUsers] = useState(true);
 
   const searchParams = useSearchParams();
-  const page: number = Number(searchParams.get("page")) || 1;
+  const page: number = useSelector((state: RootState) => state?.admin?.data?.currentPage) ?? 1;
 
   useEffect(() => {
     dispatch(authRequired(router))

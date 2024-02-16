@@ -18,13 +18,11 @@ const Posts = ({ from }: { from: string }) => {
     const dispatch: AppDispatch = useDispatch()
     const router = useRouter();
 
-    const searchQuery = useSearchParams();
-    const page: number = Number(searchQuery.get("page")) || 1;
-
     useEffect(() => {
         dispatch(getAllFavouriteProducts())
     }, [])
 
+    const page = useSelector((state: RootState) => state?.user?.data?.currentPage) ?? 1;
     const products = useSelector((state: RootState) => state?.user?.data?.products)
     const favourites = useSelector((state: RootState) => state?.user?.data?.favourites)
     const [isDropdownOpen, setIsDropdownOpen] = useState<boolean[]>(Array(products?.length).fill(false));
@@ -41,7 +39,9 @@ const Posts = ({ from }: { from: string }) => {
     const handleRemoveFromFavourite = (productId: string) => {
         console.log(`called for remove from favourite. product id is ${productId}`);
         dispatch(removeFromFavourites(productId))
-        dispatch(getFavouriteProducts(page))
+        if (from === 'favourites') {
+            dispatch(getFavouriteProducts(page))
+        }
     }
 
     const handleSoldout = (productId: string, index: number) => {

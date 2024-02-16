@@ -18,8 +18,7 @@ const Categories = () => {
   const [categoryId, setCategoryId] = useState<string>('');
   const [status, setStatus] = useState<boolean | null>(null);
 
-  const searchParams = useSearchParams();
-  const page: number | any = searchParams.get("page") || 1;
+  const page: number | any = useSelector((state: RootState) => state?.admin?.data?.currentPage) ?? 1;
 
   useEffect(() => {
     dispatch(authRequired(router))

@@ -11,8 +11,7 @@ const Profile = () => {
   const dispatch: AppDispatch = useDispatch();
   const router = useRouter();
 
-  const searchQuery =  useSearchParams();
-  const page = Number(searchQuery.get("page")) || 1;
+  const page = useSelector((state: RootState) => state.user?.data?.currentPage) ?? 1;
 
   useEffect(() => {
     dispatch(authRequired(router))

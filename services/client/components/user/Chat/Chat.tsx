@@ -36,7 +36,7 @@ const Chat = () => {
     const router = useRouter()
     const scrollContainerRef = useRef<HTMLDivElement | null>(null);
     const [message, setMessage] = useState('')
-    const [dataFromIncomingCall, setDataFromIncomingCall] = useState(null)
+    const [dataFromIncomingCall, setDataFromIncomingCall] = useState<object>({})
     const [ringtone, setRingtone] = useState<HTMLAudioElement | null>(null);
     const [showEmojis, setShowEmojis] = useState(false)
     const [isDropdownOpen, setIsDropdownOpen] = useState(false)
@@ -78,6 +78,10 @@ const Chat = () => {
         if (roomId) {
             inputRef?.current?.focus()
         }
+
+        return () => {
+            socket.emit("user-left", userId)
+        }
     }, [])
 
     const scrollToBottom = () => {
@@ -112,7 +116,7 @@ const Chat = () => {
         data.showToReceiver = true;
         setNewMessages((newMessages: any) => [...newMessages, data]);
         scrollToBottom()
-        if ( data.senderId === user?._id) {
+        if (data.senderId === user?._id) {
             dispatch(saveNewMessage(data))
         }
     })
@@ -129,8 +133,8 @@ const Chat = () => {
         if (roomId !== data.chatRoomId && userId !== data.senderId) {
             dispatch(getCurrentUserChatRooms())
         }
-        else if ( roomId === data.chatRoomId) {
-            changeMessageStatusAsRead({roomId, userId: user?._id})
+        else if (roomId === data.chatRoomId) {
+            changeMessageStatusAsRead({ roomId, userId: user?._id })
         }
     })
 
@@ -188,6 +192,14 @@ const Chat = () => {
             to: seller?._id,
             roomId: roomId
         }))
+        // here we are setting some data for to use on when call ends we have to notify it to the other side user
+        const data = {
+            fromUserId: seller?._id,
+            from: seller?.userName,
+            to: user?._id,
+            roomId: roomId
+        }
+        setDataFromIncomingCall(data)
     }
 
     useEffect(() => {
@@ -196,7 +208,7 @@ const Chat = () => {
     }, [])
     // its the time when user is active and user getting calls;
     // at that point of time, video call page will shows;
-    
+
     socket?.on("calling-user", (data: any) => {
         setDataFromIncomingCall(data)
         setIncomingCallModalOpen(!incomingCallModalOpen)
@@ -208,11 +220,11 @@ const Chat = () => {
     // event from backend on when receiver declined
     socket?.on("receiver-declined", (data: any) => {
         console.log('yes receiver declined');
-        
+
         setVideoCallOngoing(false)
         window.location.reload()
     })
-    
+
     // on call end;
     socket?.on("call-ended", (data: any) => {
         setVideoCallOngoing(false)
@@ -220,7 +232,7 @@ const Chat = () => {
             window.location.reload()
         }
     })
-    
+
     // after accepting incoming calls;
     const incomingCallAccepted = (data: any) => {
         setIncomingCallModalOpen(!incomingCallModalOpen)
@@ -231,7 +243,7 @@ const Chat = () => {
             ringtone.currentTime = 0;
         }
     }
-    
+
     // after declining incoming calls;
     const incomingCallDeclined = (data: any) => {
         setIncomingCallModalOpen(false)
@@ -318,7 +330,11 @@ const Chat = () => {
         const date = new Date(timeStamp);
         const hour = date.getHours().toString().padStart(2, '0')
         const minute = date.getMinutes().toString().padStart(2, '0')
-        return `${hour}: ${minute}`
+        if (Number(hour) > 12) {
+            const hourInTwelve: string = String(Number(hour) - 12)
+            return `${hourInTwelve}: ${minute} pm`
+        }
+        return `${hour}: ${minute} am`
     }
 
     return (
@@ -443,34 +459,49 @@ const Chat = () => {
                                         user?._id !== messageDoc.senderId) || user?._id === messageDoc.senderId
                                     ) &&
                                     <div key={index}
-                                        className={`bg-white p-1 px-2 mb-1 w-fit rounded-md ${messageDoc.senderId === user?._id ?
+                                        className={`bg-white p-1 px-2 mb-1 rounded-md relative w-fit max-w-2/3 ${messageDoc.senderId === user?._id ?
                                             'ml-auto' : ''}`}
                                     >
                                         {messageDoc.typeOfMessage === 'text' && (
-                                            <div className='max-w-2/3'>{messageDoc?.message}</div>
+                                            <>
+                                                <div className=' min-w-12 min-h-10'>{messageDoc?.message}</div>
+                                                <div className='absolute bottom-0 right-0 p-1 text-xs inline-block'>{formatTime(new Date(messageDoc?.createdAt))}</div>
+                                            </>
                                         )}
                                         {messageDoc.typeOfMessage === 'image' && (
-                                            <img className='max-w-2/3' src={messageDoc?.message} alt="Image" />
+                                            <>
+                                                <img className=' min-w-12 min-h-10 pb-4' src={messageDoc?.message} alt="Image" />
+                                                <div className='absolute bottom-0 right-0 p-1 text-xs inline-block'>{formatTime(new Date(messageDoc?.createdAt))}</div>
+                                            </>
                                         )}
                                         {messageDoc.typeOfMessage === 'video' && (
-                                            <video controls width="300" className='max-w-2/3'>
-                                                <source src={messageDoc?.message} type="video/mp4" />
-                                                Your browser does not support the video tag.
-                                            </video>
+                                            <>
+                                                <video controls width="300" className='max-w-2/3 min-w-12 min-h-10 pb-4'>
+                                                    <source src={messageDoc?.message} type="video/mp4" />
+                                                    Your browser does not support the video tag.
+                                                </video>
+                                                <div className='absolute bottom-0 right-0 p-1 text-xs inline-block'>{formatTime(new Date(messageDoc?.createdAt))}</div>
+                                            </>
                                         )}
                                         {messageDoc.typeOfMessage === 'audio' && (
-                                            <audio controls className='max-w-2/3'>
-                                                <source src={messageDoc?.message} type="audio/mp3" />
-                                                Your browser does not support the audio tag.
-                                            </audio>
+                                            <>
+                                                <audio controls className='max-w-2/3 pb-4'>
+                                                    <source src={messageDoc?.message} type="audio/mp3" />
+                                                    Your browser does not support the audio tag.
+                                                </audio>
+                                                <div className='absolute bottom-0 right-0 p-1 text-xs inline-block'>{formatTime(new Date(messageDoc?.createdAt))}</div>
+                                            </>
                                         )}
                                         {messageDoc.typeOfMessage === 'document' && (
-                                            <div className="flex items-center max-w-2/3">
-                                                <GrDocument className="w-6 h-6 mr-2" />
-                                                <a href={messageDoc?.message} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
-                                                    {messageDoc.documentName || "Download Document"}
-                                                </a>
-                                            </div>
+                                            <>
+                                                <div className="flex items-center max-w-2/3 pb-4">
+                                                    <GrDocument className="w-6 h-6 mr-2" />
+                                                    <a href={messageDoc?.message} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+                                                        {messageDoc.documentName || "Download Document"}
+                                                    </a>
+                                                </div>
+                                                <div className='absolute bottom-0 right-0 p-1 text-xs inline-block'>{formatTime(new Date(messageDoc?.createdAt))}</div>
+                                            </>
                                         )}
                                     </div>
                                 ))
@@ -482,34 +513,49 @@ const Chat = () => {
                                         user?._id !== messageDoc.senderId) || user?._id === messageDoc.senderId
                                     ) &&
                                     <div key={index}
-                                        className={`bg-white p-1 px-2 mb-1 w-fit rounded-md ${messageDoc.senderId === user?._id ?
+                                        className={`bg-white p-1 px-2 mb-1 w-fit rounded-md relative ${messageDoc.senderId === user?._id ?
                                             'ml-auto' : ''}`}
                                     >
                                         {messageDoc.typeOfMessage === 'text' && (
-                                            <div className='max-w-2/3'>{messageDoc?.message}</div>
+                                            <>
+                                                <div className='max-w-2/3 min-w-12 min-h-10'>{messageDoc?.message}</div>
+                                                <div className='absolute bottom-0 right-0 p-1 text-xs inline-block'>{formatTime(new Date())}</div>
+                                            </>
                                         )}
                                         {messageDoc.typeOfMessage === 'image' && (
-                                            <img className='max-w-2/3' src={messageDoc?.message} alt="Image" />
+                                            <>
+                                                <img className='max-w-2/3 pb-4' src={messageDoc?.message} alt="Image" />
+                                                <div className='absolute bottom-0 right-0 p-1 text-xs inline-block'>{formatTime(new Date())}</div>
+                                            </>
                                         )}
                                         {messageDoc.typeOfMessage === 'video' && (
-                                            <video className='max-w-2/3' controls width="300">
-                                                <source src={messageDoc?.message} type="video/mp4" />
-                                                Your browser does not support the video tag.
-                                            </video>
+                                            <>
+                                                <video className='max-w-2/3 pb-4' controls width="300">
+                                                    <source src={messageDoc?.message} type="video/mp4" />
+                                                    Your browser does not support the video tag.
+                                                </video>
+                                                <div className='absolute bottom-0 right-0 p-1 text-xs inline-block'>{formatTime(new Date())}</div>
+                                            </>
                                         )}
                                         {messageDoc.typeOfMessage === 'audio' && (
-                                            <audio controls className='max-w-2/3'>
-                                                <source src={messageDoc?.message} type="audio/mp3" />
-                                                Your browser does not support the audio tag.
-                                            </audio>
+                                            <>
+                                                <audio controls className='max-w-2/3 pb-4'>
+                                                    <source src={messageDoc?.message} type="audio/mp3" />
+                                                    Your browser does not support the audio tag.
+                                                </audio>
+                                                <div className='absolute bottom-0 right-0 p-1 text-xs inline-block'>{formatTime(new Date())}</div>
+                                            </>
                                         )}
                                         {messageDoc.typeOfMessage === 'document' && (
-                                            <div className="flex items-center max-w-2/3">
-                                                <GrDocument className="w-6 h-6 mr-2" />
-                                                <a href={messageDoc?.message} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
-                                                    {messageDoc.documentName || "Download Document"}
-                                                </a>
-                                            </div>
+                                            <>
+                                                <div className="flex items-center max-w-2/3 pb-4">
+                                                    <GrDocument className="w-6 h-6 mr-2" />
+                                                    <a href={messageDoc?.message} target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:underline">
+                                                        {messageDoc.documentName || "Download Document"}
+                                                    </a>
+                                                </div>
+                                                <div className='absolute bottom-0 right-0 p-1 text-xs inline-block'>{formatTime(new Date())}</div>
+                                            </>
                                         )}
                                     </div>
                                 ))
@@ -660,13 +706,13 @@ const Chat = () => {
             </div> :
             (
                 videoCallOngoing &&
-                <VideoCall 
-                roomID={roomId} 
-                callerRoomId={incomingCallOn} 
-                rejectCall={endCall} 
-                currentUserName={user?.userName} 
-                callTo={seller?.userName} 
-                data={dataFromIncomingCall}
+                <VideoCall
+                    roomID={roomId}
+                    callerRoomId={incomingCallOn}
+                    rejectCall={endCall}
+                    currentUserName={user?.userName}
+                    callTo={seller?.userName}
+                    data={dataFromIncomingCall}
                 />
             )
     )

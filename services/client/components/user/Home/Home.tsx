@@ -19,13 +19,13 @@ const Home = () => {
 
   const searchParams = useSearchParams();
   const searchQuery: string = searchParams.get("search") || '';
-  const page: number = Number(searchParams.get("page")) || 1;
+  const page: number = useSelector((state: RootState) => state.user?.data?.currentPage) ?? 1;
 
   useEffect(() => {
     dispatch(checkAuth(router))
     dispatch(getProducts({ searchQuery, page }))
     dispatch(getAllCategories())
-  }, [dispatch])
+  }, [])
 
   useEffect(() => {
     const currentlySelectedCategories = selectedCategories.join(',')

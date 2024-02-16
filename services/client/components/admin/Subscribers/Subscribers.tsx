@@ -2,7 +2,7 @@ import Pagination from '@/components/shared/common/Pagination'
 import { authRequired, getSubscribersList } from '@/store/actions/adminActions/adminActions'
 import { AppDispatch, RootState } from '@/store/store'
 import { User } from '@/types/user'
-import { useRouter, useSearchParams } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 import React, { useEffect } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 
@@ -16,8 +16,7 @@ const Subscribers = () => {
         dispatch(getSubscribersList(page))
     }, [])
 
-    const searchQuery = useSearchParams();
-    const page: number = Number(searchQuery.get("page")) || 1;
+    const page: number = useSelector((state: RootState) => state?.admin?.data?.currentPage) ?? 1;
 
     const subscribers: User[] = useSelector((state: RootState) => state?.admin?.data?.subscribers)
     const totalSubscribers = useSelector((state: RootState) => state?.admin?.data?.countOfSubscribers)
