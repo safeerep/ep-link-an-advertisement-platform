@@ -68,6 +68,9 @@ const SignIn = () => {
                                 <p>
                                     <Link className='text-blue-600' href='/forgot-password'>forgot password?</Link>
                                 </p>
+                                <p>don't have an account?
+                                    <Link className='text-blue-600' href='/sign-up'>Signup</Link>
+                                </p>
                                 <div className='w-full px-1 py-2'>
                                     <button type="submit" className='bg-gray-950 w-full py-2 rounded-sm'>
                                         <span className='font-bold text-white'> SignIn </span>

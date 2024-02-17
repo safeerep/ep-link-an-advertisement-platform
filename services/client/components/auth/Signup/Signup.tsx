@@ -29,10 +29,6 @@ const Signup = () => {
     }
 
     const handleOtpModalSubmit = (userData: signUpCredentials | null, otp: number) => {
-        console.log('in fun');
-        console.log(userData);
-        console.log(otp);
-        
         const userCredentials: any = { ...userData, otp };
         dispatch(register({ userCredentials, setIsModalOpen, router, setModalError}));
     };

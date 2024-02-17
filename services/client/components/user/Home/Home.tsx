@@ -23,7 +23,6 @@ const Home = () => {
 
   useEffect(() => {
     dispatch(checkAuth(router))
-    dispatch(getProducts({ searchQuery, page }))
     dispatch(getAllCategories())
   }, [])
 
@@ -67,7 +66,7 @@ const Home = () => {
 
   return (
     <>
-      <div className='mt-[-8px]'>
+      <div className='mt-[-2px]'>
         <Navbar from='home' />
       </div>
       <div className='min-h-screen'>

@@ -49,6 +49,7 @@ const Chat = () => {
     const [incomingCallOn, setIncomingCallOn] = useState('')
     const [prevRoom, setPrevRoom] = useState('')
     const [newMessages, setNewMessages] = useState<any>([])
+    const [onlineUsers, setOnlineUsers] = useState<string[]>([])
     const inputRef = useRef<HTMLInputElement | null>(null)
     const roomId = useSelector((state: RootState) => state?.user?.data?.chatroom?._id)
     const seller = useSelector((state: RootState) => state?.user?.data?.seller)
@@ -63,6 +64,11 @@ const Chat = () => {
     const [currentlySelectedAttachments, setCurrentlySelectedAttachments] = useState<any>(null);
     const [currentlySelectedAttachmentType, setCurrentlySelectedAttachmentType] = useState<string>('');
 
+    // to show active status
+    socket.on("online-users", (users: string[]) => {
+        setOnlineUsers(users)
+    })
+    
     useEffect(() => {
         socket.emit("join-user-room", userId)
     }, [userId])
@@ -122,11 +128,6 @@ const Chat = () => {
         }
     })
 
-    // to show active status
-    let onlineUsers: string[] = []
-    socket.on("online-users", (users: string[]) => {
-        onlineUsers = users;
-    })
 
     socket.on("receiver-blocked", (data: any) => {
         console.log('----receiver-blocked received in front end-----------');
@@ -369,8 +370,12 @@ const Chat = () => {
                                     onClick={() => handleRoomChange(behindUser?.userId?.userId)}
                                 >
                                     <div className="flex justify-start gap-2 items-center">
-                                        <div className="w-10 bg-gray-600 h-10 rounded-full">
+                                        <div className="w-10 bg-gray-600 h-10 rounded-full relative">
                                             <img className="object-cover w-full h-full rounded-full" src={behindUser?.userId?.profilePhoto} alt="" />
+                                            {
+                                                onlineUsers.includes(behindUser?.userId?.userId) &&
+                                                <div className="absolute w-2 h-2 rounded-full bg-green-600"></div>
+                                            }
                                         </div>
                                         <div className="flex flex-col">
                                             <span className="font-semibold">{behindUser?.userId?.userName}</span>
@@ -402,8 +407,12 @@ const Chat = () => {
                         {/* user name and head */}
                         <div className="w-full flex justify-between h-16 mb-1 border-b items-center border-black">
                             <div className="flex justify-start gap-2 items-center">
-                                <div className="w-10 bg-green-600 h-10 rounded-full">
+                                <div className="w-10 bg-green-600 h-10 rounded-full relative">
                                     <img className="object-cover w-full h-full rounded-full" src={seller?.profilePhoto} alt="" />
+                                    {
+                                        onlineUsers.includes(seller?._id) &&
+                                        <div className="absolute w-2 h-2 rounded-full bg-green-600"></div>
+                                    }
                                 </div>
                                 <div className="flex flex-col">
                                     <span className="font-semibold">{seller ? seller.userName : 'User'}</span>
