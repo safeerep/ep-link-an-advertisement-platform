@@ -79,12 +79,8 @@ const adminSlice = createSlice({
             })
             .addCase(getAllUsers.fulfilled, (state: AdminState, action) => {
                 state.loading = false;
-                if (action.payload?.currentPage == 1) {
-                    state.data.users = action.payload?.users
-                } else if (action.payload?.currentPage > 1) {
-                    state.data.users = [...state.data.users, ...action.payload?.users]
-                }
-                state.data.currentPage = action.payload?.currentPage;
+                state.data = { ...state.data, ...action.payload };
+                state.data.users = action.payload?.users
                 state.error = null;
             })
             .addCase(getAllUsers.rejected, (state: AdminState, action) => {
@@ -161,18 +157,9 @@ const adminSlice = createSlice({
                 state.loading = true;
             })
             .addCase(getProducts.fulfilled, (state: AdminState, action) => {
-                console.log(`ok here`);
-                
                 state.loading = false;
-                state.loading = false;
-                if (state.data) {
-                    state.data.products = action.payload?.products;
-                }
-                else {
-                    state.data = {};
-                    state.data.products = action.payload?.products;
-                }
-                state.data.currentPage = action.payload?.currentPage;
+                state.data = { ...state.data, ...action.payload }
+                state.data.products = action.payload?.products;
                 state.error = null;
             })
             .addCase(getProducts.rejected, (state: AdminState, action) => {
@@ -211,13 +198,8 @@ const adminSlice = createSlice({
             })
             .addCase(getReportedUsers.fulfilled, (state: AdminState, action) => {
                 state.loading = false;
-                if (action.payload.currentPage === 1) {
-                    state.data.reportedUsers = action.payload.reportedUsers
-                }
-                else if (action.payload.currentPage > 1) {
-                    state.data.reportedUsers = [...state.data.reportedUsers, ...action.payload.reportedUsers]
-                }
-                state.data.currentPage = action.payload?.currentPage;
+                state.data = { ...state.data, ...action.payload }
+                state.data.reportedUsers = action.payload.reportedUsers
                 state.error = null;
             })
             .addCase(getReportedUsers.rejected, (state: AdminState, action) => {
@@ -230,14 +212,8 @@ const adminSlice = createSlice({
             })
             .addCase(getReportedProducts.fulfilled, (state: AdminState, action) => {
                 state.loading = false;
-                if (state.data) {
-                    state.data.reportedProducts = action.payload?.products;
-                }
-                else {
-                    state.data = {};
-                    state.data.reportedProducts = action.payload?.products;
-                }
-                state.data.currentPage = action.payload?.currentPage;
+                state.data = { ...state.data, ...action.payload }
+                state.data.reportedProducts = action.payload?.products;
                 state.error = null;
             })
             .addCase(getReportedProducts.rejected, (state: AdminState, action) => {
@@ -250,15 +226,8 @@ const adminSlice = createSlice({
             })
             .addCase(getSubscribersList.fulfilled, (state: AdminState, action) => {
                 state.loading = false;
-                if (state.data) {
-                    state.data.subscribers = action.payload?.subscribers;
-                }
-                else {
-                    state.data = {};
-                    state.data.subscribers = action.payload?.subscribers;
-                }
-                state.data.currentPage = action.payload?.currentPage;
-                state.data.countOfSubscribers = action.payload?.countOfSubscribers;
+                state.data = { ...state.data, ...action.payload }
+                state.data.subscribers = action.payload?.subscribers;
                 state.error = null;
             })
             .addCase(getSubscribersList.rejected, (state: AdminState, action) => {

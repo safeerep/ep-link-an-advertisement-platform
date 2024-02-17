@@ -124,7 +124,6 @@ const Home = () => {
         </div>
         <Posts from={'home'} />
         {
-          totalProducts &&
           totalProducts > 0 &&
           <Pagination currentPage={page} passPageToComponent={handlePageChanges} totalPages={totalPages} />
         }
