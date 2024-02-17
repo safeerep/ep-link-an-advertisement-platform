@@ -45,13 +45,7 @@ export const getAllChatsOfCurrentUser = async (currentUserId: string): Promise<C
         }).populate({
             path: 'users.userId',  
             model: UserCollection
-        }).sort({ updatedAt: -1 });
-
-        
-
-        console.log(`-------------------------`);
-        console.log(chats);
-        console.log(`-------------------------`);
+        }).sort({ createdAt: -1 });
 
         return chats as ChatRoomDocument[];
     } catch (error) {

@@ -2,12 +2,14 @@ import {
     saveMessage, 
     getMessagesFromASpecificRoom, 
     countOfUnreadMessagesInEachChat,
-    makeMessageStatusAsRead 
+    makeMessageStatusAsRead,
+    getCountOfAllUnreadMessages 
 } from "./messageRepo"
 
 export default {
     saveMessage,
     getMessagesFromASpecificRoom,
     countOfUnreadMessagesInEachChat,
-    makeMessageStatusAsRead
+    makeMessageStatusAsRead,
+    getCountOfAllUnreadMessages
 }

@@ -8,13 +8,15 @@ const messageRoutes = ( dependencies: any) => {
     const {
         saveMessageController,
         saveMediafilesController,
-        changeMessagesStatusAsReadController
+        changeMessagesStatusAsReadController,
+        getCountOfUnreadMessagesController
     } = messageControllers(dependencies);
 
     router.use(verifyUserAuth)
     router.post('/save-message', saveMessageController)
     router.post('/save-media-files', upload.array("files"), saveMediafilesController)
     router.patch('/change-message-status', changeMessagesStatusAsReadController)
+    router.get('/get-unread-messages-count', getCountOfUnreadMessagesController)
     
     return router;
 }

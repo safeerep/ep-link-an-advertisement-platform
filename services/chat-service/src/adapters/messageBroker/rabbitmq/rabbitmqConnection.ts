@@ -3,9 +3,10 @@ import amqp, { Channel, Connection } from 'amqplib'
 let connection: Connection;
 let channel: Channel;
 
+const RABBIT_PORT = String(process.env.RABBIT_PORT);
 const connectRabbitMq = async () => {
     try {
-        connection = await amqp.connect("amqp://localhost:5672")
+        connection = await amqp.connect(RABBIT_PORT)
         channel = await connection.createChannel()
         console.log(`successfully connected with message broker in chat service`);
     } catch (error) {

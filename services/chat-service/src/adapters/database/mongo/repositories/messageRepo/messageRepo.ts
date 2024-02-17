@@ -86,3 +86,23 @@ export const makeMessageStatusAsRead =
         return false;
     }
 }
+
+export const getCountOfAllUnreadMessages = async ( userId: string, chatRoomsId: string[]):Promise< number | boolean> => {
+    try {
+        const totalCountOfUnreadMessages = await MessagesCollection.countDocuments(
+            {
+                senderId: {
+                    $ne: userId
+                },
+                chatRoomId: {
+                    $in: chatRoomsId
+                }         
+            }
+        )
+        
+        return totalCountOfUnreadMessages;
+    } catch (error) {
+        console.log(`something went wrong during fetching the count of total unread messages ${error}`);
+        return false;
+    }
+}
