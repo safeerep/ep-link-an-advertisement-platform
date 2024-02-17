@@ -15,6 +15,7 @@ import {
     changeMessageStatusAsRead,
     changeRoom,
     getCurrentUserChatRooms,
+    getTotalCountOfUnreadMessage,
     reportSeller,
     saveNewMessage,
     sendMediaFilesAsMessage,
@@ -121,6 +122,12 @@ const Chat = () => {
         }
     })
 
+    // to show active status
+    let onlineUsers: string[] = []
+    socket.on("online-users", (users: string[]) => {
+        onlineUsers = users;
+    })
+
     socket.on("receiver-blocked", (data: any) => {
         console.log('----receiver-blocked received in front end-----------');
         console.log(data);
@@ -132,6 +139,7 @@ const Chat = () => {
     socket.on("show-notification", (data: any) => {
         if (roomId !== data.chatRoomId && userId !== data.senderId) {
             dispatch(getCurrentUserChatRooms())
+            dispatch(getTotalCountOfUnreadMessage())
         }
         else if (roomId === data.chatRoomId) {
             changeMessageStatusAsRead({ roomId, userId: user?._id })
@@ -350,10 +358,6 @@ const Chat = () => {
                             // every chatroom contains two users
                             // first we have to show the user which is not currently using
                             const behindUser = chatroom?.users?.find((userDoc: any) => {
-                                console.log('okdaa');
-                                console.log(userDoc?.userId);
-                                console.log(user?._id);
-                                console.log('okdaa');
                                 if (userDoc?.userId?.userId !== user?._id) {
                                     return userDoc?.userId;
                                 }
