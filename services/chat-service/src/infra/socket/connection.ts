@@ -3,7 +3,7 @@ import { Server } from 'http'
 import { handleSocketEvents } from './events'
 
 const connectSocketIO = async ( server: Server) => {
-    const io = new SocketIOServer( server, {
+    const io: SocketIOServer = new SocketIOServer( server, {
         cors: {
             origin: process.env.CLIENT_URL
         }
@@ -11,7 +11,7 @@ const connectSocketIO = async ( server: Server) => {
 
     io.on("connection", (socket: Socket) => {
         console.log('socket io connected');
-        handleSocketEvents(socket)
+        handleSocketEvents(socket, io)
 
         socket.on("disconnect", () => {
             console.log('socket disconnected');
