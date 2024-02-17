@@ -1,4 +1,4 @@
-import { Socket } from "socket.io"
+import { Socket, Server } from "socket.io"
 // importing controller to check receiver is blocked or not the sender;
 import userControllers from "../../handlers/contollers/userControllers"
 import messageControllers from "../../handlers/contollers/messageControllers"
@@ -12,11 +12,24 @@ const {
     changeMessageStatusOnEventController
 } = messageControllers(dependencies)
 
-export const handleSocketEvents = ( socket: Socket) => {
+export const handleSocketEvents = ( socket: Socket, io: Server) => {
+    let onlineUsers: string[] = []
 
     socket.on("join-user-room", (userId: string) => {
         socket.join(userId)
+        onlineUsers.push(userId)
+        io.emit("online-users", onlineUsers)
         console.log('user joined in user room');
+    })
+
+    socket.on("user-left", (userId: string) => {
+        socket.leave(userId)
+        const onlineUsersUpdated: string[] = onlineUsers.filter((user: string) => {
+            return user !== userId;
+        })
+        onlineUsers = onlineUsersUpdated;
+        io.emit("online-users", onlineUsers)
+        console.log('user left');
     })
 
     socket.on("join-room", async ( prevRoom: string, roomId: string, userId: string) => {
