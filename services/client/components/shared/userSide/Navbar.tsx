@@ -7,12 +7,10 @@ import { FiUser } from 'react-icons/fi'
 import { BsChatDots } from 'react-icons/bs'
 import { BsSearch } from 'react-icons/bs'
 import { RiArrowDownSLine } from 'react-icons/ri'
-import { getProducts, getTotalCountOfUnreadMessage, logout } from '@/store/actions/userActions/userActions'
+import { getTotalCountOfUnreadMessage, logout } from '@/store/actions/userActions/userActions'
 import { Skeleton } from '@mui/material'
 import { AppDispatch, RootState } from '@/store/store'
 import { User } from '@/types/user'
-import ConfimationModalWithDialogue from '@/components/Modals/ConfirmationWithDialogue'
-import Image from 'next/image'
 
 const Navbar = ({ from }: { from?: string }) => {
   const dispatch: AppDispatch = useDispatch()
@@ -31,7 +29,6 @@ const Navbar = ({ from }: { from?: string }) => {
     setSearchTerm(searchQuery)
   }, [dispatch, searchQuery])
 
-  const [searchModalOpen, setSearchModalOpen] = useState(false);
   const [isDropdownOpen, setDropdownOpen] = useState(false);
   const handleButtonClickForDropDown = () => {
     setDropdownOpen(!isDropdownOpen);
@@ -45,14 +42,12 @@ const Navbar = ({ from }: { from?: string }) => {
 
     const timeoutId = setTimeout(() => {
       searchProducts(value);
-    }, 2000);
+    }, 1000);
 
     setTypingTimeout(timeoutId);
   };
 
   const searchProducts = (substring: string) => {
-    console.log(substring);
-
     const encodedQuery = encodeURIComponent(substring);
     router.push(`?search=${encodedQuery}`)
   }
@@ -83,7 +78,7 @@ const Navbar = ({ from }: { from?: string }) => {
         }}
         className='cursor-pointer flex justify-center items-center'
         onClick={() => router.push('/')}>
-        <Image src="/brand.png"
+        <img src="/brand.png"
           alt='logo'
           width={200} height={200} />
       </div>
@@ -159,15 +154,8 @@ const Navbar = ({ from }: { from?: string }) => {
               )}
             </div>
           </>
-        ) : <Link href='/sign-up' className='text-black font-semibold ps-10 pe-2'>LOGIN</Link>}
+        ) : <Link href='/sign-in' className='text-black font-semibold ps-10 pe-2'>LOGIN</Link>}
       </div>
-      < ConfimationModalWithDialogue
-        afterConfirmation={searchProducts}
-        isModalOpen={searchModalOpen}
-        setModalOpen={setSearchModalOpen}
-        notesHead="Search for products"
-        submitButtonName='Search'
-      />
     </div>)
   )
 }
