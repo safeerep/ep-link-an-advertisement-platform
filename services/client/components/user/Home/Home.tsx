@@ -30,7 +30,7 @@ const Home = () => {
   useEffect(() => {
     const currentlySelectedCategories = selectedCategories.join(',')
     const currentlySelectedLocations = selectedCategories.join(',')
-    dispatch(getProducts({ searchQuery, page, locations: currentlySelectedLocations, categories: currentlySelectedCategories }))
+    dispatch(getProducts({ searchQuery, page: 1, locations: currentlySelectedLocations, categories: currentlySelectedCategories }))
   }, [searchQuery])
 
   const handleCategorySelectionChanges = (categoryName: string) => {
