@@ -33,7 +33,6 @@ const Favourites = () => {
             <h1 className='p-6 text-xl'>Your Favourites</h1>
             <Posts from={'favourites'} />
             {
-                totalFavouriteProducts &&
                 totalFavouriteProducts > 0 &&
                 <Pagination currentPage={page} passPageToComponent={handlePageChanges} totalPages={totalPages} />
             }
