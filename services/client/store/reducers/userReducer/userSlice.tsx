@@ -247,7 +247,7 @@ const userSlice = createSlice({
             })
             .addCase(followUser.fulfilled, (state: UserState, action) => {
                 state.loading = false;
-                // state.data = { ...state.data, ...action.payload };
+                state.data = { ...state.data, ...action.payload };
                 const { followedUserId } = action.payload;
                 state.data.userData.following = [...state?.data?.userData?.following, followedUserId];
                 state.error = null;
@@ -262,7 +262,7 @@ const userSlice = createSlice({
             })
             .addCase(unFollowUser.fulfilled, (state: UserState, action) => {
                 state.loading = false;
-                // state.data = { ...state.data, ...action.payload };
+                state.data = { ...state.data, ...action.payload };
                 const { unFollowedUserId } = action.payload;
                 state.data.userData.following =
                     state.data.userData.following.filter((userId: any) => userId !== unFollowedUserId);
