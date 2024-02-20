@@ -27,7 +27,8 @@ const PremiumPolicy = () => {
             setIsModalOpen(false)
             dispatch(updatePremiumPolicy({
                 policyDuration: currentPolicyDuration,
-                subscriptionAmount: updatedPrice
+                subscriptionAmount: updatedPrice,
+                dispatch
             }))
             dispatch(getPremiumPolicies())
         }
