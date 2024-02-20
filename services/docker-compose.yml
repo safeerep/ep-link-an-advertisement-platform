@@ -24,20 +24,10 @@ services:
     env_file:
       - .env.users
     depends_on:
-      - mongodb-users
       - rabbitmq
     networks:
       - ep-link-network
   
-  mongodb-users:
-    image: mongo:latest
-    ports:
-      - "27017:27017"
-    environment:
-      MONGO_INITDB_DATABASE: mainUsersService
-    networks:
-      - ep-link-network
-
   product-service:
     image: "safeerep/product:latest"
     ports:
@@ -45,20 +35,10 @@ services:
     env_file:
       - .env.product
     depends_on:
-      - mongodb-product
       - rabbitmq
     networks:
       - ep-link-network
   
-  mongodb-product:
-    image: mongo:latest
-    ports:
-      - "27018:27017"
-    environment:
-      MONGO_INITDB_DATABASE: mainProductService
-    networks:
-      - ep-link-network
-
   chat-service:
     image: "safeerep/chat:latest"
     ports:
@@ -66,20 +46,10 @@ services:
     env_file:
       - .env.chat
     depends_on:
-      - mongodb-chat
       - rabbitmq
     networks:
       - ep-link-network
   
-  mongodb-chat:
-    image: mongo:latest
-    ports:
-      - "27019:27017"
-    environment:
-      MONGO_INITDB_DATABASE: mainChatService
-    networks:
-      - ep-link-network
-
   payment-service:
     image: "safeerep/payment:latest"
     ports:
@@ -87,17 +57,7 @@ services:
     env_file:
       - .env.payment
     depends_on:
-      - mongodb-payment
       - rabbitmq
-    networks:
-      - ep-link-network
-  
-  mongodb-payment:
-    image: mongo:latest
-    ports:
-      - "27020:27017"
-    environment:
-      MONGO_INITDB_DATABASE: mainPaymentService
     networks:
       - ep-link-network
 
