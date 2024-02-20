@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name:  eplink-users-service
+spec:
+  selector:
+    app: users-service
+  ports:
+  - name: users-service
+    protocol: TCP
+    port:  3001
+    targetPort: 3001
