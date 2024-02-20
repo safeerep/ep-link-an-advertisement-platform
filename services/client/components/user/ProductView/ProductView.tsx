@@ -151,7 +151,7 @@ const ProductView = () => {
                                     'loading' :
                                     sellerStatus && sellerStatus == "following" && (
                                         <>
-                                            <button className='bg-white px-4  p-1 rounded-md'
+                                            <button className='bg-white px-4  p-1 rounded-md border'
                                                 onClick={handleUnfollow}
                                             >
                                                 <span

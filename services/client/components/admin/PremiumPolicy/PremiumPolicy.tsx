@@ -29,6 +29,7 @@ const PremiumPolicy = () => {
                 policyDuration: currentPolicyDuration,
                 subscriptionAmount: updatedPrice
             }))
+            dispatch(getPremiumPolicies())
         }
     }
 
@@ -43,11 +44,23 @@ const PremiumPolicy = () => {
                         <GiChessQueen className='ms-4 text-2xl text-yellow-600' />
                         <span className='text-2xl'>Monthly Subscription Plan </span>
                     </div>
-                    <span className='text-xl'>Subscription Amount: {policies && policies[0]?.subscriptionAmount} </span>
+                    {
+                        policies &&
+                        ((policies[0]?.policyDuration === "monthly" && (
+                            <span className='text-xl'>
+                                Subscription Amount: {policies[0]?.subscriptionAmount}
+                            </span>
+                        )) ||
+                            (policies[1]?.policyDuration === "monthly" && (
+                                <span className='text-xl'>
+                                    Subscription Amount: {policies[1]?.subscriptionAmount}
+                                </span>
+                            )))
+                    }
                     <div
-                        onClick={() => { 
-                            setIsModalOpen(!isModalOpen)
+                        onClick={() => {
                             setCurrentPolicyDuration('monthly')
+                            setIsModalOpen(!isModalOpen)
                         }}
                         className="absolute top-2 right-2 cursor-pointer">
                         < AiOutlineEdit />
@@ -58,18 +71,30 @@ const PremiumPolicy = () => {
                         <GiChessQueen className='ms-4 text-2xl text-yellow-600' />
                         <span className='text-2xl'>Annual Subscription Plan </span>
                     </div>
-                    <span className='text-xl'>Subscription Amount: {policies && policies[1]?.subscriptionAmount} </span>
+                    {
+                        policies &&
+                        ((policies[0]?.policyDuration === "annual" && (
+                            <span className='text-xl'>
+                                Subscription Amount: {policies[0]?.subscriptionAmount}
+                            </span>
+                        )) ||
+                            (policies[1]?.policyDuration === "annual" && (
+                                <span className='text-xl'>
+                                    Subscription Amount: {policies[1]?.subscriptionAmount}
+                                </span>
+                            )))
+                    }
                     <div
                         onClick={() => {
-                            setIsModalOpen(!isModalOpen)
                             setCurrentPolicyDuration('annual')
+                            setIsModalOpen(!isModalOpen)
                         }}
                         className="absolute top-2 right-2 cursor-pointer">
                         < AiOutlineEdit />
                     </div>
                 </div>
             </div>
-           
+
             < ConfimationModalWithDialogue
                 afterConfirmation={updatePolicy}
                 isModalOpen={isModalOpen}

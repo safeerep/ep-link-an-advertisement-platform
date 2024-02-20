@@ -397,6 +397,7 @@ export const updatePremiumPolicy = createAsyncThunk(`/admin/update-premium-poici
             })
             if (response?.data) {
                 if (response?.data?.success) {
+                    toast.success(response.data.message)
                     return response.data;
                 }
                 return response.data;
