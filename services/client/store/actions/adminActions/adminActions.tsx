@@ -3,6 +3,7 @@ import axios from "axios"
 import { USERS_SERVICE_BASE_URL, PRODUCT_SERVICE_BASE_URL, PAYMENT_SERVICE_BASE_URL } from "@/constants"
 import { signInCredentials } from "@/types/admin"
 import { Toaster, toast } from "react-hot-toast"
+import { AppDispatch } from "@/store/store"
 
 export const login = createAsyncThunk('/admin/login',
     async ({ adminCredentials, router, setError }: { adminCredentials: signInCredentials, router: any, setError: React.Dispatch<React.SetStateAction<any>> }) => {
@@ -389,7 +390,7 @@ export const getPremiumPolicies = createAsyncThunk(`/admin/premium-poicies`,
 )
 
 export const updatePremiumPolicy = createAsyncThunk(`/admin/update-premium-poicies`,
-    async ({ policyDuration, subscriptionAmount }: { policyDuration: string, subscriptionAmount: number }) => {
+    async ({ policyDuration, subscriptionAmount, dispatch }: { policyDuration: string, subscriptionAmount: number, dispatch: AppDispatch }) => {
         try {
             const response = await axios.put(`${PAYMENT_SERVICE_BASE_URL}/premium/update`, { policyDuration, subscriptionAmount }, {
                 headers: { "Content-Type": "application/json" },
@@ -397,6 +398,7 @@ export const updatePremiumPolicy = createAsyncThunk(`/admin/update-premium-poici
             })
             if (response?.data) {
                 if (response?.data?.success) {
+                    dispatch(getPremiumPolicies())
                     toast.success(response.data.message)
                     return response.data;
                 }
