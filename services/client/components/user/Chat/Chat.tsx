@@ -374,7 +374,7 @@ const Chat = () => {
                                             <img className="object-cover w-full h-full rounded-full" src={behindUser?.userId?.profilePhoto} alt="" />
                                             {
                                                 onlineUsers.includes(behindUser?.userId?.userId) &&
-                                                <div className="absolute w-2 h-2 rounded-full bg-green-600"></div>
+                                                <div className="absolute bottom-2 right-2 w-2 h-2 rounded-full bg-green-600"></div>
                                             }
                                         </div>
                                         <div className="flex flex-col">
@@ -411,7 +411,7 @@ const Chat = () => {
                                     <img className="object-cover w-full h-full rounded-full" src={seller?.profilePhoto} alt="" />
                                     {
                                         onlineUsers.includes(seller?._id) &&
-                                        <div className="absolute w-2 h-2 rounded-full bg-green-600"></div>
+                                        <div className="absolute bottom-2 right-2 w-2 h-2 rounded-full bg-green-600"></div>
                                     }
                                 </div>
                                 <div className="flex flex-col">

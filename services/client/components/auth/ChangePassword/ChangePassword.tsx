@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react'
 import Image from 'next/image';
 import { useDispatch } from 'react-redux';
 import { useSearchParams, useRouter } from 'next/navigation';
-import { RequestToResetPassword, checkAuth } from '@/store/actions/adminActions/adminActions';
+import { checkAuth, RequestToResetPassword } from '@/store/actions/userActions/userActions';
 import { Formik, Form, Field, ErrorMessage } from 'formik';
 import { passwordValidationSchema } from '@/models/validationSchemas';
 import { AppDispatch } from '@/store/store';
