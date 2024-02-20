@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eplink-client
+  labels:
+    name:  client-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: client-service
+  template:
+    metadata:
+      labels:
+        app: client-service
+    spec:
+      containers:
+      - image: safeerep/client:latest
+        name: client-service
+        envFrom:
+          - configMapRef:
+              name: client-config

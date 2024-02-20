@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eplink-users
+  labels:
+    name:  users-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: users-service
+  template:
+    metadata:
+      labels:
+        app: users-service
+    spec:
+      containers:
+      - image: safeerep/users:latest
+        name: users-service
+        envFrom:
+          - configMapRef:
+              name: users-config

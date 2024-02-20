@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eplink-product
+  labels:
+    name:  product-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: product-service
+  template:
+    metadata:
+      labels:
+        app: product-service
+    spec:
+      containers:
+      - image: safeerep/product:latest
+        name: product-service
+        envFrom:
+          - configMapRef:
+              name: product-config
