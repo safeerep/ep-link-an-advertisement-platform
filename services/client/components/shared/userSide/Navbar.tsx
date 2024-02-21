@@ -103,7 +103,6 @@ const Navbar = ({ from }: { from?: string }) => {
             onClick={() => router.push('/chat')}
           />
           {
-            totalCountOfUnreadMessages &&
             totalCountOfUnreadMessages > 0 &&
             (
               <span className="absolute bg-red-600 px-2 py-1 text-xs font-bold rounded-full -top-3 -right-3">
