@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: eplink-rabbitmq
+  labels:
+    name:  rabbitmq-service
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: rabbitmq-service
+  template:
+    metadata:
+      labels:
+        app: rabbitmq-service
+    spec:
+      containers:
+      - image: rabbitmq:management
+        name: rabbitmq-service
+        ports:
+        - containerPort: 5672
+        - containerPort: 15672
