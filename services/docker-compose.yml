@@ -5,6 +5,11 @@ services:
     ports:
       - "5672:5672"
       - "15672:15672"
+    healthcheck:
+      test: ["CMD", "rabbitmqctl", "status"]
+      interval: 30s
+      timeout: 30s
+      retries: 5
     networks:
       - ep-link-network
 
@@ -24,7 +29,8 @@ services:
     env_file:
       - .env.users
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
     networks:
       - ep-link-network
   
@@ -35,7 +41,8 @@ services:
     env_file:
       - .env.product
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
     networks:
       - ep-link-network
   
@@ -46,7 +53,8 @@ services:
     env_file:
       - .env.chat
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
     networks:
       - ep-link-network
   
@@ -57,7 +65,8 @@ services:
     env_file:
       - .env.payment
     depends_on:
-      - rabbitmq
+      rabbitmq:
+        condition: service_healthy
     networks:
       - ep-link-network
 
