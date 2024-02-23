@@ -1,0 +1,40 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: ingress-controller
+  annotations:
+    nginx.ingress.kubernetes.io/use-regex: "true"
+spec:
+  ingressClassName: nginx
+  rules:
+  - host: kubernetes.docker.internal
+    http:
+      paths:
+      - path: /api/users
+        pathType: Prefix
+        backend:
+          service:
+            name: eplink-users-service
+            port:
+              number: 3001
+      - path: /api/product
+        pathType: Prefix
+        backend:
+          service:
+            name: eplink-product-service
+            port:
+              number: 3002
+      - path: /api/chat
+        pathType: Prefix
+        backend:
+          service:
+            name: eplink-chat-service
+            port:
+              number: 3003
+      - path: /api/payment
+        pathType: Prefix
+        backend:
+          service:
+            name: eplink-payment-service
+            port:
+              number: 3004
