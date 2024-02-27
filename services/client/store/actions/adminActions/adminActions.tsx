@@ -72,7 +72,7 @@ export const logout = createAsyncThunk('/admin/logout', async (router: any) => {
             withCredentials: true
         })
         if (response?.data) {
-            if (response.data.success) router.push('/admin/sign-in')
+            if (response.data.success) router.push('/admin-sign-in')
             return response.data;
         } else {
             throw new Error(response?.data?.message)
