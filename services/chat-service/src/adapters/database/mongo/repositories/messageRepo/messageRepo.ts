@@ -94,6 +94,7 @@ export const getCountOfAllUnreadMessages = async ( userId: string, chatRoomsId: 
                 senderId: {
                     $ne: userId
                 },
+                unRead: true,
                 chatRoomId: {
                     $in: chatRoomsId
                 }         
