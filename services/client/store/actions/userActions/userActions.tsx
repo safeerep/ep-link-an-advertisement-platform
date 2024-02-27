@@ -727,16 +727,17 @@ export const getCurrentUserChatRooms = createAsyncThunk('/user/chat-rooms',
 )
 
 export const saveNewMessage = createAsyncThunk('/user/new-message',
-    async (messageDetails: any, { dispatch }) => {
+    async ({data, chats, roomId}: {data: any, chats: any, roomId: string}, { dispatch }) => {
         console.log('called to save new message');
-
         try {
-            const response = await axios.post(`${CHAT_SERVICE_BASE_URL}/save-message`, messageDetails, {
+            const response = await axios.post(`${CHAT_SERVICE_BASE_URL}/save-message`, data, {
                 headers: { "Content-Type": "application/json" },
                 withCredentials: true
             })
             if (response?.data) {
-                dispatch(getCurrentUserChatRooms())
+                if ( roomId !== chats[0]?._id) {
+                    dispatch(getCurrentUserChatRooms())
+                }
                 return response.data;
             }
         } catch (error: any) {
