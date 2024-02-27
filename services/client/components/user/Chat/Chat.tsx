@@ -1,6 +1,5 @@
 "use client"
 import { GrMore, GrEmoji, GrDocument } from 'react-icons/gr'
-import { IoIosCall } from 'react-icons/io'
 import { BsCameraVideoFill, BsCameraVideo, BsImageAlt } from 'react-icons/bs'
 import { AiOutlinePlus } from 'react-icons/ai'
 import { MdAudiotrack } from 'react-icons/md'
@@ -106,7 +105,6 @@ const Chat = () => {
 
     const sendMessage = () => {
         if (!message || currentUserBlockedReceiver) return;
-        console.log(`yes message have `, message);
         const messageDoc = {
             typeOfMessage: 'text',
             message: message,
@@ -119,24 +117,19 @@ const Chat = () => {
     }
 
     socket.on("show-message", (data: any) => {
-        console.log('----show message received in front end-----------');
-        console.log(chats);
-        
         data.showToReceiver = true;
         setNewMessages((newMessages: any) => [...newMessages, data]);
         scrollToBottom()
         if (data.senderId === user?._id) {
-            dispatch(saveNewMessage(data))
+            dispatch(saveNewMessage({data, chats, roomId}))
         }
     })
 
 
     socket.on("receiver-blocked", (data: any) => {
-        console.log('----receiver-blocked received in front end-----------');
-        console.log(data);
         data.showToReceiver = false;
         setNewMessages((newMessages: any) => [...newMessages, data]);
-        dispatch(saveNewMessage(data))
+        dispatch(saveNewMessage({data, chats, roomId}))
     })
 
     socket.on("show-notification", (data: any) => {
@@ -376,7 +369,7 @@ const Chat = () => {
                                             <img className="object-cover w-full h-full rounded-full" src={behindUser?.userId?.profilePhoto} alt="" />
                                             {
                                                 onlineUsers.includes(behindUser?.userId?.userId) &&
-                                                <div className="absolute bottom-2 right-2 w-2 h-2 rounded-full bg-green-600"></div>
+                                                <div className="absolute bottom-2 right-0 w-2 h-2 rounded-full bg-green-600"></div>
                                             }
                                         </div>
                                         <div className="flex flex-col">
@@ -413,7 +406,7 @@ const Chat = () => {
                                     <img className="object-cover w-full h-full rounded-full" src={seller?.profilePhoto} alt="" />
                                     {
                                         onlineUsers.includes(seller?._id) &&
-                                        <div className="absolute bottom-2 right-2 w-2 h-2 rounded-full bg-green-600"></div>
+                                        <div className="absolute bottom-2 right-0 w-2 h-2 rounded-full bg-green-600"></div>
                                     }
                                 </div>
                                 <div className="flex flex-col">
@@ -427,9 +420,6 @@ const Chat = () => {
                                     type="button">
                                     <BsCameraVideoFill />
                                 </button >
-                                <button type="button">
-                                    <IoIosCall />
-                                </button>
                                 <>
                                     <button
                                         onClick={() => setIsDropdownOpen(!isDropdownOpen)}
