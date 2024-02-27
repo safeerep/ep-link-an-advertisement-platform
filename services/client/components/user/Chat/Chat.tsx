@@ -120,6 +120,8 @@ const Chat = () => {
 
     socket.on("show-message", (data: any) => {
         console.log('----show message received in front end-----------');
+        console.log(chats);
+        
         data.showToReceiver = true;
         setNewMessages((newMessages: any) => [...newMessages, data]);
         scrollToBottom()

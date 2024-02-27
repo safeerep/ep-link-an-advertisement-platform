@@ -23,6 +23,8 @@ const Posts = ({ from }: { from: string }) => {
         dispatch(getAllFavouriteProducts())
     }, [])
 
+    const user = useSelector((state: RootState) => state?.user?.data?.userData)
+    const userId = user?._id;
     const page = useSelector((state: RootState) => state?.user?.data?.currentPage) ?? 1;
     const products = useSelector((state: RootState) => state?.user?.data?.products)
     const favourites = useSelector((state: RootState) => state?.user?.data?.favourites)
@@ -34,7 +36,11 @@ const Posts = ({ from }: { from: string }) => {
 
     const handleAddToFavourite = (productId: string) => {
         console.log(`called for add to favourite. product id is ${productId}`);
-        dispatch(addToFavourites(productId))
+        if (userId) {
+            dispatch(addToFavourites(productId))
+        } else {
+            router.push('/sign-in')
+        }
     }
 
     const handleRemoveFromFavourite = (productId: string) => {

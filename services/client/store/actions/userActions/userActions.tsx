@@ -727,7 +727,7 @@ export const getCurrentUserChatRooms = createAsyncThunk('/user/chat-rooms',
 )
 
 export const saveNewMessage = createAsyncThunk('/user/new-message',
-    async (messageDetails: any) => {
+    async (messageDetails: any, { dispatch }) => {
         console.log('called to save new message');
 
         try {
@@ -736,10 +736,7 @@ export const saveNewMessage = createAsyncThunk('/user/new-message',
                 withCredentials: true
             })
             if (response?.data) {
-                console.log('-------------------------');
-                console.log('new message saved');
-                console.log(response.data);
-                console.log('-------------------------');
+                dispatch(getCurrentUserChatRooms())
                 return response.data;
             }
         } catch (error: any) {
