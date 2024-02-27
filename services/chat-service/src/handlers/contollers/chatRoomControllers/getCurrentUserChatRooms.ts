@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import getUserId from "../../../utils/externalServices/jwt/getUserId";
+import mongoose from "mongoose";
 
 export default ( dependencies: any) => {
     const {
@@ -21,8 +22,7 @@ export default ( dependencies: any) => {
             .then(async (userId: any) => {
                 const currentUserId: string = String(userId)
                 const chats = await getAllChatsOfCurrentUser_usecase(dependencies).interactor(currentUserId)
-                const unreadMessages = await getUnreadMessageCounts_usecase(dependencies).interactor(currentUserId, chats)
-
+                const unreadMessages = await getUnreadMessageCounts_usecase(dependencies).interactor(new mongoose.Types.ObjectId(currentUserId), chats)
                 return res.json({ success: true, chats, unreadMessages, message: "successfully fetched all chats of currentuser" })
             })
             .catch((err) => {
